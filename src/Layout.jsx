@@ -20,7 +20,8 @@ import {
   LogOut,
   ChevronRight,
   BarChart2,
-  DollarSign
+  DollarSign,
+  AlertCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import PWAInstallBanner from "@/components/PWAInstallBanner";
@@ -34,6 +35,7 @@ const mainNavItems = [
   { name: "Contract Tools", icon: FileBadge, page: "Contracts" },
   { name: "Expense Tools", icon: Receipt, page: "ExpensesHub" },
   { name: "Finance", icon: DollarSign, page: "Finance" },
+  { name: "Alerts", icon: AlertCircle, page: "Alerts" },
   { name: "BUL Performance", icon: TrendingUp, page: "BULPerformance" },
 ];
 

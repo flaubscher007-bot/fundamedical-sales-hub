@@ -70,6 +70,7 @@ import BULDashboard from './pages/BULDashboard';
 import FinanceDashboard from './pages/FinanceDashboard';
 import Finance from './pages/Finance';
 import FinanceReporting from './pages/FinanceReporting';
+import Alerts from './pages/Alerts';
 import __Layout from './Layout.jsx';
 
 
@@ -97,6 +98,7 @@ export const PAGES = {
     "FinanceDashboard": FinanceDashboard,
     "Finance": Finance,
     "FinanceReporting": FinanceReporting,
+    "Alerts": Alerts,
 }
 
 export const pagesConfig = {
