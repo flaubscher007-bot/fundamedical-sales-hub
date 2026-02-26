@@ -47,6 +47,7 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
+import AdvancedReporting from './pages/AdvancedReporting';
 import Alerts from './pages/Alerts';
 import AppointmentTools from './pages/AppointmentTools';
 import Appointments from './pages/Appointments';
@@ -55,8 +56,8 @@ import BULManagement from './pages/BULManagement';
 import BULPerformance from './pages/BULPerformance';
 import BusinessCard from './pages/BusinessCard';
 import ClientContacts from './pages/ClientContacts';
+import ClientInsights from './pages/ClientInsights';
 import ClientPortal from './pages/ClientPortal';
-import Clients from './pages/Clients';
 import CompanyTargets from './pages/CompanyTargets';
 import Contracts from './pages/Contracts';
 import Dashboard from './pages/Dashboard';
@@ -67,22 +68,22 @@ import Experts from './pages/Experts';
 import Finance from './pages/Finance';
 import FinanceDashboard from './pages/FinanceDashboard';
 import FinanceReporting from './pages/FinanceReporting';
+import FollowUpRules from './pages/FollowUpRules';
 import FollowUps from './pages/FollowUps';
+import Help from './pages/Help';
 import IntakeForms from './pages/IntakeForms';
 import Marketing from './pages/Marketing';
 import MeetingMinutes from './pages/MeetingMinutes';
 import Mileage from './pages/Mileage';
 import PricingProposals from './pages/PricingProposals';
 import SocialMedia from './pages/SocialMedia';
-import AdvancedReporting from './pages/AdvancedReporting';
 import UserManagement from './pages/UserManagement';
-import FollowUpRules from './pages/FollowUpRules';
-import Help from './pages/Help';
-import ClientInsights from './pages/ClientInsights';
+import Clients from './pages/Clients';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "AdvancedReporting": AdvancedReporting,
     "Alerts": Alerts,
     "AppointmentTools": AppointmentTools,
     "Appointments": Appointments,
@@ -91,8 +92,8 @@ export const PAGES = {
     "BULPerformance": BULPerformance,
     "BusinessCard": BusinessCard,
     "ClientContacts": ClientContacts,
+    "ClientInsights": ClientInsights,
     "ClientPortal": ClientPortal,
-    "Clients": Clients,
     "CompanyTargets": CompanyTargets,
     "Contracts": Contracts,
     "Dashboard": Dashboard,
@@ -103,18 +104,17 @@ export const PAGES = {
     "Finance": Finance,
     "FinanceDashboard": FinanceDashboard,
     "FinanceReporting": FinanceReporting,
+    "FollowUpRules": FollowUpRules,
     "FollowUps": FollowUps,
+    "Help": Help,
     "IntakeForms": IntakeForms,
     "Marketing": Marketing,
     "MeetingMinutes": MeetingMinutes,
     "Mileage": Mileage,
     "PricingProposals": PricingProposals,
     "SocialMedia": SocialMedia,
-    "AdvancedReporting": AdvancedReporting,
     "UserManagement": UserManagement,
-    "FollowUpRules": FollowUpRules,
-    "Help": Help,
-    "ClientInsights": ClientInsights,
+    "Clients": Clients,
 }
 
 export const pagesConfig = {

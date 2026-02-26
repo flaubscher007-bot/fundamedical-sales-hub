@@ -30,6 +30,9 @@ export default function BULManagement() {
   const [editingTeamAssignment, setEditingTeamAssignment] = useState(null);
   const [teamForm, setTeamForm] = useState(emptyTeamAssignment);
   const [importLoading, setImportLoading] = useState(false);
+  const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
+  const [inviteForm, setInviteForm] = useState({ name: "", email: "", role: "Business Unit Leader", method: "email" });
+  const [inviting, setInviting] = useState(false);
   const [user, setUser] = useState(null);
   const qc = useQueryClient();
 
@@ -172,6 +175,24 @@ export default function BULManagement() {
       document.body.removeChild(link);
     } catch (error) {
       alert('Download failed: ' + error.message);
+    }
+  };
+
+  const handleInviteTeamMember = async () => {
+    if (!inviteForm.name.trim() || !inviteForm.email.trim()) {
+      alert('Please fill in name and email');
+      return;
+    }
+    setInviting(true);
+    try {
+      const result = await base44.functions.invoke('inviteTeamMember', inviteForm);
+      alert(`Invitation sent to ${inviteForm.email} via ${inviteForm.method}`);
+      setInviteForm({ name: "", email: "", role: "Business Unit Leader", method: "email" });
+      setInviteDialogOpen(false);
+    } catch (error) {
+      alert('Invite failed: ' + error.message);
+    } finally {
+      setInviting(false);
     }
   };
 
@@ -405,7 +426,7 @@ export default function BULManagement() {
         </TabsContent>
 
         {/* ORGANIZATION TAB */}
-        <TabsContent value="organization" className="space-y-4">
+         <TabsContent value="organization" className="space-y-4">
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-semibold text-slate-800">Team Organization</h3>
             <div className="flex gap-2">
@@ -418,6 +439,9 @@ export default function BULManagement() {
                   <span>{importLoading ? 'Importing...' : 'Import from File'}</span>
                 </Button>
               </label>
+              <Button onClick={() => setInviteDialogOpen(true)} className="bg-green-600 hover:bg-green-700">
+                <Plus className="w-4 h-4 mr-2" /> Invite User
+              </Button>
               <Button onClick={openNewTeamAssignment} className="bg-[#00bcd4] hover:bg-[#0097a7]">
                 <Plus className="w-4 h-4 mr-2" /> Add Team Member
               </Button>
@@ -662,6 +686,49 @@ export default function BULManagement() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
-  );
-}
+
+      {/* INVITE USER DIALOG */}
+      <Dialog open={inviteDialogOpen} onOpenChange={setInviteDialogOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader><DialogTitle>Invite Team Member</DialogTitle></DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <Label>Full Name *</Label>
+              <Input value={inviteForm.name} onChange={(e) => setInviteForm({ ...inviteForm, name: e.target.value })} placeholder="Full name" />
+            </div>
+            <div>
+              <Label>Email Address *</Label>
+              <Input type="email" value={inviteForm.email} onChange={(e) => setInviteForm({ ...inviteForm, email: e.target.value })} placeholder="user@example.com" />
+            </div>
+            <div>
+              <Label>Role *</Label>
+              <Select value={inviteForm.role} onValueChange={(v) => setInviteForm({ ...inviteForm, role: v })}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {ROLES.map(role => (
+                    <SelectItem key={role} value={role}>{role}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Send Invitation Via *</Label>
+              <Select value={inviteForm.method} onValueChange={(v) => setInviteForm({ ...inviteForm, method: v })}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="email">Email</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setInviteDialogOpen(false)}>Cancel</Button>
+            <Button onClick={handleInviteTeamMember} className="bg-green-600 hover:bg-green-700" disabled={inviting}>
+              {inviting ? 'Sending...' : 'Send Invitation'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      </div>
+      );
+      }
