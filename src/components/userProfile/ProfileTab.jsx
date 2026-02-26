@@ -73,7 +73,34 @@ export default function ProfileTab({ currentUser }) {
         <CardHeader>
           <CardTitle>Personal Information</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-6">
+          <div className="flex flex-col items-center gap-4">
+            <div className="relative">
+              <div className="w-32 h-32 rounded-full bg-gradient-to-br from-[#7ed957] to-[#00bcd4] flex items-center justify-center overflow-hidden border-4 border-white shadow-lg">
+                {profilePicture ? (
+                  <img src={profilePicture} alt="Profile" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-4xl font-bold text-white">
+                    {currentUser?.full_name?.[0]?.toUpperCase() || currentUser?.email?.[0]?.toUpperCase()}
+                  </span>
+                )}
+              </div>
+              {editMode && (
+                <label className="absolute bottom-0 right-0 bg-[#00bcd4] hover:bg-[#0097a7] text-white p-2 rounded-full cursor-pointer transition-colors">
+                  <Upload className="w-4 h-4" />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleProfilePictureUpload}
+                    disabled={uploading}
+                    className="hidden"
+                  />
+                </label>
+              )}
+            </div>
+            {editMode && uploading && <p className="text-sm text-slate-500">Uploading...</p>}
+          </div>
+
           <div>
             <Label>Full Name</Label>
             <Input
