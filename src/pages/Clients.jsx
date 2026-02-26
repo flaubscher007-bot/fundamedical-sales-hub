@@ -45,6 +45,8 @@ export default function Clients() {
   const [search, setSearch] = useState("");
   const [activityFilter, setActivityFilter] = useState("all");
   const [bulFilter, setBulFilter] = useState("all");
+  const [caFilter, setCaFilter] = useState("all");
+  const [fcFilter, setFcFilter] = useState("all");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingClient, setEditingClient] = useState(null);
   const [form, setForm] = useState(emptyClient);
