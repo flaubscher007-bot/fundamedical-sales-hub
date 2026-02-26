@@ -142,27 +142,27 @@ export default function Layout({ children, currentPageName }) {
         <div className="fixed inset-0 bg-black/40 z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}
 
-      <aside className={`fixed lg:static inset-y-0 left-0 z-50 w-72 funda-gradient text-white transform transition-transform duration-300 ease-in-out ${
+      <aside className={`fixed lg:static inset-y-0 left-0 z-50 w-full sm:w-72 funda-gradient text-white transform transition-transform duration-300 ease-in-out ${
         sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-      } flex flex-col`}>
+      } flex flex-col max-h-screen overflow-y-auto`}>
         {/* Logo */}
-        <div className="p-6 border-b border-white/10">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-xl font-bold tracking-wide">
+        <div className="p-4 sm:p-6 border-b border-white/10 sticky top-0 bg-[#0a2540]">
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <h1 className="text-lg sm:text-xl font-bold tracking-wide truncate">
                 <span className="text-[#7ed957]">FUNDA</span>
                 <span className="text-[#00bcd4]">MEDICAL</span>
               </h1>
-              <p className="text-xs text-slate-400 mt-1">Sales Hub</p>
+              <p className="text-xs text-slate-400 mt-0.5 truncate">Sales Hub</p>
             </div>
-            <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-slate-400 hover:text-white">
+            <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-slate-400 hover:text-white flex-shrink-0">
               <X className="w-5 h-5" />
             </button>
           </div>
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 overflow-y-auto py-4 px-3">
+        <nav className="flex-1 overflow-y-auto py-3 px-2 sm:py-4 sm:px-3">
           {mainNavItems.map(renderNavItem)}
 
           {/* Power BI Section */}
@@ -250,16 +250,16 @@ export default function Layout({ children, currentPageName }) {
 
         {/* User */}
         {user && (
-          <div className="p-4 border-t border-white/10">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full bg-[#00bcd4]/20 flex items-center justify-center text-[#00bcd4] font-semibold text-sm">
+          <div className="p-3 sm:p-4 border-t border-white/10 sticky bottom-0 bg-[#0a2540]">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#00bcd4]/20 flex items-center justify-center text-[#00bcd4] font-semibold text-xs sm:text-sm flex-shrink-0">
                 {user.full_name?.[0] || user.email?.[0]?.toUpperCase()}
               </div>
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0 hidden sm:block">
                 <p className="text-sm font-medium text-white truncate">{user.full_name || "User"}</p>
                 <p className="text-xs text-slate-400 truncate">{user.email}</p>
               </div>
-              <button onClick={() => base44.auth.logout()} className="text-slate-500 hover:text-red-400 transition-colors">
+              <button onClick={() => base44.auth.logout()} className="text-slate-500 hover:text-red-400 transition-colors flex-shrink-0">
                 <LogOut className="w-4 h-4" />
               </button>
             </div>

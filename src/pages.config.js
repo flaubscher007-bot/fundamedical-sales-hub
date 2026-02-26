@@ -49,6 +49,7 @@
  */
 import AdvancedReporting from './pages/AdvancedReporting';
 import Alerts from './pages/Alerts';
+import Analytics from './pages/Analytics';
 import AppointmentTools from './pages/AppointmentTools';
 import Appointments from './pages/Appointments';
 import BULDashboard from './pages/BULDashboard';
@@ -83,13 +84,13 @@ import SocialMedia from './pages/SocialMedia';
 import TeamCalendar from './pages/TeamCalendar';
 import UserManagement from './pages/UserManagement';
 import UserProfile from './pages/UserProfile';
-import Analytics from './pages/Analytics';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "AdvancedReporting": AdvancedReporting,
     "Alerts": Alerts,
+    "Analytics": Analytics,
     "AppointmentTools": AppointmentTools,
     "Appointments": Appointments,
     "BULDashboard": BULDashboard,
@@ -124,7 +125,6 @@ export const PAGES = {
     "TeamCalendar": TeamCalendar,
     "UserManagement": UserManagement,
     "UserProfile": UserProfile,
-    "Analytics": Analytics,
 }
 
 export const pagesConfig = {
