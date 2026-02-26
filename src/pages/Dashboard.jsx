@@ -82,6 +82,9 @@ export default function Dashboard() {
         <StatsCard title="Expenses" value={`R${totalExpenses.toLocaleString()}`} icon={Receipt} color="red" />
       </div>
 
+      {/* BUL Performance Summary */}
+      {user && <BULPerformanceSummary user={user} />}
+
       {/* Contract KPIs */}
       <ContractKPIs contracts={contracts} proposals={proposals} />
 
