@@ -37,7 +37,7 @@ const mainNavItems = [
   { name: "Appointments", icon: Calendar, page: "Appointments" },
   { name: "Meeting Minutes", icon: ClipboardList, page: "MeetingMinutes" },
   { name: "Follow-Ups", icon: Phone, page: "FollowUps" },
-  { name: "Intake Forms", icon: Briefcase, page: "IntakeForms" },
+  { name: "Contracts", icon: FileBadge, page: "Contracts" },
   { name: "Mileage", icon: Car, page: "Mileage" },
   { name: "Expenses", icon: Receipt, page: "Expenses" },
   { name: "Pricing Proposals", icon: DollarSign, page: "PricingProposals" },
