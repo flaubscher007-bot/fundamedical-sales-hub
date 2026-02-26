@@ -71,7 +71,8 @@ export default function Clients() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["clients"] }),
   });
 
-  const openNew = () => { setEditingClient(null); setForm(emptyClient); setDialogOpen(true); };
+  const openNew = () => setWizardOpen(true);
+  const handleWizardSave = (data) => { saveMutation.mutate(data); setWizardOpen(false); };
   const openEdit = (c) => { setEditingClient(c); setForm(c); setDialogOpen(true); };
   const closeDialog = () => { setDialogOpen(false); setEditingClient(null); setForm(emptyClient); };
 
