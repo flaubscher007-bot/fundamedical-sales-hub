@@ -29,6 +29,7 @@ export default function BULManagement() {
   const [teamDialogOpen, setTeamDialogOpen] = useState(false);
   const [editingTeamAssignment, setEditingTeamAssignment] = useState(null);
   const [teamForm, setTeamForm] = useState(emptyTeamAssignment);
+  const [importLoading, setImportLoading] = useState(false);
   const [user, setUser] = useState(null);
   const qc = useQueryClient();
 
@@ -128,6 +129,27 @@ export default function BULManagement() {
     setEditingTeamAssignment(assignment);
     setTeamForm(assignment);
     setTeamDialogOpen(true);
+  };
+
+  const handleImportFile = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setImportLoading(true);
+    try {
+      const uploadRes = await base44.integrations.Core.UploadFile({ file });
+      const result = await base44.functions.invoke('importBULTeamAssignments', { file_url: uploadRes.file_url });
+      
+      if (result.data.success) {
+        qc.invalidateQueries({ queryKey: ["teamAssignments"] });
+        alert(`Imported ${result.data.created} BUL team assignments${result.data.skipped > 0 ? ` (${result.data.skipped} skipped)` : ''}`);
+      }
+    } catch (error) {
+      alert('Import failed: ' + error.message);
+    } finally {
+      setImportLoading(false);
+      e.target.value = '';
+    }
   };
 
   const formatCurrency = (value) => {
@@ -312,9 +334,17 @@ export default function BULManagement() {
         <TabsContent value="organization" className="space-y-4">
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-semibold text-slate-800">Team Organization</h3>
-            <Button onClick={openNewTeamAssignment} className="bg-[#00bcd4] hover:bg-[#0097a7]">
-              <Plus className="w-4 h-4 mr-2" /> Add Team Member
-            </Button>
+            <div className="flex gap-2">
+              <label>
+                <input type="file" accept=".xlsx,.xls,.csv" onChange={handleImportFile} disabled={importLoading} style={{ display: 'none' }} />
+                <Button asChild disabled={importLoading} className="bg-slate-600 hover:bg-slate-700">
+                  <span>{importLoading ? 'Importing...' : 'Import from File'}</span>
+                </Button>
+              </label>
+              <Button onClick={openNewTeamAssignment} className="bg-[#00bcd4] hover:bg-[#0097a7]">
+                <Plus className="w-4 h-4 mr-2" /> Add Team Member
+              </Button>
+            </div>
           </div>
 
           <div className="grid gap-4">
