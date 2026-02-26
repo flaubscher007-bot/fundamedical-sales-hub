@@ -3,11 +3,12 @@ import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Plus, Settings, Calendar } from "lucide-react";
+import { Plus, Settings, Calendar, CheckSquare } from "lucide-react";
 import CalendarView from "@/components/calendar/CalendarView";
 import TeamCalendarView from "@/components/calendar/TeamCalendarView";
 import EventForm from "@/components/calendar/EventForm";
 import CalendarSettings from "@/components/calendar/CalendarSettings";
+import TaskPanel from "@/components/calendar/TaskPanel";
 
 export default function TeamCalendarPage() {
   const [showEventForm, setShowEventForm] = useState(false);
@@ -38,6 +39,11 @@ export default function TeamCalendarPage() {
       if (!currentUser?.email) return [];
       return base44.entities.CalendarIntegration.filter({ user_email: currentUser.email });
     },
+  });
+
+  const { data: tasks = [] } = useQuery({
+    queryKey: ["tasks"],
+    queryFn: () => base44.entities.Task.list(),
   });
 
   const createEventMutation = useMutation({
@@ -108,16 +114,20 @@ export default function TeamCalendarPage() {
       </div>
 
       <Tabs defaultValue="personal" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="personal" className="flex items-center gap-2">
-            <Calendar className="w-4 h-4" />
-            My Calendar
-          </TabsTrigger>
-          <TabsTrigger value="team" className="flex items-center gap-2">
-            <Calendar className="w-4 h-4" />
-            Team Calendar
-          </TabsTrigger>
-        </TabsList>
+         <TabsList className="grid w-full grid-cols-3">
+           <TabsTrigger value="personal" className="flex items-center gap-2">
+             <Calendar className="w-4 h-4" />
+             My Calendar
+           </TabsTrigger>
+           <TabsTrigger value="team" className="flex items-center gap-2">
+             <Calendar className="w-4 h-4" />
+             Team Calendar
+           </TabsTrigger>
+           <TabsTrigger value="tasks" className="flex items-center gap-2">
+             <CheckSquare className="w-4 h-4" />
+             Tasks
+           </TabsTrigger>
+         </TabsList>
 
         {/* Personal Calendar */}
         <TabsContent value="personal" className="border rounded-lg p-4">
@@ -137,20 +147,29 @@ export default function TeamCalendarPage() {
         </TabsContent>
 
         {/* Team Calendar */}
-        <TabsContent value="team" className="border rounded-lg p-4">
-          <TeamCalendarView
-            events={events}
-            users={users}
-            selectedDate={selectedDate}
-            onSelectDate={setSelectedDate}
-            onEditEvent={(event) => {
-              setEditingEvent(event);
-              setShowEventForm(true);
-            }}
-            currentUser={currentUser}
-          />
-        </TabsContent>
-      </Tabs>
+         <TabsContent value="team" className="border rounded-lg p-4">
+           <TeamCalendarView
+             events={events}
+             users={users}
+             selectedDate={selectedDate}
+             onSelectDate={setSelectedDate}
+             onEditEvent={(event) => {
+               setEditingEvent(event);
+               setShowEventForm(true);
+             }}
+             currentUser={currentUser}
+           />
+         </TabsContent>
+
+         {/* Tasks */}
+         <TabsContent value="tasks" className="border rounded-lg p-4">
+           <TaskPanel
+             selectedDate={selectedDate}
+             currentUser={currentUser}
+             tasks={tasks}
+           />
+         </TabsContent>
+        </Tabs>
 
       {showEventForm && (
         <EventForm

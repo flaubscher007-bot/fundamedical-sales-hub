@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { format, addDays, startOfWeek, eachDayOfInterval } from "date-fns";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, CheckSquare } from "lucide-react";
 
-export default function TeamCalendarView({ events, users, selectedDate, onSelectDate, onEditEvent, currentUser }) {
+export default function TeamCalendarView({ events, users, selectedDate, onSelectDate, onEditEvent, currentUser, tasks = [] }) {
   const [currentWeek, setCurrentWeek] = useState(new Date());
   const [selectedTeamMembers, setSelectedTeamMembers] = useState([currentUser?.email]);
+  const [showTasks, setShowTasks] = useState(true);
 
   const weekStart = startOfWeek(currentWeek);
   const weekDays = eachDayOfInterval({
@@ -25,13 +26,20 @@ export default function TeamCalendarView({ events, users, selectedDate, onSelect
   };
 
   const getEventsForTimeSlot = (date, hour) => {
-    return events.filter(event => {
+    const dateEvents = events.filter(event => {
       const eventStart = new Date(event.start_time);
       const eventHour = eventStart.getHours();
       return weekDays.some(d => d.toDateString() === date.toDateString()) &&
         eventHour === hour &&
         selectedTeamMembers.includes(event.organizer_email);
     });
+
+    const dateTasks = showTasks ? tasks.filter(task => {
+      const taskDate = new Date(task.due_date).toDateString();
+      return taskDate === date.toDateString();
+    }) : [];
+
+    return { events: dateEvents, tasks: dateTasks };
   };
 
   const hours = Array.from({ length: 24 }, (_, i) => i);
@@ -44,6 +52,15 @@ export default function TeamCalendarView({ events, users, selectedDate, onSelect
           Week of {format(weekStart, "MMM d")} - {format(addDays(weekStart, 6), "MMM d, yyyy")}
         </h2>
         <div className="flex gap-2">
+          <Button 
+            size="sm" 
+            variant={showTasks ? "default" : "outline"}
+            onClick={() => setShowTasks(!showTasks)}
+            className={showTasks ? "bg-[#7ed957] text-black" : ""}
+          >
+            <CheckSquare className="w-4 h-4 mr-1" />
+            Tasks
+          </Button>
           <Button size="sm" variant="outline" onClick={prevWeek}>
             <ChevronLeft className="w-4 h-4" />
           </Button>
@@ -92,22 +109,36 @@ export default function TeamCalendarView({ events, users, selectedDate, onSelect
                   {String(hour).padStart(2, "0")}:00
                 </td>
                 {weekDays.map(day => {
-                  const dayEvents = getEventsForTimeSlot(day, hour);
-                  return (
-                    <td key={day.toString()} className="min-w-32 border-r p-1 min-h-16 bg-gray-50 hover:bg-gray-100 transition-colors">
-                      {dayEvents.map(event => (
-                        <div
-                          key={event.id}
-                          onClick={() => onEditEvent(event)}
-                          className="bg-[#7ed957] text-black text-xs p-1 rounded mb-1 cursor-pointer hover:opacity-80 truncate"
-                          title={event.title}
-                        >
-                          {event.title}
-                        </div>
-                      ))}
-                    </td>
-                  );
-                })}
+                   const { events: dayEvents, tasks: dayTasks } = getEventsForTimeSlot(day, hour);
+                   return (
+                     <td key={day.toString()} className="min-w-32 border-r p-1 min-h-16 bg-gray-50 hover:bg-gray-100 transition-colors">
+                       {dayEvents.map(event => (
+                         <div
+                           key={event.id}
+                           onClick={() => onEditEvent(event)}
+                           className="bg-[#7ed957] text-black text-xs p-1 rounded mb-1 cursor-pointer hover:opacity-80 truncate"
+                           title={event.title}
+                         >
+                           {event.title}
+                         </div>
+                       ))}
+                       {dayTasks.map(task => (
+                         <div
+                           key={task.id}
+                           className={`text-xs p-1 rounded mb-1 cursor-pointer hover:opacity-80 truncate border-l-2 ${
+                             task.priority === "Urgent" ? "bg-red-100 text-red-900 border-red-500" :
+                             task.priority === "High" ? "bg-orange-100 text-orange-900 border-orange-500" :
+                             task.priority === "Medium" ? "bg-yellow-100 text-yellow-900 border-yellow-500" :
+                             "bg-blue-100 text-blue-900 border-blue-500"
+                           }`}
+                           title={task.task_title}
+                         >
+                           ✓ {task.task_title}
+                         </div>
+                       ))}
+                     </td>
+                   );
+                 })}
               </tr>
             ))}
           </tbody>
