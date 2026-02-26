@@ -5,8 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Building2, Mail, Phone, Copy, ExternalLink, User, Briefcase } from "lucide-react";
+import { Search, Building2, Mail, Phone, Copy, ExternalLink, User, Briefcase, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link, useSearchParams } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 
 const copyToClipboard = (text) => {
   navigator.clipboard.writeText(text);
@@ -68,9 +70,12 @@ const activityColors = {
 };
 
 export default function ClientContacts() {
-  const [search, setSearch] = useState("");
-  const [bulFilter, setBulFilter] = useState("all");
-  const [activityFilter, setActivityFilter] = useState("ACTIVE");
+   const [searchParams] = useSearchParams();
+   const firmFilter = searchParams.get("firm");
+
+   const [search, setSearch] = useState("");
+   const [bulFilter, setBulFilter] = useState("all");
+   const [activityFilter, setActivityFilter] = useState("ACTIVE");
 
   const { data: clients = [], isLoading } = useQuery({
     queryKey: ["clients"],
@@ -90,7 +95,8 @@ export default function ClientContacts() {
       c.contact_phone?.toLowerCase().includes(q);
     const matchActivity = activityFilter === "all" || c.activity_status === activityFilter;
     const matchBul = bulFilter === "all" || c.business_unit_leader === bulFilter;
-    return matchSearch && matchActivity && matchBul;
+    const matchFirm = !firmFilter || c.firm_name === firmFilter;
+    return matchSearch && matchActivity && matchBul && matchFirm;
   });
 
   const hasContacts = (c) =>
@@ -99,9 +105,18 @@ export default function ClientContacts() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">Law Firm Contacts</h1>
-        <p className="text-sm text-slate-500 mt-1">All email addresses and phone numbers per firm</p>
+      <div className="flex items-start justify-between">
+        <div className="flex-1">
+          <div className="flex items-center gap-2">
+            {firmFilter && (
+              <Link to={createPageUrl("Clients")} className="inline-flex items-center gap-1 text-[#00bcd4] hover:text-[#0097a7] transition-colors">
+                <ArrowLeft className="w-4 h-4" />
+              </Link>
+            )}
+            <h1 className="text-2xl font-bold text-slate-900">Law Firm Contacts</h1>
+          </div>
+          <p className="text-sm text-slate-500 mt-1">{firmFilter ? `Contacts for ${firmFilter}` : "All email addresses and phone numbers per firm"}</p>
+        </div>
       </div>
 
       {/* Filters */}
@@ -157,10 +172,10 @@ export default function ClientContacts() {
                       {c.activity_status}
                     </Badge>
                     {c.business_unit_leader && (
-                      <span className="text-[10px] text-slate-500 flex items-center gap-0.5">
-                        <Briefcase className="w-2.5 h-2.5 text-[#00bcd4]" /> {c.business_unit_leader}
-                      </span>
-                    )}
+                        <Link to={createPageUrl("BULManagement")} className="text-[10px] text-slate-500 hover:text-[#00bcd4] transition-colors flex items-center gap-0.5">
+                          <Briefcase className="w-2.5 h-2.5 text-[#00bcd4]" /> {c.business_unit_leader}
+                        </Link>
+                      )}
                   </div>
                 </div>
               </div>
