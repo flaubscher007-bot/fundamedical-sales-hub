@@ -571,9 +571,19 @@ export default function BULManagement() {
             })}
           </div>
         </TabsContent>
-      </Tabs>
 
-      {/* TARGET DIALOG */}
+        {/* ACTIVITY LOG TAB */}
+        {user && ['admin', 'Sales Manager'].includes(user.role) && (
+          <TabsContent value="activity" className="space-y-4">
+            <div>
+              <h3 className="text-lg font-semibold text-slate-800 mb-4">Team Activity Log</h3>
+              <ActivityLogPanel />
+            </div>
+          </TabsContent>
+        )}
+        </Tabs>
+
+        {/* TARGET DIALOG */}
       <Dialog open={targetDialogOpen} onOpenChange={setTargetDialogOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader><DialogTitle>{editingTarget ? "Edit Target" : "Create Target"}</DialogTitle></DialogHeader>
@@ -748,17 +758,6 @@ export default function BULManagement() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      {/* ACTIVITY LOG TAB */}
-       {user && ['admin', 'Sales Manager'].includes(user.role) && (
-         <TabsContent value="activity" className="space-y-4">
-           <div>
-             <h3 className="text-lg font-semibold text-slate-800 mb-4">Team Activity Log</h3>
-             <ActivityLogPanel />
-           </div>
-         </TabsContent>
-       )}
-      </Tabs>
 
       {/* INVITE USER DIALOG */}
       <Dialog open={inviteDialogOpen} onOpenChange={setInviteDialogOpen}>
