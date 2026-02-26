@@ -10,6 +10,29 @@ import { Download, FileText, Loader2, TrendingUp, DollarSign } from "lucide-reac
 import { format } from "date-fns";
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
+const generateChartData = (reportData) => {
+  if (!reportData) return {};
+
+  // Status breakdown chart
+  const statusChartData = Object.entries(reportData.by_status || {}).map(([status, data]) => ({
+    name: status,
+    count: data.count,
+    balance: Math.round(data.total_balance / 1000)
+  }));
+
+  // KAC breakdown chart
+  const kacChartData = Object.entries(reportData.by_kac || {})
+    .map(([kac, data]) => ({
+      name: kac.substring(0, 12),
+      count: data.count,
+      balance: Math.round(data.total_balance / 1000)
+    }))
+    .sort((a, b) => b.balance - a.balance)
+    .slice(0, 8);
+
+  return { statusChartData, kacChartData };
+};
+
 export default function AdvancedFinancialReporting() {
   const [startDate, setStartDate] = useState(format(new Date(new Date().setMonth(new Date().getMonth() - 3)), 'yyyy-MM-dd'));
   const [endDate, setEndDate] = useState(format(new Date(), 'yyyy-MM-dd'));
@@ -207,6 +230,55 @@ export default function AdvancedFinancialReporting() {
       {/* Report Results */}
       {reportData && (
         <>
+          {/* Charts */}
+          {(() => {
+            const { statusChartData, kacChartData } = generateChartData(reportData);
+            return (
+              <div className="grid lg:grid-cols-2 gap-6">
+                {statusChartData.length > 0 && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">Account Status Breakdown</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ResponsiveContainer width="100%" height={250}>
+                        <BarChart data={statusChartData}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="name" />
+                          <YAxis yAxisId="left" label={{ value: 'Count', angle: -90, position: 'insideLeft' }} />
+                          <YAxis yAxisId="right" orientation="right" label={{ value: 'Balance (ZAR k)', angle: 90, position: 'insideRight' }} />
+                          <Tooltip />
+                          <Legend />
+                          <Bar yAxisId="left" dataKey="count" fill="#34CCD0" name="Count" />
+                          <Bar yAxisId="right" dataKey="balance" fill="#92F21D" name="Balance (k)" />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {kacChartData.length > 0 && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">Top KACs by Balance</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ResponsiveContainer width="100%" height={250}>
+                        <BarChart data={kacChartData} layout="vertical">
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis type="number" />
+                          <YAxis dataKey="name" type="category" width={100} />
+                          <Tooltip />
+                          <Bar dataKey="balance" fill="#48B600" radius={[0, 8, 8, 0]} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            );
+          })()}
+
           {/* Summary Metrics */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <Card className="border-0 shadow-sm">
