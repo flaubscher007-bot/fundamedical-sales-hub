@@ -47,6 +47,7 @@ const mainNavItems = [
   { name: "BUL Performance", icon: TrendingUp, page: "BULPerformance" },
   { name: "Company Targets", icon: TrendingUp, page: "CompanyTargets" },
   { name: "User Management", icon: Users, page: "UserManagement" },
+  { name: "Settings", icon: Wrench, page: "UserProfile" },
   { name: "Help", icon: FileText, page: "Help" },
 ];
 

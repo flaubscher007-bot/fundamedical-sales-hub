@@ -82,6 +82,7 @@ import Clients from './pages/Clients';
 import Goals from './pages/Goals';
 import Collaboration from './pages/Collaboration';
 import TeamCalendar from './pages/TeamCalendar';
+import UserProfile from './pages/UserProfile';
 import __Layout from './Layout.jsx';
 
 
@@ -121,6 +122,7 @@ export const PAGES = {
     "Goals": Goals,
     "Collaboration": Collaboration,
     "TeamCalendar": TeamCalendar,
+    "UserProfile": UserProfile,
 }
 
 export const pagesConfig = {
