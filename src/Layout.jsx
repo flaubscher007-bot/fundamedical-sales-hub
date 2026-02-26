@@ -37,10 +37,8 @@ const mainNavItems = [
   { name: "Meeting Minutes", icon: ClipboardList, page: "MeetingMinutes" },
   { name: "Follow-Ups", icon: Phone, page: "FollowUps" },
   { name: "Contracts", icon: FileBadge, page: "Contracts" },
-  { name: "Mileage", icon: Car, page: "Mileage" },
-  { name: "Expenses", icon: Receipt, page: "Expenses" },
+  { name: "Expenses", icon: Receipt, page: "ExpensesHub" },
   { name: "Pricing Proposals", icon: DollarSign, page: "PricingProposals" },
-  { name: "Entertainment", icon: Wine, page: "EntertainmentProposals" },
 ];
 
 const marketingItems = [
