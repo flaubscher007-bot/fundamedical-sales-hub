@@ -39,7 +39,7 @@ export default function UserManagement() {
   });
 
   const inviteUserMutation = useMutation({
-    mutationFn: (data) => base44.users.inviteUser(data.email, data.role),
+    mutationFn: (data) => base44.auth.inviteUser(data.email, data.role),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["users"] });
       setInviteDialogOpen(false);
