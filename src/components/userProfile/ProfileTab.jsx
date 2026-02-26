@@ -138,7 +138,7 @@ export default function ProfileTab({ currentUser }) {
                 <Button
                   variant="outline"
                   onClick={() => {
-                    setFormData({ full_name: currentUser?.full_name || "" });
+                    setFormData({ full_name: currentUser?.full_name || "", profile_picture: profilePicture });
                     setEditMode(false);
                   }}
                 >
