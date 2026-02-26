@@ -65,6 +65,7 @@ import Mileage from './pages/Mileage';
 import PricingProposals from './pages/PricingProposals';
 import SocialMedia from './pages/SocialMedia';
 import ExpensesHub from './pages/ExpensesHub';
+import BULPerformance from './pages/BULPerformance';
 import __Layout from './Layout.jsx';
 
 
@@ -87,6 +88,7 @@ export const PAGES = {
     "PricingProposals": PricingProposals,
     "SocialMedia": SocialMedia,
     "ExpensesHub": ExpensesHub,
+    "BULPerformance": BULPerformance,
 }
 
 export const pagesConfig = {
