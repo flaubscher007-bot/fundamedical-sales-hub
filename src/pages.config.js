@@ -62,6 +62,7 @@ import PricingProposals from './pages/PricingProposals';
 import ClientContacts from './pages/ClientContacts';
 import Experts from './pages/Experts';
 import SocialMedia from './pages/SocialMedia';
+import AppointmentTools from './pages/AppointmentTools';
 import __Layout from './Layout.jsx';
 
 
@@ -81,6 +82,7 @@ export const PAGES = {
     "ClientContacts": ClientContacts,
     "Experts": Experts,
     "SocialMedia": SocialMedia,
+    "AppointmentTools": AppointmentTools,
 }
 
 export const pagesConfig = {
