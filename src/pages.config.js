@@ -60,6 +60,7 @@ import MeetingMinutes from './pages/MeetingMinutes';
 import Mileage from './pages/Mileage';
 import PricingProposals from './pages/PricingProposals';
 import ClientContacts from './pages/ClientContacts';
+import Experts from './pages/Experts';
 import __Layout from './Layout.jsx';
 
 
@@ -77,6 +78,7 @@ export const PAGES = {
     "Mileage": Mileage,
     "PricingProposals": PricingProposals,
     "ClientContacts": ClientContacts,
+    "Experts": Experts,
 }
 
 export const pagesConfig = {
