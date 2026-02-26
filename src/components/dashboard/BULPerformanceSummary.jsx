@@ -15,6 +15,7 @@ const METRICS = [
   { key: "balance_payments_collected", label: "Balance Pmts", icon: TrendingUp, color: "text-purple-500", currency: true },
   { key: "visits", label: "Visits", icon: Car, color: "text-orange-500" },
   { key: "line_items", label: "Line Items", icon: ClipboardList, color: "text-slate-500" },
+  { key: "new_firms_signed", label: "New Firms", icon: UserPlus, color: "text-emerald-600" },
 ];
 
 export default function BULPerformanceSummary({ user }) {
