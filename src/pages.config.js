@@ -73,6 +73,7 @@ import Mileage from './pages/Mileage';
 import PricingProposals from './pages/PricingProposals';
 import SocialMedia from './pages/SocialMedia';
 import BULManagement from './pages/BULManagement';
+import CompanyTargets from './pages/CompanyTargets';
 import __Layout from './Layout.jsx';
 
 
@@ -103,6 +104,7 @@ export const PAGES = {
     "PricingProposals": PricingProposals,
     "SocialMedia": SocialMedia,
     "BULManagement": BULManagement,
+    "CompanyTargets": CompanyTargets,
 }
 
 export const pagesConfig = {

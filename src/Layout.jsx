@@ -38,6 +38,7 @@ const mainNavItems = [
   { name: "Alerts", icon: AlertCircle, page: "Alerts" },
   { name: "BUL Management", icon: TrendingUp, page: "BULManagement" },
   { name: "BUL Performance", icon: TrendingUp, page: "BULPerformance" },
+  { name: "Company Targets", icon: TrendingUp, page: "CompanyTargets" },
 ];
 
 const powerBIItems = [
