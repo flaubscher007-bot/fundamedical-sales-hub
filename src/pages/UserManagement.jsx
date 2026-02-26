@@ -7,7 +7,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Mail, Plus, Trash2, Lock, UserX, Edit, Copy, Check } from "lucide-react";
+import { Mail, Plus, Trash2, Lock, UserX, Edit, Copy, Check, Users } from "lucide-react";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 
 export default function UserManagement() {
   const [user, setUser] = useState(null);
@@ -127,8 +129,16 @@ export default function UserManagement() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-slate-800">User Management</h2>
+        <div>
+          <h2 className="text-2xl font-bold text-slate-800">User Management</h2>
+          <p className="text-sm text-slate-600 mt-1">Manage app users and roles</p>
+        </div>
         <div className="flex gap-2">
+          <Link to={createPageUrl('BULManagement')}>
+            <Button variant="outline" className="border-slate-300">
+              <Users className="w-4 h-4 mr-2" /> BUL Management
+            </Button>
+          </Link>
           <Button onClick={() => setCreateDialogOpen(true)} className="bg-[#7ed957] hover:bg-[#6bc54f]">
             <Plus className="w-4 h-4 mr-2" /> Create User
           </Button>
@@ -152,6 +162,7 @@ export default function UserManagement() {
                     <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Name</th>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Email</th>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Role</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Created</th>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Actions</th>
                   </tr>
                 </thead>
@@ -164,6 +175,9 @@ export default function UserManagement() {
                         <span className="inline-block px-3 py-1 rounded-full bg-[#00bcd4]/10 text-[#00bcd4] text-xs font-medium">
                           {u.role || "team_member"}
                         </span>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-slate-500">
+                        {new Date(u.created_date).toLocaleDateString('en-ZA')}
                       </td>
                       <td className="px-6 py-4 text-sm flex gap-2">
                         <Button 
