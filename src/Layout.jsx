@@ -19,6 +19,7 @@ import {
   Megaphone,
   Share2,
   Wrench,
+  FileBadge,
   ChevronDown,
   Menu,
   X,
