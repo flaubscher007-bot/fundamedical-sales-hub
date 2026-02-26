@@ -80,6 +80,7 @@ import SocialMedia from './pages/SocialMedia';
 import UserManagement from './pages/UserManagement';
 import Clients from './pages/Clients';
 import Goals from './pages/Goals';
+import Collaboration from './pages/Collaboration';
 import __Layout from './Layout.jsx';
 
 
@@ -117,6 +118,7 @@ export const PAGES = {
     "UserManagement": UserManagement,
     "Clients": Clients,
     "Goals": Goals,
+    "Collaboration": Collaboration,
 }
 
 export const pagesConfig = {
