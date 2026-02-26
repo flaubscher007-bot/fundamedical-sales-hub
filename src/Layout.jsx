@@ -97,7 +97,8 @@ export default function Layout({ children, currentPageName }) {
   const isPowerBIActive = powerBIItems.some(i => i.page === currentPageName);
 
   return (
-    <div className="min-h-screen bg-slate-50 flex">
+    <div className="min-h-screen bg-slate-50 flex pb-safe">
+      <PWAInstallBanner />
       {sidebarOpen && (
         <div className="fixed inset-0 bg-black/40 z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}
