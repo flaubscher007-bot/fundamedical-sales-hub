@@ -17,6 +17,7 @@ import {
   CreditCard,
   Stethoscope,
   Megaphone,
+  Share2,
   ChevronDown,
   Menu,
   X,
