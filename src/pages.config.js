@@ -72,7 +72,7 @@ import MeetingMinutes from './pages/MeetingMinutes';
 import Mileage from './pages/Mileage';
 import PricingProposals from './pages/PricingProposals';
 import SocialMedia from './pages/SocialMedia';
-import Targets from './pages/Targets';
+import BULManagement from './pages/BULManagement';
 import __Layout from './Layout.jsx';
 
 
@@ -102,7 +102,7 @@ export const PAGES = {
     "Mileage": Mileage,
     "PricingProposals": PricingProposals,
     "SocialMedia": SocialMedia,
-    "Targets": Targets,
+    "BULManagement": BULManagement,
 }
 
 export const pagesConfig = {
