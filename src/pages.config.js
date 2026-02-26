@@ -78,6 +78,7 @@ import AdvancedReporting from './pages/AdvancedReporting';
 import UserManagement from './pages/UserManagement';
 import FollowUpRules from './pages/FollowUpRules';
 import Help from './pages/Help';
+import ClientInsights from './pages/ClientInsights';
 import __Layout from './Layout.jsx';
 
 
@@ -113,6 +114,7 @@ export const PAGES = {
     "UserManagement": UserManagement,
     "FollowUpRules": FollowUpRules,
     "Help": Help,
+    "ClientInsights": ClientInsights,
 }
 
 export const pagesConfig = {
