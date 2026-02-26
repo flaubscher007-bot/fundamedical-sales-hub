@@ -86,6 +86,7 @@ import UserManagement from './pages/UserManagement';
 import UserProfile from './pages/UserProfile';
 import RoleManagement from './pages/RoleManagement';
 import UserRoleManagement from './pages/UserRoleManagement';
+import CustomReports from './pages/CustomReports';
 import __Layout from './Layout.jsx';
 
 
@@ -129,6 +130,7 @@ export const PAGES = {
     "UserProfile": UserProfile,
     "RoleManagement": RoleManagement,
     "UserRoleManagement": UserRoleManagement,
+    "CustomReports": CustomReports,
 }
 
 export const pagesConfig = {
