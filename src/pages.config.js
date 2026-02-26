@@ -56,6 +56,7 @@ import BULPerformance from './pages/BULPerformance';
 import BusinessCard from './pages/BusinessCard';
 import ClientContacts from './pages/ClientContacts';
 import ClientPortal from './pages/ClientPortal';
+import Clients from './pages/Clients';
 import CompanyTargets from './pages/CompanyTargets';
 import Contracts from './pages/Contracts';
 import Dashboard from './pages/Dashboard';
@@ -77,7 +78,7 @@ import AdvancedReporting from './pages/AdvancedReporting';
 import UserManagement from './pages/UserManagement';
 import FollowUpRules from './pages/FollowUpRules';
 import Help from './pages/Help';
-import Clients from './pages/Clients';
+import ClientInsights from './pages/ClientInsights';
 import __Layout from './Layout.jsx';
 
 
@@ -91,6 +92,7 @@ export const PAGES = {
     "BusinessCard": BusinessCard,
     "ClientContacts": ClientContacts,
     "ClientPortal": ClientPortal,
+    "Clients": Clients,
     "CompanyTargets": CompanyTargets,
     "Contracts": Contracts,
     "Dashboard": Dashboard,
@@ -112,7 +114,7 @@ export const PAGES = {
     "UserManagement": UserManagement,
     "FollowUpRules": FollowUpRules,
     "Help": Help,
-    "Clients": Clients,
+    "ClientInsights": ClientInsights,
 }
 
 export const pagesConfig = {
