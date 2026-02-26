@@ -1,84 +1,111 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --funda-navy: #0a1628;
-  --funda-navy-light: #0f2240;
-  --funda-teal: #00bcd4;
-  --funda-teal-dark: #0097a7;
-  --funda-green: #7ed957;
-  --funda-green-dark: #5cb840;
-  --funda-white: #ffffff;
-  --funda-gray: #e8edf2;
-  --funda-gray-dark: #94a3b8;
-}
-
 @layer base {
   :root {
-    --background: 210 40% 98%;
-    --foreground: 215 35% 10%;
-    --card: 0 0% 100%;
-    --card-foreground: 215 35% 10%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 215 35% 10%;
-    --primary: 187 100% 42%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 210 30% 96%;
-    --secondary-foreground: 215 35% 10%;
-    --muted: 210 30% 96%;
-    --muted-foreground: 215 15% 47%;
-    --accent: 90 60% 60%;
-    --accent-foreground: 215 35% 10%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 210 20% 90%;
-    --input: 210 20% 90%;
-    --ring: 187 100% 42%;
-    --radius: 0.75rem;
+    --background: 8 65% 12%;
+    --foreground: 0 0% 98%;
+    --card: 8 65% 18%;
+    --card-foreground: 0 0% 98%;
+    --popover: 8 65% 18%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 75 100% 60%;
+    --primary-foreground: 0 0% 3%;
+    --secondary: 181 100% 50%;
+    --secondary-foreground: 0 0% 3%;
+    --muted: 8 65% 25%;
+    --muted-foreground: 0 0% 70%;
+    --accent: 75 100% 60%;
+    --accent-foreground: 0 0% 3%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 8 65% 25%;
+    --input: 8 65% 25%;
+    --ring: 75 100% 60%;
+    --chart-1: 75 100% 60%;
+    --chart-2: 181 100% 50%;
+    --chart-3: 92 69% 48%;
+    --chart-4: 75 100% 60%;
+    --chart-5: 181 100% 50%;
+    --radius: 0.5rem;
+    --sidebar-background: 8 65% 12%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 75 100% 60%;
+    --sidebar-primary-foreground: 0 0% 3%;
+    --sidebar-accent: 181 100% 50%;
+    --sidebar-accent-foreground: 0 0% 3%;
+    --sidebar-border: 8 65% 25%;
+    --sidebar-ring: 75 100% 60%;
+  }
+
+  .dark {
+    --background: 8 65% 12%;
+    --foreground: 0 0% 98%;
+    --card: 8 65% 18%;
+    --card-foreground: 0 0% 98%;
+    --popover: 8 65% 18%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 75 100% 60%;
+    --primary-foreground: 0 0% 3%;
+    --secondary: 181 100% 50%;
+    --secondary-foreground: 0 0% 3%;
+    --muted: 8 65% 25%;
+    --muted-foreground: 0 0% 70%;
+    --accent: 75 100% 60%;
+    --accent-foreground: 0 0% 3%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 8 65% 25%;
+    --input: 8 65% 25%;
+    --ring: 75 100% 60%;
+    --chart-1: 75 100% 60%;
+    --chart-2: 181 100% 50%;
+    --chart-3: 92 69% 48%;
+    --chart-4: 75 100% 60%;
+    --chart-5: 181 100% 50%;
+    --sidebar-background: 8 65% 12%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 75 100% 60%;
+    --sidebar-primary-foreground: 0 0% 3%;
+    --sidebar-accent: 181 100% 50%;
+    --sidebar-accent-foreground: 0 0% 3%;
+    --sidebar-border: 8 65% 25%;
+    --sidebar-ring: 75 100% 60%;
   }
 }
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', sans-serif;
+    position: relative;
+    overflow-x: hidden;
   }
-}
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
-}
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolygon points='50,0 93.3,25 93.3,75 50,100 6.7,75 6.7,25' fill='%2392F21D' opacity='0.05'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolygon points='60,0 103.9,30 103.9,90 60,120 16.1,90 16.1,30' fill='%2334CCD0' opacity='0.04'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg width='140' height='140' viewBox='0 0 140 140' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolygon points='70,0 121.2,35 121.2,105 70,140 18.8,105 18.8,35' fill='%2348B600' opacity='0.03'/%3E%3C/svg%3E");
+    background-size: 600px 600px, 800px 800px, 1000px 1000px;
+    background-position: 0 0, 150px 150px, 300px 300px;
+    background-repeat: repeat;
+    pointer-events: none;
+    z-index: 0;
+  }
 
-/* Safe area support for PWA on iOS */
-.pb-safe {
-  padding-bottom: env(safe-area-inset-bottom);
-}
-
-/* Funda Medical custom styles */
-.funda-gradient {
-  background: linear-gradient(135deg, #0a1628 0%, #0f2240 50%, #0a1628 100%);
-}
-
-.funda-card {
-  @apply bg-white rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300;
-}
-
-.funda-badge {
-  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  body > * {
+    position: relative;
+    z-index: 1;
+  }
 }
