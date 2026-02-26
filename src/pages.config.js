@@ -47,16 +47,24 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
+import Alerts from './pages/Alerts';
 import AppointmentTools from './pages/AppointmentTools';
 import Appointments from './pages/Appointments';
+import BULDashboard from './pages/BULDashboard';
+import BULPerformance from './pages/BULPerformance';
 import BusinessCard from './pages/BusinessCard';
 import ClientContacts from './pages/ClientContacts';
+import ClientPortal from './pages/ClientPortal';
 import Clients from './pages/Clients';
 import Contracts from './pages/Contracts';
 import Dashboard from './pages/Dashboard';
 import EntertainmentProposals from './pages/EntertainmentProposals';
 import Expenses from './pages/Expenses';
+import ExpensesHub from './pages/ExpensesHub';
 import Experts from './pages/Experts';
+import Finance from './pages/Finance';
+import FinanceDashboard from './pages/FinanceDashboard';
+import FinanceReporting from './pages/FinanceReporting';
 import FollowUps from './pages/FollowUps';
 import IntakeForms from './pages/IntakeForms';
 import Marketing from './pages/Marketing';
@@ -64,28 +72,28 @@ import MeetingMinutes from './pages/MeetingMinutes';
 import Mileage from './pages/Mileage';
 import PricingProposals from './pages/PricingProposals';
 import SocialMedia from './pages/SocialMedia';
-import ExpensesHub from './pages/ExpensesHub';
-import BULPerformance from './pages/BULPerformance';
-import BULDashboard from './pages/BULDashboard';
-import FinanceDashboard from './pages/FinanceDashboard';
-import Finance from './pages/Finance';
-import FinanceReporting from './pages/FinanceReporting';
-import Alerts from './pages/Alerts';
-import ClientPortal from './pages/ClientPortal';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "Alerts": Alerts,
     "AppointmentTools": AppointmentTools,
     "Appointments": Appointments,
+    "BULDashboard": BULDashboard,
+    "BULPerformance": BULPerformance,
     "BusinessCard": BusinessCard,
     "ClientContacts": ClientContacts,
+    "ClientPortal": ClientPortal,
     "Clients": Clients,
     "Contracts": Contracts,
     "Dashboard": Dashboard,
     "EntertainmentProposals": EntertainmentProposals,
     "Expenses": Expenses,
+    "ExpensesHub": ExpensesHub,
     "Experts": Experts,
+    "Finance": Finance,
+    "FinanceDashboard": FinanceDashboard,
+    "FinanceReporting": FinanceReporting,
     "FollowUps": FollowUps,
     "IntakeForms": IntakeForms,
     "Marketing": Marketing,
@@ -93,14 +101,6 @@ export const PAGES = {
     "Mileage": Mileage,
     "PricingProposals": PricingProposals,
     "SocialMedia": SocialMedia,
-    "ExpensesHub": ExpensesHub,
-    "BULPerformance": BULPerformance,
-    "BULDashboard": BULDashboard,
-    "FinanceDashboard": FinanceDashboard,
-    "Finance": Finance,
-    "FinanceReporting": FinanceReporting,
-    "Alerts": Alerts,
-    "ClientPortal": ClientPortal,
 }
 
 export const pagesConfig = {

@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { Plus, Mail, Phone, MessageCircle, MapPin, Share2, Upload, Pencil } from "lucide-react";
 
-const empty = { full_name: "", title: "Business Unit Leader", email: "", phone: "", whatsapp: "", region: "", profile_photo_url: "" };
+const empty = { full_name: "", title: "Business Unit Leader", email: "", phone: "", whatsapp: "", region: "", profile_photo_url: "", business_card_front_url: "", business_card_back_url: "", assigned_bul: "" };
 
 export default function BusinessCard() {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -23,6 +23,11 @@ export default function BusinessCard() {
   const { data: cards = [] } = useQuery({
     queryKey: ["businesscards"],
     queryFn: () => base44.entities.BusinessCard.list("-created_date", 50),
+  });
+
+  const { data: users = [] } = useQuery({
+    queryKey: ["users"],
+    queryFn: () => base44.entities.User.list(),
   });
 
   const myCard = cards.find(c => c.owner_email === user?.email);
@@ -40,6 +45,13 @@ export default function BusinessCard() {
     if (!file) return;
     const { file_url } = await base44.integrations.Core.UploadFile({ file });
     setForm({ ...form, profile_photo_url: file_url });
+  };
+
+  const handleCardImage = async (e, imageType) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    setForm({ ...form, [imageType]: file_url });
   };
 
   const openEdit = (card) => {
@@ -174,6 +186,52 @@ export default function BusinessCard() {
                   <SelectItem value="Western Cape">Western Cape</SelectItem>
                   <SelectItem value="KwaZulu-Natal">KwaZulu-Natal</SelectItem>
                   <SelectItem value="Gauteng">Gauteng</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Business Card Images */}
+            <div className="border-t pt-4">
+              <Label className="font-semibold mb-3 block">Business Card Images</Label>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="cursor-pointer block">
+                    <p className="text-xs font-medium text-slate-700 mb-2">Front Image</p>
+                    {form.business_card_front_url ? (
+                      <img src={form.business_card_front_url} alt="Front" className="w-full h-32 object-cover rounded-lg border-2 border-[#00bcd4]" />
+                    ) : (
+                      <div className="w-full h-32 bg-slate-100 flex items-center justify-center rounded-lg border-2 border-dashed border-slate-300 hover:border-[#00bcd4] transition-colors">
+                        <Upload className="w-5 h-5 text-slate-400" />
+                      </div>
+                    )}
+                    <input type="file" className="hidden" accept="image/*" onChange={(e) => handleCardImage(e, "business_card_front_url")} />
+                  </label>
+                </div>
+                <div>
+                  <label className="cursor-pointer block">
+                    <p className="text-xs font-medium text-slate-700 mb-2">Back Image</p>
+                    {form.business_card_back_url ? (
+                      <img src={form.business_card_back_url} alt="Back" className="w-full h-32 object-cover rounded-lg border-2 border-[#00bcd4]" />
+                    ) : (
+                      <div className="w-full h-32 bg-slate-100 flex items-center justify-center rounded-lg border-2 border-dashed border-slate-300 hover:border-[#00bcd4] transition-colors">
+                        <Upload className="w-5 h-5 text-slate-400" />
+                      </div>
+                    )}
+                    <input type="file" className="hidden" accept="image/*" onChange={(e) => handleCardImage(e, "business_card_back_url")} />
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            {/* Business Unit Leader Selection */}
+            <div>
+              <Label>Business Unit Leader</Label>
+              <Select value={form.assigned_bul || ""} onValueChange={(v) => setForm({ ...form, assigned_bul: v })}>
+                <SelectTrigger><SelectValue placeholder="Select BUL" /></SelectTrigger>
+                <SelectContent>
+                  {users.map(user => (
+                    <SelectItem key={user.id} value={user.full_name || user.email}>{user.full_name || user.email}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
