@@ -32,6 +32,7 @@ const mainNavItems = [
   { name: "Appointment Tools", icon: Wrench, page: "AppointmentTools" },
   { name: "Contract Tools", icon: FileBadge, page: "Contracts" },
   { name: "Expense Tools", icon: Receipt, page: "ExpensesHub" },
+  { name: "Finance", icon: DollarSign, page: "Finance" },
   { name: "BUL Performance", icon: TrendingUp, page: "BULPerformance" },
 ];
 
