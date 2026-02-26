@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import ClientOnboardingWizard from "@/components/clients/ClientOnboardingWizard";
 import StatementAnalysis from "@/components/clients/StatementAnalysis";
+import ClientsVisualization from "@/components/clients/ClientsVisualization";
 
 const activityColors = {
   ACTIVE: "bg-emerald-100 text-emerald-700",
@@ -135,6 +136,9 @@ export default function Clients() {
 
   return (
     <div className="space-y-6">
+      {/* Visualizations */}
+      <ClientsVisualization clients={clients} statements={statements} />
+
       {/* Stats bar */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <Card className="border-0 shadow-sm p-3">
