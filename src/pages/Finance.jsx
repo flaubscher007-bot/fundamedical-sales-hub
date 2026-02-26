@@ -11,8 +11,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import StatementCardView from "@/components/finance/StatementCardView";
-import StatementTableView from "@/components/finance/StatementTableView";
+import StatementCardView from "@/components/finance/StatementCardView.jsx";
+import StatementTableView from "@/components/finance/StatementTableView.jsx";
 
 export default function Finance() {
   const [viewMode, setViewMode] = useState("cards");
