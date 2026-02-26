@@ -32,6 +32,7 @@ const mainNavItems = [
   { name: "Clients", icon: Users, page: "Clients" },
   { name: "Firm Contacts", icon: Phone, page: "ClientContacts" },
   { name: "Experts", icon: Stethoscope, page: "Experts" },
+  { name: "Appointment Tools", icon: Wrench, page: "AppointmentTools" },
   { name: "Appointments", icon: Calendar, page: "Appointments" },
   { name: "Meeting Minutes", icon: ClipboardList, page: "MeetingMinutes" },
   { name: "Follow-Ups", icon: Phone, page: "FollowUps" },
