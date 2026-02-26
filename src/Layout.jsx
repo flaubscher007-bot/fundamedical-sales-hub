@@ -34,6 +34,11 @@ const mainNavItems = [
   { name: "BUL Performance", icon: TrendingUp, page: "BULPerformance" },
 ];
 
+const powerBIItems = [
+  { name: "BUL Dashboard", icon: BarChart2, page: "BULDashboard" },
+  { name: "Finance Dashboard", icon: BarChart2, page: "FinanceDashboard" },
+];
+
 const marketingItems = [
   { name: "Marketing Materials", icon: FileText, page: "Marketing" },
   { name: "Business Cards", icon: CreditCard, page: "BusinessCard" },
