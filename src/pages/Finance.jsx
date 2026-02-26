@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/select";
 import StatementCardView from "@/components/finance/StatementCardView.jsx";
 import StatementTableView from "@/components/finance/StatementTableView.jsx";
+import SharePointSyncPanel from "@/components/finance/SharePointSyncPanel.jsx";
 
 export default function Finance() {
   const [viewMode, setViewMode] = useState("cards");
@@ -66,6 +67,9 @@ export default function Finance() {
           {isRefreshing ? "Syncing..." : "Manual Sync"}
         </Button>
       </div>
+
+      {/* SharePoint Integration Panel */}
+      <SharePointSyncPanel onSyncTrigger={handleManualRefresh} />
 
       {/* Info Banner */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3">
