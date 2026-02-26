@@ -47,42 +47,44 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
+import AppointmentTools from './pages/AppointmentTools';
 import Appointments from './pages/Appointments';
 import BusinessCard from './pages/BusinessCard';
+import ClientContacts from './pages/ClientContacts';
 import Clients from './pages/Clients';
 import Dashboard from './pages/Dashboard';
 import EntertainmentProposals from './pages/EntertainmentProposals';
 import Expenses from './pages/Expenses';
+import Experts from './pages/Experts';
 import FollowUps from './pages/FollowUps';
 import IntakeForms from './pages/IntakeForms';
 import Marketing from './pages/Marketing';
 import MeetingMinutes from './pages/MeetingMinutes';
 import Mileage from './pages/Mileage';
 import PricingProposals from './pages/PricingProposals';
-import ClientContacts from './pages/ClientContacts';
-import Experts from './pages/Experts';
 import SocialMedia from './pages/SocialMedia';
-import AppointmentTools from './pages/AppointmentTools';
+import Contracts from './pages/Contracts';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "AppointmentTools": AppointmentTools,
     "Appointments": Appointments,
     "BusinessCard": BusinessCard,
+    "ClientContacts": ClientContacts,
     "Clients": Clients,
     "Dashboard": Dashboard,
     "EntertainmentProposals": EntertainmentProposals,
     "Expenses": Expenses,
+    "Experts": Experts,
     "FollowUps": FollowUps,
     "IntakeForms": IntakeForms,
     "Marketing": Marketing,
     "MeetingMinutes": MeetingMinutes,
     "Mileage": Mileage,
     "PricingProposals": PricingProposals,
-    "ClientContacts": ClientContacts,
-    "Experts": Experts,
     "SocialMedia": SocialMedia,
-    "AppointmentTools": AppointmentTools,
+    "Contracts": Contracts,
 }
 
 export const pagesConfig = {
