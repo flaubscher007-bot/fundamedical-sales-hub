@@ -52,6 +52,7 @@ import Appointments from './pages/Appointments';
 import BusinessCard from './pages/BusinessCard';
 import ClientContacts from './pages/ClientContacts';
 import Clients from './pages/Clients';
+import Contracts from './pages/Contracts';
 import Dashboard from './pages/Dashboard';
 import EntertainmentProposals from './pages/EntertainmentProposals';
 import Expenses from './pages/Expenses';
@@ -63,7 +64,7 @@ import MeetingMinutes from './pages/MeetingMinutes';
 import Mileage from './pages/Mileage';
 import PricingProposals from './pages/PricingProposals';
 import SocialMedia from './pages/SocialMedia';
-import Contracts from './pages/Contracts';
+import ExpensesHub from './pages/ExpensesHub';
 import __Layout from './Layout.jsx';
 
 
@@ -73,6 +74,7 @@ export const PAGES = {
     "BusinessCard": BusinessCard,
     "ClientContacts": ClientContacts,
     "Clients": Clients,
+    "Contracts": Contracts,
     "Dashboard": Dashboard,
     "EntertainmentProposals": EntertainmentProposals,
     "Expenses": Expenses,
@@ -84,7 +86,7 @@ export const PAGES = {
     "Mileage": Mileage,
     "PricingProposals": PricingProposals,
     "SocialMedia": SocialMedia,
-    "Contracts": Contracts,
+    "ExpensesHub": ExpensesHub,
 }
 
 export const pagesConfig = {
