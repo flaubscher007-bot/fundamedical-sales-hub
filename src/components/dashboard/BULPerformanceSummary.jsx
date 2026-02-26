@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp, BookOpen, FileText, DollarSign, Car, ClipboardList } from "lucide-react";
+import { TrendingUp, BookOpen, FileText, DollarSign, Car, ClipboardList, UserPlus } from "lucide-react";
 import { format, startOfMonth } from "date-fns";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
