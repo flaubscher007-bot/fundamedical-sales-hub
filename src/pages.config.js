@@ -66,6 +66,7 @@ import PricingProposals from './pages/PricingProposals';
 import SocialMedia from './pages/SocialMedia';
 import ExpensesHub from './pages/ExpensesHub';
 import BULPerformance from './pages/BULPerformance';
+import BULDashboard from './pages/BULDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -89,6 +90,7 @@ export const PAGES = {
     "SocialMedia": SocialMedia,
     "ExpensesHub": ExpensesHub,
     "BULPerformance": BULPerformance,
+    "BULDashboard": BULDashboard,
 }
 
 export const pagesConfig = {
