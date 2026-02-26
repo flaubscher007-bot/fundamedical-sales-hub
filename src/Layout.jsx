@@ -62,10 +62,13 @@ export default function Layout({ children, currentPageName }) {
     base44.auth.me().then(setUser).catch(() => {});
   }, []);
 
-  // Auto-expand if current page is under marketing
+  // Auto-expand if current page is under marketing or powerBI
   useEffect(() => {
     if (marketingItems.some(i => i.page === currentPageName)) {
       setMarketingOpen(true);
+    }
+    if (powerBIItems.some(i => i.page === currentPageName)) {
+      setPowerBIOpen(true);
     }
   }, [currentPageName]);
 
