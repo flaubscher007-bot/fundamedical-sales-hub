@@ -17,6 +17,7 @@ const STEPS = [
   { id: 5, title: "Initial Tasks", description: "Set up first appointment & target", icon: Target },
 ];
 
+const TEAMS = ["Kopano", "Kutlwano", "Sisonke", "Nasira"];
 const PROVINCES = ["Western Cape", "KwaZulu-Natal", "Gauteng", "Eastern Cape", "Free State", "Limpopo", "Mpumalanga", "North West", "Northern Cape"];
 
 const emptyForm = {
