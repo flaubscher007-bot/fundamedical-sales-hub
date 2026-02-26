@@ -40,6 +40,7 @@ const mainNavItems = [
   { name: "Contract Tools", icon: FileBadge, page: "Contracts" },
   { name: "Expense Tools", icon: Receipt, page: "ExpensesHub" },
   { name: "Finance Tools", icon: DollarSign, page: "Finance" },
+  { name: "Custom Reports", icon: BarChart2, page: "CustomReports" },
   { name: "Alerts", icon: AlertCircle, page: "Alerts" },
   { name: "Follow-Up Rules", icon: FileText, page: "FollowUpRules" },
   { name: "Goals", icon: TrendingUp, page: "Goals" },
