@@ -42,7 +42,12 @@ export default function Dashboard() {
 
   const { data: proposals = [] } = useQuery({
     queryKey: ["proposals"],
-    queryFn: () => base44.entities.PricingProposal.list("-created_date", 50),
+    queryFn: () => base44.entities.PricingProposal.list("-created_date", 200),
+  });
+
+  const { data: contracts = [] } = useQuery({
+    queryKey: ["contracts"],
+    queryFn: () => base44.entities.Contract.list("-created_date", 200),
   });
 
   const activeClients = clients.filter((c) => c.status === "Active").length;
