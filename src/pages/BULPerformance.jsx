@@ -193,6 +193,7 @@ export default function BULPerformancePage() {
                     <th className="px-4 py-3 text-right text-xs font-medium text-slate-500">Balance Pmts</th>
                     <th className="px-4 py-3 text-right text-xs font-medium text-slate-500">Visits</th>
                     <th className="px-4 py-3 text-right text-xs font-medium text-slate-500">Line Items</th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-slate-500">New Firms</th>
                     <th className="px-4 py-3 text-center text-xs font-medium text-slate-500">Actions</th>
                   </tr>
                 </thead>
@@ -207,6 +208,7 @@ export default function BULPerformancePage() {
                       <td className="px-4 py-3 text-right text-purple-600 font-semibold">R{(r.balance_payments_collected || 0).toLocaleString()}</td>
                       <td className="px-4 py-3 text-right text-orange-500 font-semibold">{r.visits || 0}</td>
                       <td className="px-4 py-3 text-right text-slate-600 font-semibold">{r.line_items || 0}</td>
+                      <td className="px-4 py-3 text-right text-emerald-600 font-semibold">{r.new_firms_signed || 0}</td>
                       <td className="px-4 py-3 text-center">
                         <div className="flex justify-center gap-1">
                           <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => openEdit(r)}>
