@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
-import { Eye, EyeOff, LogOut, Download } from "lucide-react";
+import { Eye, EyeOff, LogOut, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ClientStatementCard from "@/components/clientPortal/ClientStatementCard.jsx";
 import ClientPaymentHistory from "@/components/clientPortal/ClientPaymentHistory.jsx";
+import ClientFinanceSection from "@/components/clientPortal/ClientFinanceSection.jsx";
 
 export default function ClientPortal() {
   const [user, setUser] = useState(null);
@@ -133,60 +134,45 @@ export default function ClientPortal() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-6xl mx-auto px-4 lg:px-8 py-8">
-        {/* Key Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-          <div className="bg-white rounded-lg border border-slate-200 p-6 shadow-sm">
-            <p className="text-xs font-medium text-slate-600 uppercase tracking-wide">
-              Outstanding Balance
-            </p>
-            <p className="text-3xl font-bold text-slate-900 mt-2">
-              {showBalances ? `R ${totalBalance.toLocaleString("en-ZA", { maximumFractionDigits: 2 })}` : "•••••••"}
-            </p>
-            <p className="text-xs text-slate-500 mt-2">
-              As of {latestStatement?.statement_month || "N/A"}
-            </p>
-          </div>
-
-          <div className="bg-white rounded-lg border border-slate-200 p-6 shadow-sm">
-            <p className="text-xs font-medium text-slate-600 uppercase tracking-wide">
-              Total Due
-            </p>
-            <p className="text-3xl font-bold text-orange-600 mt-2">
-              {showBalances ? `R ${totalDue.toLocaleString("en-ZA", { maximumFractionDigits: 2 })}` : "•••••••"}
-            </p>
-            <p className="text-xs text-slate-500 mt-2">
-              {totalDue > 0 ? "Payment due" : "No outstanding amount"}
-            </p>
-          </div>
-        </div>
-
-        {/* Statements Section */}
-        <div className="space-y-6">
+      <div className="max-w-6xl mx-auto px-4 lg:px-8 py-8 space-y-8">
+        {/* PowerBI Dashboard */}
+        {clientAccount?.dashboard_url && (
           <div>
-            <h2 className="text-lg font-semibold text-slate-900 mb-4">
-              Account Statements
-            </h2>
-            {statements.length > 0 ? (
-              <div className="space-y-4">
-                {statements.map(stmt => (
-                  <ClientStatementCard
-                    key={stmt.id}
-                    statement={stmt}
-                    showBalances={showBalances}
-                  />
-                ))}
+            <h2 className="text-lg font-semibold text-slate-900 mb-4">Performance Dashboard</h2>
+            <div className="bg-white rounded-lg border border-slate-200 overflow-hidden shadow-sm">
+              <iframe
+                src={clientAccount.dashboard_url}
+                title="PowerBI Dashboard"
+                className="w-full"
+                style={{ height: "600px", border: "none" }}
+                allowFullScreen
+              />
+              <div className="p-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between">
+                <p className="text-xs text-slate-600">
+                  Dashboard powered by Power BI
+                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => window.open(clientAccount.dashboard_url, "_blank")}
+                >
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  Open Full View
+                </Button>
               </div>
-            ) : (
-              <div className="bg-white rounded-lg border border-slate-200 p-8 text-center">
-                <p className="text-slate-600">No statements available</p>
-              </div>
-            )}
+            </div>
           </div>
+        )}
 
-          {/* Payment History */}
-          <ClientPaymentHistory account={clientAccount} />
-        </div>
+        {/* Finance Section */}
+        <ClientFinanceSection
+          account={clientAccount}
+          statements={statements}
+          showBalances={showBalances}
+          latestStatement={latestStatement}
+          totalDue={totalDue}
+          totalBalance={totalBalance}
+        />
       </div>
     </div>
   );
