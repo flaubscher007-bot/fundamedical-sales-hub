@@ -40,6 +40,10 @@ const emptyClient = {
    contact_person: "", contact_email: "", finance_email: "", legal_clerk_emails: "",
    contact_phone: "", address: "", city: "", province: "", category: "",
    special_requirements: "", notes: "",
+   director: { name: "", email: "", phone: "" },
+   attorney: { name: "", email: "", phone: "" },
+   legal_secretary: { name: "", email: "", phone: "" },
+   finance_person: { name: "", email: "", phone: "" },
  };
 
 export default function Clients() {
@@ -309,17 +313,49 @@ export default function Clients() {
               </div>
             </div>
 
-            {/* Contact Info */}
+            {/* Structured Contacts */}
             <div>
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Law Firm Contacts</p>
-              <div className="space-y-3">
-                <div className="grid grid-cols-2 gap-3">
-                  <div><Label>Contact Person</Label><Input value={form.contact_person} onChange={(e) => setForm({ ...form, contact_person: e.target.value })} /></div>
-                  <div><Label>Phone</Label><Input value={form.contact_phone} onChange={(e) => setForm({ ...form, contact_phone: e.target.value })} /></div>
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Law Firm Key Contacts</p>
+              <div className="space-y-4">
+                {/* Director */}
+                <div className="border rounded-lg p-3 bg-slate-50">
+                  <p className="text-xs font-semibold text-slate-600 mb-3">Director</p>
+                  <div className="grid grid-cols-3 gap-3">
+                    <div><Label className="text-xs">Name</Label><Input value={form.director?.name || ""} onChange={(e) => setForm({ ...form, director: { ...form.director, name: e.target.value } })} placeholder="Name" /></div>
+                    <div><Label className="text-xs">Email</Label><Input value={form.director?.email || ""} onChange={(e) => setForm({ ...form, director: { ...form.director, email: e.target.value } })} placeholder="Email" type="email" /></div>
+                    <div><Label className="text-xs">Phone</Label><Input value={form.director?.phone || ""} onChange={(e) => setForm({ ...form, director: { ...form.director, phone: e.target.value } })} placeholder="Phone" /></div>
+                  </div>
                 </div>
-                <div><Label>Director/Attorney Emails</Label><Textarea rows={2} value={form.contact_email} onChange={(e) => setForm({ ...form, contact_email: e.target.value })} /></div>
-                <div><Label>Finance Email</Label><Input value={form.finance_email} onChange={(e) => setForm({ ...form, finance_email: e.target.value })} /></div>
-                <div><Label>Legal Clerk Emails</Label><Textarea rows={3} value={form.legal_clerk_emails} onChange={(e) => setForm({ ...form, legal_clerk_emails: e.target.value })} /></div>
+
+                {/* Attorney */}
+                <div className="border rounded-lg p-3 bg-slate-50">
+                  <p className="text-xs font-semibold text-slate-600 mb-3">Attorney</p>
+                  <div className="grid grid-cols-3 gap-3">
+                    <div><Label className="text-xs">Name</Label><Input value={form.attorney?.name || ""} onChange={(e) => setForm({ ...form, attorney: { ...form.attorney, name: e.target.value } })} placeholder="Name" /></div>
+                    <div><Label className="text-xs">Email</Label><Input value={form.attorney?.email || ""} onChange={(e) => setForm({ ...form, attorney: { ...form.attorney, email: e.target.value } })} placeholder="Email" type="email" /></div>
+                    <div><Label className="text-xs">Phone</Label><Input value={form.attorney?.phone || ""} onChange={(e) => setForm({ ...form, attorney: { ...form.attorney, phone: e.target.value } })} placeholder="Phone" /></div>
+                  </div>
+                </div>
+
+                {/* Legal Secretary */}
+                <div className="border rounded-lg p-3 bg-slate-50">
+                  <p className="text-xs font-semibold text-slate-600 mb-3">Legal Secretary</p>
+                  <div className="grid grid-cols-3 gap-3">
+                    <div><Label className="text-xs">Name</Label><Input value={form.legal_secretary?.name || ""} onChange={(e) => setForm({ ...form, legal_secretary: { ...form.legal_secretary, name: e.target.value } })} placeholder="Name" /></div>
+                    <div><Label className="text-xs">Email</Label><Input value={form.legal_secretary?.email || ""} onChange={(e) => setForm({ ...form, legal_secretary: { ...form.legal_secretary, email: e.target.value } })} placeholder="Email" type="email" /></div>
+                    <div><Label className="text-xs">Phone</Label><Input value={form.legal_secretary?.phone || ""} onChange={(e) => setForm({ ...form, legal_secretary: { ...form.legal_secretary, phone: e.target.value } })} placeholder="Phone" /></div>
+                  </div>
+                </div>
+
+                {/* Finance Person */}
+                <div className="border rounded-lg p-3 bg-slate-50">
+                  <p className="text-xs font-semibold text-slate-600 mb-3">Finance Person</p>
+                  <div className="grid grid-cols-3 gap-3">
+                    <div><Label className="text-xs">Name</Label><Input value={form.finance_person?.name || ""} onChange={(e) => setForm({ ...form, finance_person: { ...form.finance_person, name: e.target.value } })} placeholder="Name" /></div>
+                    <div><Label className="text-xs">Email</Label><Input value={form.finance_person?.email || ""} onChange={(e) => setForm({ ...form, finance_person: { ...form.finance_person, email: e.target.value } })} placeholder="Email" type="email" /></div>
+                    <div><Label className="text-xs">Phone</Label><Input value={form.finance_person?.phone || ""} onChange={(e) => setForm({ ...form, finance_person: { ...form.finance_person, phone: e.target.value } })} placeholder="Phone" /></div>
+                  </div>
+                </div>
               </div>
             </div>
 
