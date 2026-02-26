@@ -219,13 +219,64 @@ export default function BULManagement() {
 
         {/* TARGETS TAB */}
         <TabsContent value="targets" className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="text-lg font-semibold text-slate-800">Manage Targets</h3>
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold text-slate-800">Targets & Performance</h3>
             <Button onClick={openNewTarget} className="bg-[#00bcd4] hover:bg-[#0097a7]">
-              <Plus className="w-4 h-4 mr-2" /> Add Target
+              <Plus className="w-4 h-4 mr-2" /> Add BUL Target
             </Button>
           </div>
 
+          {/* Company Targets Overview */}
+          {companyTargets.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+              {(() => {
+                const currentYear = new Date().getFullYear();
+                const monthTargets = companyTargets.filter(t => t.category === 'Targets Per Month' && t.month.includes(currentYear.toString())).sort((a, b) => new Date(a.month) - new Date(b.month));
+                const deposits = companyTargets.filter(t => t.category === 'Deposits =25%' && t.month.includes(currentYear.toString()));
+                const balance = companyTargets.filter(t => t.category === 'Balance = 49%' && t.month.includes(currentYear.toString()));
+
+                const totalBankReceipt = monthTargets.reduce((sum, t) => sum + (t.amount || 0), 0);
+                const totalReports = totalBankReceipt * 0.15;
+                const totalDeposits = deposits.reduce((sum, t) => sum + (t.amount || 0), 0);
+                const totalBookings = totalReports * 1.3;
+
+                return (
+                  <>
+                    <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+                      <CardContent className="pt-6">
+                        <p className="text-sm text-blue-700 font-medium">Bank Receipt Targets</p>
+                        <p className="text-2xl font-bold text-blue-900 mt-2">R{(totalBankReceipt / 1000000).toFixed(1)}M</p>
+                        <p className="text-xs text-blue-600 mt-1">Annual 2026</p>
+                      </CardContent>
+                    </Card>
+                    <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+                      <CardContent className="pt-6">
+                        <p className="text-sm text-green-700 font-medium">Reports Delivered (Est.)</p>
+                        <p className="text-2xl font-bold text-green-900 mt-2">{Math.round(totalReports / 10000)}</p>
+                        <p className="text-xs text-green-600 mt-1">~15% of Bank Receipt</p>
+                      </CardContent>
+                    </Card>
+                    <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200">
+                      <CardContent className="pt-6">
+                        <p className="text-sm text-orange-700 font-medium">Invoice Targets</p>
+                        <p className="text-2xl font-bold text-orange-900 mt-2">R{(totalDeposits / 1000000).toFixed(1)}M</p>
+                        <p className="text-xs text-orange-600 mt-1">49% (Balance)</p>
+                      </CardContent>
+                    </Card>
+                    <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+                      <CardContent className="pt-6">
+                        <p className="text-sm text-purple-700 font-medium">Bookings Made (Est.)</p>
+                        <p className="text-2xl font-bold text-purple-900 mt-2">{Math.round(totalBookings / 10000)}</p>
+                        <p className="text-xs text-purple-600 mt-1">+30% of Reports</p>
+                      </CardContent>
+                    </Card>
+                  </>
+                );
+              })()}
+            </div>
+          )}
+
+          <h4 className="text-base font-semibold text-slate-700 mt-6">Business Unit Targets</h4>
           <div className="grid gap-4">
             {targets.length === 0 ? (
               <Card>
