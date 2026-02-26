@@ -7,7 +7,6 @@ import {
   Users,
   FileText,
   Receipt,
-  DollarSign,
   CreditCard,
   Stethoscope,
   Megaphone,
