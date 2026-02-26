@@ -59,6 +59,7 @@ import Marketing from './pages/Marketing';
 import MeetingMinutes from './pages/MeetingMinutes';
 import Mileage from './pages/Mileage';
 import PricingProposals from './pages/PricingProposals';
+import ClientContacts from './pages/ClientContacts';
 import __Layout from './Layout.jsx';
 
 
@@ -75,6 +76,7 @@ export const PAGES = {
     "MeetingMinutes": MeetingMinutes,
     "Mileage": Mileage,
     "PricingProposals": PricingProposals,
+    "ClientContacts": ClientContacts,
 }
 
 export const pagesConfig = {
