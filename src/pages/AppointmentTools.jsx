@@ -23,6 +23,8 @@ import FeedbackDialog from "../components/appointmentTools/FeedbackDialog";
 import ActionPointsPanel from "../components/appointmentTools/ActionPointsPanel";
 import FeedbackPanel from "../components/appointmentTools/FeedbackPanel";
 import SummaryDialog from "../components/appointmentTools/SummaryDialog";
+import MeetingMinutesTab from "../components/appointmentTools/MeetingMinutesTab";
+import FollowUpsTab from "../components/appointmentTools/FollowUpsTab";
 
 const emptyApt = {
   title: "", client_id: "", client_name: "", date: "", time: "", end_time: "",
@@ -39,7 +41,8 @@ const statusColors = {
 export default function AppointmentTools() {
   const qc = useQueryClient();
   const [user, setUser] = useState(null);
-  const [activeTab, setActiveTab] = useState("appointments");
+  const urlParams = new URLSearchParams(window.location.search);
+  const [activeTab, setActiveTab] = useState(urlParams.get("tab") || "appointments");
 
   // Appointment form state
   const [aptDialogOpen, setAptDialogOpen] = useState(false);
@@ -115,8 +118,10 @@ export default function AppointmentTools() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid grid-cols-3 w-full max-w-md">
+        <TabsList className="flex w-full flex-wrap gap-1 h-auto">
           <TabsTrigger value="appointments">Appointments</TabsTrigger>
+          <TabsTrigger value="meeting-minutes">Meeting Minutes</TabsTrigger>
+          <TabsTrigger value="follow-ups">Follow-Ups</TabsTrigger>
           <TabsTrigger value="action-points">Action Points</TabsTrigger>
           <TabsTrigger value="feedback">Feedback</TabsTrigger>
         </TabsList>
@@ -164,6 +169,14 @@ export default function AppointmentTools() {
               />
             ))}
           </div>
+        </TabsContent>
+
+        <TabsContent value="meeting-minutes" className="mt-4">
+          <MeetingMinutesTab />
+        </TabsContent>
+
+        <TabsContent value="follow-ups" className="mt-4">
+          <FollowUpsTab />
         </TabsContent>
 
         <TabsContent value="action-points" className="mt-4">
