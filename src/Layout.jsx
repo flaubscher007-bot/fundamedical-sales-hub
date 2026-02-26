@@ -46,7 +46,7 @@ const marketingItems = [
 ];
 
 // All pages for header title lookup
-const allNavItems = [...mainNavItems, ...marketingItems];
+const allNavItems = [...mainNavItems, ...powerBIItems, ...marketingItems];
 
 export default function Layout({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
