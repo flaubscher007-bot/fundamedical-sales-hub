@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Briefcase, FileText, FileBadge, BookTemplate, Sparkles } from "lucide-react";
+import { Briefcase, FileText, FileBadge, BookTemplate, Sparkles, DollarSign } from "lucide-react";
 import IntakeForms from "./IntakeForms";
 import ContractTemplates from "../components/contracts/ContractTemplates";
 import CompletedContracts from "../components/contracts/CompletedContracts";
 import ContractAIAssistant from "../components/contracts/ContractAIAssistant";
+import PricingProposals from "./PricingProposals";
 
 export default function Contracts() {
   const [tab, setTab] = useState("intake");
