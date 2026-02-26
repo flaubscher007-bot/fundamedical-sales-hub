@@ -5,10 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Mail, Check, AlertCircle } from "lucide-react";
+import { Mail, Check, AlertCircle, Upload } from "lucide-react";
 
 export default function ProfileTab({ currentUser }) {
   const [editMode, setEditMode] = useState(false);
+  const [profilePicture, setProfilePicture] = useState(currentUser?.profile_picture || null);
+  const [uploading, setUploading] = useState(false);
   const [formData, setFormData] = useState({
     full_name: currentUser?.full_name || "",
   });
