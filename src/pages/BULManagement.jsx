@@ -15,6 +15,7 @@ import { createPageUrl } from "@/utils";
 import ActivityLogPanel from "@/components/BULManagement/ActivityLogPanel";
 import PerformanceReportsTab from "@/components/BULManagement/PerformanceReportsTab";
 import GoalsTab from "@/components/goals/GoalsTab";
+import { canPerformAction, shouldShowActionButton } from "@/components/entityPermissions";
 
 // Empty states
 const emptyTarget = { bul_name: "", bul_email: "", month: "", revenue_target: "", bookings_target: "", collections_target: "", notes: "" };
@@ -332,13 +333,15 @@ export default function BULManagement() {
          </TabsList>
 
         {/* TARGETS TAB */}
-        <TabsContent value="targets" className="space-y-4">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold text-slate-800">Targets & Performance</h3>
-            <Button onClick={openNewTarget} className="bg-[#00bcd4] hover:bg-[#0097a7]">
-              <Plus className="w-4 h-4 mr-2" /> Add BUL Target
-            </Button>
-          </div>
+         <TabsContent value="targets" className="space-y-4">
+           <div className="flex justify-between items-center mb-4">
+             <h3 className="text-lg font-semibold text-slate-800">Targets & Performance</h3>
+             {canPerformAction(user?.role, 'Target', 'create') && (
+               <Button onClick={openNewTarget} className="bg-[#00bcd4] hover:bg-[#0097a7]">
+                 <Plus className="w-4 h-4 mr-2" /> Add BUL Target
+               </Button>
+             )}
+           </div>
 
           {/* Company Targets Overview */}
           {companyTargets.length > 0 && (
@@ -408,13 +411,17 @@ export default function BULManagement() {
                       <p className="text-sm text-slate-500 mt-1">{new Date(target.month).toLocaleDateString('en-ZA', { year: 'numeric', month: 'long' })}</p>
                     </div>
                     <div className="flex gap-2">
-                      <Button variant="ghost" size="icon" onClick={() => openEditTarget(target)}>
-                        <Pencil className="w-4 h-4 text-slate-600" />
-                      </Button>
-                      <Button variant="ghost" size="icon" onClick={() => deleteTargetMutation.mutate(target.id)}>
-                        <Trash2 className="w-4 h-4 text-red-500" />
-                      </Button>
-                    </div>
+                       {canPerformAction(user?.role, 'Target', 'edit', { isOwner: target.bul_email === user?.email }) && (
+                         <Button variant="ghost" size="icon" onClick={() => openEditTarget(target)}>
+                           <Pencil className="w-4 h-4 text-slate-600" />
+                         </Button>
+                       )}
+                       {canPerformAction(user?.role, 'Target', 'delete') && (
+                         <Button variant="ghost" size="icon" onClick={() => deleteTargetMutation.mutate(target.id)}>
+                           <Trash2 className="w-4 h-4 text-red-500" />
+                         </Button>
+                       )}
+                     </div>
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <div className="grid grid-cols-3 gap-4">
@@ -454,9 +461,11 @@ export default function BULManagement() {
         <TabsContent value="leave" className="space-y-4">
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-semibold text-slate-800">Leave Requests</h3>
-            <Button onClick={openNewLeave} className="bg-[#00bcd4] hover:bg-[#0097a7]">
-              <Plus className="w-4 h-4 mr-2" /> New Leave Request
-            </Button>
+            {canPerformAction(user?.role, 'Leave', 'create') && (
+              <Button onClick={openNewLeave} className="bg-[#00bcd4] hover:bg-[#0097a7]">
+                <Plus className="w-4 h-4 mr-2" /> New Leave Request
+              </Button>
+            )}
           </div>
 
           <div className="grid gap-4">
@@ -480,12 +489,16 @@ export default function BULManagement() {
                       <p className="text-sm text-slate-500 mt-1">{leave.leave_type} Leave</p>
                     </div>
                     <div className="flex gap-2">
-                      <Button variant="ghost" size="icon" onClick={() => openEditLeave(leave)}>
-                        <Pencil className="w-4 h-4 text-slate-600" />
-                      </Button>
-                      <Button variant="ghost" size="icon" onClick={() => deleteLeaveMutation.mutate(leave.id)}>
-                        <Trash2 className="w-4 h-4 text-red-500" />
-                      </Button>
+                      {canPerformAction(user?.role, 'Leave', 'edit', { isOwner: leave.bul_email === user?.email }) && (
+                        <Button variant="ghost" size="icon" onClick={() => openEditLeave(leave)}>
+                          <Pencil className="w-4 h-4 text-slate-600" />
+                        </Button>
+                      )}
+                      {canPerformAction(user?.role, 'Leave', 'delete') && (
+                        <Button variant="ghost" size="icon" onClick={() => deleteLeaveMutation.mutate(leave.id)}>
+                          <Trash2 className="w-4 h-4 text-red-500" />
+                        </Button>
+                      )}
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-3">
@@ -530,16 +543,20 @@ export default function BULManagement() {
               <p className="text-sm text-slate-600 mt-1">Manage team members and their assignments</p>
             </div>
             <div className="flex gap-2 flex-wrap">
-              <Button onClick={handleDownloadTemplate} variant="outline" className="border-slate-300">
-                <Download className="w-4 h-4 mr-2" /> Download Template
-              </Button>
-              <label>
-                <input type="file" accept=".xlsx,.xls,.csv" onChange={handleImportFile} disabled={importLoading} style={{ display: 'none' }} />
-                <Button asChild disabled={importLoading} className="bg-slate-600 hover:bg-slate-700">
-                  <span>{importLoading ? 'Importing...' : 'Import from File'}</span>
+              {canPerformAction(user?.role, 'TeamAssignment', 'view') && (
+                <Button onClick={handleDownloadTemplate} variant="outline" className="border-slate-300">
+                  <Download className="w-4 h-4 mr-2" /> Download Template
                 </Button>
-              </label>
-              {user && ['admin', 'Sales Manager'].includes(user.role) && (
+              )}
+              {canPerformAction(user?.role, 'TeamAssignment', 'create') && (
+                <label>
+                  <input type="file" accept=".xlsx,.xls,.csv" onChange={handleImportFile} disabled={importLoading} style={{ display: 'none' }} />
+                  <Button asChild disabled={importLoading} className="bg-slate-600 hover:bg-slate-700">
+                    <span>{importLoading ? 'Importing...' : 'Import from File'}</span>
+                  </Button>
+                </label>
+              )}
+              {canPerformAction(user?.role, 'User', 'create') && user && ['admin', 'Sales Manager'].includes(user.role) && (
                 <label>
                   <input type="file" accept=".xlsx,.xls,.csv" onChange={handleBulkInviteFile} disabled={bulkInviting} style={{ display: 'none' }} />
                   <Button asChild disabled={bulkInviting} className="bg-orange-600 hover:bg-orange-700">
@@ -547,12 +564,16 @@ export default function BULManagement() {
                   </Button>
                 </label>
               )}
-              <Button onClick={() => setInviteDialogOpen(true)} className="bg-green-600 hover:bg-green-700">
-                <Plus className="w-4 h-4 mr-2" /> Invite User
-              </Button>
-              <Button onClick={openNewTeamAssignment} className="bg-[#00bcd4] hover:bg-[#0097a7]">
-                <Plus className="w-4 h-4 mr-2" /> Add Team Member
-              </Button>
+              {canPerformAction(user?.role, 'User', 'create') && (
+                <Button onClick={() => setInviteDialogOpen(true)} className="bg-green-600 hover:bg-green-700">
+                  <Plus className="w-4 h-4 mr-2" /> Invite User
+                </Button>
+              )}
+              {canPerformAction(user?.role, 'TeamAssignment', 'create') && (
+                <Button onClick={openNewTeamAssignment} className="bg-[#00bcd4] hover:bg-[#0097a7]">
+                  <Plus className="w-4 h-4 mr-2" /> Add Team Member
+                </Button>
+              )}
             </div>
           </div>
 
@@ -609,7 +630,7 @@ export default function BULManagement() {
                                       </div>
                                     </div>
                                     <div className="flex gap-1 ml-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                                      {member.person_email && !isUserRegistered(member.person_email) && (
+                                      {member.person_email && !isUserRegistered(member.person_email) && canPerformAction(user?.role, 'User', 'create') && (
                                         <Button 
                                           variant="ghost" 
                                           size="icon" 
@@ -620,12 +641,16 @@ export default function BULManagement() {
                                           <Send className="w-4 h-4 text-blue-600" />
                                         </Button>
                                       )}
-                                      <Button variant="ghost" size="icon" onClick={() => openEditTeamAssignment(member)}>
-                                        <Pencil className="w-4 h-4 text-slate-600" />
-                                      </Button>
-                                      <Button variant="ghost" size="icon" onClick={() => deleteTeamAssignmentMutation.mutate(member.id)}>
-                                        <Trash2 className="w-4 h-4 text-red-500" />
-                                      </Button>
+                                      {canPerformAction(user?.role, 'TeamAssignment', 'edit') && (
+                                        <Button variant="ghost" size="icon" onClick={() => openEditTeamAssignment(member)}>
+                                          <Pencil className="w-4 h-4 text-slate-600" />
+                                        </Button>
+                                      )}
+                                      {canPerformAction(user?.role, 'TeamAssignment', 'delete') && (
+                                        <Button variant="ghost" size="icon" onClick={() => deleteTeamAssignmentMutation.mutate(member.id)}>
+                                          <Trash2 className="w-4 h-4 text-red-500" />
+                                        </Button>
+                                      )}
                                     </div>
                                   </div>
                                 ))}
