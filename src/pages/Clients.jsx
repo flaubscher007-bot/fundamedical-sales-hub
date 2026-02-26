@@ -183,8 +183,7 @@ export default function Clients() {
       {/* List */}
       <div className="space-y-2">
         {filtered.map((c) => (
-          <Card key={c.id} className="border-0 shadow-sm hover:shadow-md transition-shadow">
-            <Link to={createPageUrl("ClientContacts") + "?firm=" + encodeURIComponent(c.firm_name)} className="block hover:bg-slate-50 transition-colors" onClick={(e) => { if(e.target.closest('a, button')) return; openEdit(c); }}>
+          <Card key={c.id} className="border-0 shadow-sm hover:shadow-md transition-shadow cursor-pointer group" onClick={() => openEdit(c)}>
             <CardContent className="p-4">
               <div className="flex flex-wrap items-start gap-3">
                 <div className="w-9 h-9 rounded-lg bg-[#0a1628] flex items-center justify-center flex-shrink-0">
@@ -192,7 +191,7 @@ export default function Clients() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <p className="font-semibold text-slate-800">{c.firm_name}</p>
+                    <Link to={createPageUrl("ClientContacts") + "?firm=" + encodeURIComponent(c.firm_name)} className="font-semibold text-slate-800 hover:text-[#00bcd4] transition-colors" onClick={(e) => e.stopPropagation()}>{c.firm_name}</Link>
                     <Badge className={`text-[10px] ${activityColors[c.activity_status] || activityColors.ACTIVE}`}>
                       {c.activity_status}
                     </Badge>
@@ -231,14 +230,11 @@ export default function Clients() {
                     </div>
                   )}
                 </div>
-              <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <ExternalLink className="w-3.5 h-3.5 text-[#00bcd4]" />
-                </div>
-              </CardContent>
-              </Link>
-              </Card>
-              ))}
               </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
       {filtered.length === 0 && !isLoading && (
         <div className="text-center py-16">
