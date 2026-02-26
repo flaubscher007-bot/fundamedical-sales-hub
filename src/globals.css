@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -62,6 +63,11 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+/* Safe area support for PWA on iOS */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 /* Funda Medical custom styles */
