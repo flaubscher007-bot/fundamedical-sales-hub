@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, Pencil, Trash2, TrendingUp, BookOpen, FileText, DollarSign, Car, ClipboardList, UserPlus } from "lucide-react";
 import { format, startOfMonth, subMonths } from "date-fns";
+import BULPerformanceCharts from "@/components/charts/BULPerformanceCharts";
 
 const EMPTY = {
   bul_name: "",
@@ -117,6 +118,12 @@ export default function BULPerformancePage() {
         <Button onClick={openCreate} className="bg-[#00bcd4] hover:bg-[#00acc1] text-white">
           <Plus className="w-4 h-4 mr-1" /> Add Record
         </Button>
+      </div>
+
+      {/* Interactive Charts */}
+      <div>
+        <h2 className="text-lg font-semibold text-slate-900 mb-4">Performance Analytics</h2>
+        <BULPerformanceCharts />
       </div>
 
       {/* Filters */}

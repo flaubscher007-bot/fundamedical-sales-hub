@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, TrendingUp, Users } from "lucide-react";
 import GoalForm from "@/components/goals/GoalForm";
 import GoalCard from "@/components/goals/GoalCard";
+import GoalProgressCharts from "@/components/charts/GoalProgressCharts";
 
 const STATUS_FILTERS = ["All", "Not Started", "In Progress", "On Track", "At Risk", "Completed", "Failed"];
 const GOAL_TYPE_FILTERS = ["All", "Revenue", "Bookings", "Collections", "New Clients", "Custom"];
@@ -98,6 +99,12 @@ export default function GoalsPage() {
 
   return (
     <div className="space-y-6">
+      {/* Interactive Charts */}
+      <div>
+        <h2 className="text-lg font-semibold text-slate-900 mb-4">Goal Analytics</h2>
+        <GoalProgressCharts />
+      </div>
+
       {/* Stats */}
       <div className="grid grid-cols-4 gap-4">
         <div className="bg-white rounded-lg border p-4">

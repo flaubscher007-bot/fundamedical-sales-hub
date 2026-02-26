@@ -14,6 +14,7 @@ import {
 import StatementCardView from "@/components/finance/StatementCardView.jsx";
 import StatementTableView from "@/components/finance/StatementTableView.jsx";
 import SharePointSyncPanel from "@/components/finance/SharePointSyncPanel.jsx";
+import FinancialDashboardCharts from "@/components/charts/FinancialDashboardCharts";
 
 export default function Finance() {
   const [viewMode, setViewMode] = useState("cards");
@@ -89,6 +90,12 @@ export default function Finance() {
         >
           <ExternalLink className="w-5 h-5" />
         </a>
+      </div>
+
+      {/* Interactive Charts */}
+      <div>
+        <h2 className="text-lg font-semibold text-slate-900 mb-4">Financial Analytics</h2>
+        <FinancialDashboardCharts />
       </div>
 
       {/* Filters & Controls */}
