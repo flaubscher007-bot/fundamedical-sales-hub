@@ -14,6 +14,8 @@ import MetricCard from "@/components/financeReporting/MetricCard.jsx";
 import DueVsBalanceChart from "@/components/financeReporting/DueVsBalanceChart.jsx";
 import AgingAnalysisChart from "@/components/financeReporting/AgingAnalysisChart.jsx";
 import TrendChart from "@/components/financeReporting/TrendChart.jsx";
+import MonthlyTrendChart from "@/components/financeReporting/MonthlyTrendChart.jsx";
+import PaymentStatusDistribution from "@/components/financeReporting/PaymentStatusDistribution.jsx";
 
 export default function FinanceReporting() {
   const [filterBU, setFilterBU] = useState("all");
@@ -158,8 +160,14 @@ export default function FinanceReporting() {
         <AgingAnalysisChart statements={filteredStatements} />
       </div>
 
+      {/* 12-Month Trend */}
+      <MonthlyTrendChart statements={statements} />
+
       {/* Trend Chart */}
       <TrendChart statements={statements} filteredStatements={filteredStatements} />
+
+      {/* Payment Status Distribution */}
+      <PaymentStatusDistribution statements={filteredStatements} />
     </div>
   );
 }
