@@ -13,6 +13,7 @@ import { Plus, Search, Building2, Mail, Phone, MapPin, Pencil, Trash2, User, Use
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import ClientOnboardingWizard from "@/components/clients/ClientOnboardingWizard";
+import StatementAnalysis from "@/components/clients/StatementAnalysis";
 
 const activityColors = {
   ACTIVE: "bg-emerald-100 text-emerald-700",
@@ -60,6 +61,7 @@ export default function Clients() {
   const [wizardOpen, setWizardOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingClient, setEditingClient] = useState(null);
+  const [selectedStatement, setSelectedStatement] = useState(null);
   const [form, setForm] = useState(emptyClient);
   const qc = useQueryClient();
 
@@ -298,7 +300,15 @@ export default function Clients() {
                 <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">💰 Related Financial Statements</p>
                 <div className="space-y-2 max-h-48 overflow-y-auto">
                   {getClientStatements(editingClient.firm_name).map((stmt) => (
-                    <div key={stmt.id} className="border rounded-lg p-3 bg-slate-50 hover:bg-slate-100 transition-colors">
+                    <button
+                      key={stmt.id}
+                      onClick={() => setSelectedStatement(stmt)}
+                      className={`w-full border rounded-lg p-3 text-left transition-colors ${
+                        selectedStatement?.id === stmt.id
+                          ? 'bg-blue-50 border-blue-300'
+                          : 'bg-slate-50 hover:bg-slate-100 border-slate-200'
+                      }`}
+                    >
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">
@@ -320,12 +330,19 @@ export default function Clients() {
                               <span className="text-slate-600">Bal: <span className="font-semibold">ZAR {stmt.total_balance?.toLocaleString() || '0'}</span></span>
                             </div>
                           </div>
-                          {stmt.comments && <p className="text-[10px] text-slate-500 mt-1 line-clamp-1">{stmt.comments}</p>}
                         </div>
                       </div>
-                    </div>
+                    </button>
                   ))}
                 </div>
+
+                {/* AI Analysis */}
+                {selectedStatement && (
+                  <div className="mt-4 pt-4 border-t">
+                    <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">🤖 AI Financial Analysis</p>
+                    <StatementAnalysis statement={selectedStatement} />
+                  </div>
+                )}
               </div>
             )}
 
