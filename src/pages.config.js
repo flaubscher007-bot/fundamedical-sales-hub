@@ -84,6 +84,8 @@ import SocialMedia from './pages/SocialMedia';
 import TeamCalendar from './pages/TeamCalendar';
 import UserManagement from './pages/UserManagement';
 import UserProfile from './pages/UserProfile';
+import RoleManagement from './pages/RoleManagement';
+import UserRoleManagement from './pages/UserRoleManagement';
 import __Layout from './Layout.jsx';
 
 
@@ -125,6 +127,8 @@ export const PAGES = {
     "TeamCalendar": TeamCalendar,
     "UserManagement": UserManagement,
     "UserProfile": UserProfile,
+    "RoleManagement": RoleManagement,
+    "UserRoleManagement": UserRoleManagement,
 }
 
 export const pagesConfig = {
