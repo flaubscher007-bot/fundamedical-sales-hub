@@ -20,13 +20,24 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Email and role are required' }, { status: 400 });
     }
 
-    // Invite user using the service role
-    const result = await base44.asServiceRole.auth.inviteUser(email, role);
+    // Create user with temporary password and role
+    const temporaryPassword = Math.random().toString(36).slice(-12);
+    const result = await base44.asServiceRole.entities.User.create({
+      email,
+      role,
+      full_name: email.split('@')[0]
+    });
+
+    // Send password reset email to set their own password
+    await base44.integrations.Core.SendEmail({
+      to: email,
+      subject: 'Welcome to FundaMedical Sales Hub - Set Your Password',
+      body: `Hello,\n\nYou've been invited to the FundaMedical Sales Hub.\n\nTemporary Password: ${temporaryPassword}\n\nPlease log in and change your password immediately.\n\nBest regards,\nFundaMedical Team`
+    });
 
     return Response.json({ 
       success: true, 
-      message: `Invitation sent to ${email}`,
-      result 
+      message: `User created and invitation sent to ${email}`
     });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
