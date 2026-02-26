@@ -38,6 +38,11 @@ export default function UserManagement() {
     queryFn: () => base44.entities.User.list(),
   });
 
+  const { data: teamAssignments = [] } = useQuery({
+    queryKey: ["teamAssignments"],
+    queryFn: () => base44.entities.TeamAssignment.list(),
+  });
+
   const inviteUserMutation = useMutation({
     mutationFn: (data) => base44.functions.invoke('inviteUserByAdmin', { email: data.email, role: data.role }),
     onSuccess: () => {
@@ -99,7 +104,12 @@ export default function UserManagement() {
       alert('Please enter an email');
       return;
     }
-    inviteUserMutation.mutate(inviteForm);
+    
+    // Check if email exists in BUL Management
+    const bulData = teamAssignments.find(ta => ta.person_email?.toLowerCase() === inviteForm.email.toLowerCase());
+    const roleToUse = bulData ? bulData.role : inviteForm.role;
+    
+    inviteUserMutation.mutate({ email: inviteForm.email, role: roleToUse });
   };
 
   const handleCreateUser = () => {
@@ -107,7 +117,16 @@ export default function UserManagement() {
       alert('Please enter email and name');
       return;
     }
-    createUserMutation.mutate(createForm);
+    
+    // Check if email exists in BUL Management
+    const bulData = teamAssignments.find(ta => ta.person_email?.toLowerCase() === createForm.email.toLowerCase());
+    const finalForm = {
+      ...createForm,
+      full_name: bulData?.person_name || createForm.full_name,
+      role: bulData?.role || createForm.role
+    };
+    
+    createUserMutation.mutate(finalForm);
   };
 
   const copyPassword = () => {

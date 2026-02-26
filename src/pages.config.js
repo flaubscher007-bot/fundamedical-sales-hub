@@ -58,6 +58,8 @@ import BusinessCard from './pages/BusinessCard';
 import ClientContacts from './pages/ClientContacts';
 import ClientInsights from './pages/ClientInsights';
 import ClientPortal from './pages/ClientPortal';
+import Clients from './pages/Clients';
+import Collaboration from './pages/Collaboration';
 import CompanyTargets from './pages/CompanyTargets';
 import Contracts from './pages/Contracts';
 import Dashboard from './pages/Dashboard';
@@ -70,6 +72,7 @@ import FinanceDashboard from './pages/FinanceDashboard';
 import FinanceReporting from './pages/FinanceReporting';
 import FollowUpRules from './pages/FollowUpRules';
 import FollowUps from './pages/FollowUps';
+import Goals from './pages/Goals';
 import Help from './pages/Help';
 import IntakeForms from './pages/IntakeForms';
 import Marketing from './pages/Marketing';
@@ -77,11 +80,8 @@ import MeetingMinutes from './pages/MeetingMinutes';
 import Mileage from './pages/Mileage';
 import PricingProposals from './pages/PricingProposals';
 import SocialMedia from './pages/SocialMedia';
-import UserManagement from './pages/UserManagement';
-import Clients from './pages/Clients';
-import Goals from './pages/Goals';
-import Collaboration from './pages/Collaboration';
 import TeamCalendar from './pages/TeamCalendar';
+import UserManagement from './pages/UserManagement';
 import UserProfile from './pages/UserProfile';
 import __Layout from './Layout.jsx';
 
@@ -98,6 +98,8 @@ export const PAGES = {
     "ClientContacts": ClientContacts,
     "ClientInsights": ClientInsights,
     "ClientPortal": ClientPortal,
+    "Clients": Clients,
+    "Collaboration": Collaboration,
     "CompanyTargets": CompanyTargets,
     "Contracts": Contracts,
     "Dashboard": Dashboard,
@@ -110,6 +112,7 @@ export const PAGES = {
     "FinanceReporting": FinanceReporting,
     "FollowUpRules": FollowUpRules,
     "FollowUps": FollowUps,
+    "Goals": Goals,
     "Help": Help,
     "IntakeForms": IntakeForms,
     "Marketing": Marketing,
@@ -117,11 +120,8 @@ export const PAGES = {
     "Mileage": Mileage,
     "PricingProposals": PricingProposals,
     "SocialMedia": SocialMedia,
-    "UserManagement": UserManagement,
-    "Clients": Clients,
-    "Goals": Goals,
-    "Collaboration": Collaboration,
     "TeamCalendar": TeamCalendar,
+    "UserManagement": UserManagement,
     "UserProfile": UserProfile,
 }
 
