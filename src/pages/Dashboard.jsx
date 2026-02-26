@@ -6,6 +6,7 @@ import StatsCard from "@/components/dashboard/StatsCard";
 import UpcomingAppointments from "@/components/dashboard/UpcomingAppointments";
 import PendingFollowUps from "@/components/dashboard/PendingFollowUps";
 import ContractKPIs from "@/components/dashboard/ContractKPIs";
+import BULPerformanceSummary from "@/components/dashboard/BULPerformanceSummary";
 import { format } from "date-fns";
 
 export default function Dashboard() {

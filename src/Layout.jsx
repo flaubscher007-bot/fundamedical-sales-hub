@@ -37,6 +37,7 @@ const mainNavItems = [
   { name: "Follow-Ups", icon: Phone, page: "FollowUps" },
   { name: "Contract Tools", icon: FileBadge, page: "Contracts" },
   { name: "Expenses", icon: Receipt, page: "ExpensesHub" },
+  { name: "BUL Performance", icon: TrendingUp, page: "BULPerformance" },
 ];
 
 const marketingItems = [
