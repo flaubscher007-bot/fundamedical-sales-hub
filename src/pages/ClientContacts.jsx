@@ -82,7 +82,7 @@ export default function ClientContacts() {
     queryFn: () => base44.entities.Client.list("firm_name", 500),
   });
 
-  const buls = [...new Set(clients.map(c => c.business_unit_leader).filter(Boolean))].sort();
+  const buls = [...new Map(clients.filter(c => c.business_unit_leader).map(c => [c.business_unit_leader.toUpperCase(), c.business_unit_leader])).values()].sort();
 
   const filtered = clients.filter((c) => {
     const q = search.toLowerCase();
