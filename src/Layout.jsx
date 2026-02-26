@@ -41,6 +41,7 @@ const mainNavItems = [
   { name: "BUL Management", icon: TrendingUp, page: "BULManagement" },
   { name: "BUL Performance", icon: TrendingUp, page: "BULPerformance" },
   { name: "Company Targets", icon: TrendingUp, page: "CompanyTargets" },
+  { name: "User Management", icon: Users, page: "UserManagement" },
 ];
 
 const powerBIItems = [
