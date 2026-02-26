@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, Search, Building2, Mail, Phone, MapPin, Pencil, Trash2, User, UserCog, Briefcase, AlertCircle } from "lucide-react";
+import ClientOnboardingWizard from "@/components/clients/ClientOnboardingWizard";
 
 const activityColors = {
   ACTIVE: "bg-emerald-100 text-emerald-700",
