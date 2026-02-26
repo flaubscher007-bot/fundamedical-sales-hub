@@ -68,6 +68,7 @@ import ExpensesHub from './pages/ExpensesHub';
 import BULPerformance from './pages/BULPerformance';
 import BULDashboard from './pages/BULDashboard';
 import FinanceDashboard from './pages/FinanceDashboard';
+import Finance from './pages/Finance';
 import __Layout from './Layout.jsx';
 
 
@@ -93,6 +94,7 @@ export const PAGES = {
     "BULPerformance": BULPerformance,
     "BULDashboard": BULDashboard,
     "FinanceDashboard": FinanceDashboard,
+    "Finance": Finance,
 }
 
 export const pagesConfig = {
