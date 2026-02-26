@@ -54,6 +54,9 @@ export default function Clients() {
   const [bulFilter, setBulFilter] = useState("all");
   const [caFilter, setCaFilter] = useState("all");
   const [fcFilter, setFcFilter] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState("all");
+  const [provinceFilter, setProvinceFilter] = useState("all");
+  const [viewMode, setViewMode] = useState("cards"); // cards or table
   const [wizardOpen, setWizardOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingClient, setEditingClient] = useState(null);
@@ -87,21 +90,27 @@ export default function Clients() {
   const openEdit = (c) => { setEditingClient(c); setForm(c); setDialogOpen(true); };
   const closeDialog = () => { setDialogOpen(false); setEditingClient(null); setForm(emptyClient); };
 
-  const buls = [...new Set(clients.map(c => c.business_unit_leader).filter(Boolean))].sort();
+  const buls = [...new Set(clients.map(c => c.assigned_bul || c.business_unit_leader).filter(Boolean))].sort();
   const caseAdmins = [...new Set(clients.map(c => c.case_administrator).filter(Boolean))].sort();
   const financeClerks = [...new Set(clients.map(c => c.finance_clerk).filter(Boolean))].sort();
+  const categories = [...new Set(clients.map(c => c.category).filter(Boolean))].sort();
+  const provinces = [...new Set(clients.map(c => c.province).filter(Boolean))].sort();
 
   const filtered = clients.filter((c) => {
     const matchSearch = !search ||
       c.firm_name?.toLowerCase().includes(search.toLowerCase()) ||
+      c.assigned_bul?.toLowerCase().includes(search.toLowerCase()) ||
       c.business_unit_leader?.toLowerCase().includes(search.toLowerCase()) ||
       c.case_administrator?.toLowerCase().includes(search.toLowerCase()) ||
-      c.finance_clerk?.toLowerCase().includes(search.toLowerCase());
+      c.finance_clerk?.toLowerCase().includes(search.toLowerCase()) ||
+      c.contact_person?.toLowerCase().includes(search.toLowerCase());
     const matchActivity = activityFilter === "all" || c.activity_status === activityFilter;
-    const matchBul = bulFilter === "all" || c.business_unit_leader === bulFilter;
+    const matchBul = bulFilter === "all" || (c.assigned_bul === bulFilter || c.business_unit_leader === bulFilter);
     const matchCa = caFilter === "all" || c.case_administrator === caFilter;
     const matchFc = fcFilter === "all" || c.finance_clerk === fcFilter;
-    return matchSearch && matchActivity && matchBul && matchCa && matchFc;
+    const matchCategory = categoryFilter === "all" || c.category === categoryFilter;
+    const matchProvince = provinceFilter === "all" || c.province === provinceFilter;
+    return matchSearch && matchActivity && matchBul && matchCa && matchFc && matchCategory && matchProvince;
   });
 
   return (
@@ -131,8 +140,15 @@ export default function Clients() {
         <div className="flex flex-wrap gap-3 items-center">
           <div className="relative flex-1 min-w-[200px] max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <Input placeholder="Search firms, BUL, case admin, finance..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-10" />
+            <Input placeholder="Search firms, contacts, BUL, KAC..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-10" />
           </div>
+          <div className="ml-auto">
+            <Button onClick={openNew} className="bg-[#00bcd4] hover:bg-[#0097a7]">
+              <Plus className="w-4 h-4 mr-2" /> Add Client
+            </Button>
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-3">
           <Select value={activityFilter} onValueChange={setActivityFilter}>
             <SelectTrigger className="w-36"><SelectValue placeholder="Status" /></SelectTrigger>
             <SelectContent>
@@ -142,37 +158,37 @@ export default function Clients() {
               <SelectItem value="Prospect">Prospect</SelectItem>
             </SelectContent>
           </Select>
-          <div className="ml-auto">
-            <Button onClick={openNew} className="bg-[#00bcd4] hover:bg-[#0097a7]">
-              <Plus className="w-4 h-4 mr-2" /> Add Client
-            </Button>
-          </div>
-        </div>
-        <div className="flex flex-wrap gap-3">
           <Select value={bulFilter} onValueChange={setBulFilter}>
-            <SelectTrigger className="w-52"><SelectValue placeholder="Business Unit Leader" /></SelectTrigger>
+            <SelectTrigger className="w-48"><SelectValue placeholder="Business Unit Leader" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All BULs</SelectItem>
               {buls.map(b => <SelectItem key={b} value={b}>{b}</SelectItem>)}
             </SelectContent>
           </Select>
           <Select value={caFilter} onValueChange={setCaFilter}>
-            <SelectTrigger className="w-52"><SelectValue placeholder="Case Administrator" /></SelectTrigger>
+            <SelectTrigger className="w-48"><SelectValue placeholder="Key Accounts Consultant" /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Case Admins</SelectItem>
+              <SelectItem value="all">All KACs</SelectItem>
               {caseAdmins.map(ca => <SelectItem key={ca} value={ca}>{ca}</SelectItem>)}
             </SelectContent>
           </Select>
-          <Select value={fcFilter} onValueChange={setFcFilter}>
-            <SelectTrigger className="w-52"><SelectValue placeholder="Finance Clerk" /></SelectTrigger>
+          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+            <SelectTrigger className="w-40"><SelectValue placeholder="Category" /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Finance Clerks</SelectItem>
-              {financeClerks.map(fc => <SelectItem key={fc} value={fc}>{fc}</SelectItem>)}
+              <SelectItem value="all">All Categories</SelectItem>
+              {categories.map(cat => <SelectItem key={cat} value={cat}>{cat}</SelectItem>)}
             </SelectContent>
           </Select>
-          {(bulFilter !== "all" || caFilter !== "all" || fcFilter !== "all" || activityFilter !== "all" || search) && (
-            <Button variant="ghost" size="sm" className="text-slate-500 text-xs" onClick={() => { setBulFilter("all"); setCaFilter("all"); setFcFilter("all"); setActivityFilter("all"); setSearch(""); }}>
-              Clear Filters
+          <Select value={provinceFilter} onValueChange={setProvinceFilter}>
+            <SelectTrigger className="w-40"><SelectValue placeholder="Province" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Provinces</SelectItem>
+              {provinces.map(prov => <SelectItem key={prov} value={prov}>{prov}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          {(bulFilter !== "all" || caFilter !== "all" || activityFilter !== "all" || categoryFilter !== "all" || provinceFilter !== "all" || search) && (
+            <Button variant="ghost" size="sm" className="text-slate-500 text-xs" onClick={() => { setBulFilter("all"); setCaFilter("all"); setActivityFilter("all"); setCategoryFilter("all"); setProvinceFilter("all"); setSearch(""); }}>
+              Clear All
             </Button>
           )}
         </div>
@@ -202,24 +218,24 @@ export default function Clients() {
                     )}
                   </div>
                   <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2">
-                    {c.assigned_bul && (
+                    {(c.assigned_bul || c.business_unit_leader) && (
+                        <span className="text-xs text-slate-500 flex items-center gap-1">
+                          <Briefcase className="w-3 h-3 text-[#00bcd4]" /> BUL: <span className="text-[#00bcd4] font-semibold">{c.assigned_bul || c.business_unit_leader}</span>
+                        </span>
+                      )}
+                      {c.case_administrator && (
+                        <span className="text-xs text-slate-500 flex items-center gap-1">
+                          <UserCog className="w-3 h-3" /> KAC: <span className="font-semibold">{c.case_administrator}</span>
+                        </span>
+                      )}
+                    {c.category && (
                       <span className="text-xs text-slate-500 flex items-center gap-1">
-                        <Briefcase className="w-3 h-3 text-[#00bcd4]" /> Assigned: <Link to={createPageUrl("ClientContacts") + "?firm=" + encodeURIComponent(c.firm_name)} className="text-[#00bcd4] hover:underline font-semibold" onClick={(e) => e.stopPropagation()}>{c.assigned_bul}</Link>
+                        📋 {c.category}
                       </span>
                     )}
-                    {c.case_administrator && (
-                      <span className="text-xs text-slate-500 flex items-center gap-1">
-                        <UserCog className="w-3 h-3" /> CA: {c.case_administrator}
-                      </span>
-                    )}
-                    {c.finance_clerk && (
-                      <span className="text-xs text-slate-500 flex items-center gap-1">
-                        <User className="w-3 h-3" /> FC: {c.finance_clerk}
-                      </span>
-                    )}
-                    {c.address && (
+                    {c.province && (
                       <span className="text-xs text-slate-400 flex items-center gap-1">
-                        <MapPin className="w-3 h-3" /> {c.address}
+                        <MapPin className="w-3 h-3" /> {c.province}
                       </span>
                     )}
                   </div>
