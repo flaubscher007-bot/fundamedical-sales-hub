@@ -44,6 +44,7 @@ const mainNavItems = [
 const marketingItems = [
   { name: "Marketing Materials", icon: FileText, page: "Marketing" },
   { name: "Business Cards", icon: CreditCard, page: "BusinessCard" },
+  { name: "Social Media Posts", icon: Share2, page: "SocialMedia" },
 ];
 
 // All pages for header title lookup
