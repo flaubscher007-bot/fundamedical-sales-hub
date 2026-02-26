@@ -23,12 +23,8 @@ Deno.serve(async (req) => {
       ...sampleRows.map(row => row.map(cell => `"${cell}"`).join(','))
     ].join('\n');
 
-    return new Response(csvContent, {
-      status: 200,
-      headers: {
-        'Content-Type': 'text/csv',
-        'Content-Disposition': 'attachment; filename="BUL_Team_Template.csv"'
-      }
+    return Response.json({ 
+      data: csvContent 
     });
 
   } catch (error) {
