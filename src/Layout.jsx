@@ -29,7 +29,7 @@ const mainNavItems = [
   { name: "Experts", icon: Stethoscope, page: "Experts" },
   { name: "Appointment Tools", icon: Wrench, page: "AppointmentTools" },
   { name: "Contract Tools", icon: FileBadge, page: "Contracts" },
-  { name: "Expenses", icon: Receipt, page: "ExpensesHub" },
+  { name: "Expense Tools", icon: Receipt, page: "ExpensesHub" },
   { name: "BUL Performance", icon: TrendingUp, page: "BULPerformance" },
 ];
 
