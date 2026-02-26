@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Search, FileText, Trash2, CheckCircle2, Clock, XCircle, Send, Eye } from "lucide-react";
+import { Search, FileText, Trash2, CheckCircle2, Clock, XCircle, Send, Eye, Printer, Mail, MessageCircle, Upload } from "lucide-react";
 import { format } from "date-fns";
 
 const statusColors = {
