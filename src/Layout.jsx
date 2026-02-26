@@ -28,6 +28,7 @@ import {
 import { Button } from "@/components/ui/button";
 import PWAInstallBanner from "@/components/PWAInstallBanner";
 import NotificationBell from "@/components/NotificationBell";
+import { hasPermission } from "@/lib/PageNotFound";
 
 const mainNavItems = [
   { name: "Dashboard", icon: LayoutDashboard, page: "Dashboard" },
@@ -48,6 +49,8 @@ const mainNavItems = [
   { name: "BUL Performance", icon: TrendingUp, page: "BULPerformance" },
   { name: "Company Targets", icon: TrendingUp, page: "CompanyTargets" },
   { name: "User Management", icon: Users, page: "UserManagement" },
+  { name: "Role Management", icon: Users, page: "RoleManagement" },
+  { name: "User Roles", icon: Users, page: "UserRoleManagement" },
   { name: "Settings", icon: Wrench, page: "UserProfile" },
   { name: "Help", icon: FileText, page: "Help" },
 ];
@@ -108,7 +111,25 @@ export default function Layout({ children, currentPageName }) {
 
   const renderNavItem = (item) => {
     const isActive = currentPageName === item.page;
-    const hasAccess = user ? canAccessPage(user.role || "team_member", item.page) : false;
+    
+    // Check traditional permissions first, then new permission system
+    let hasAccess = false;
+    if (user) {
+      hasAccess = canAccessPage(user.role || "team_member", item.page);
+      
+      // If traditional check fails, try new permission system
+      if (!hasAccess && user.role_permissions) {
+        const moduleMap = {
+          'RoleManagement': 'users',
+          'UserRoleManagement': 'users',
+          'UserManagement': 'users'
+        };
+        const module = moduleMap[item.page];
+        if (module) {
+          hasAccess = hasPermission(user.role_permissions, module, 'view');
+        }
+      }
+    }
 
     if (!hasAccess) return null;
 
