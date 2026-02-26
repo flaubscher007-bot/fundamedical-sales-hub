@@ -5,9 +5,7 @@ import { base44 } from "@/api/base44Client";
 import {
   LayoutDashboard,
   Users,
-  Calendar,
   FileText,
-  Car,
   Receipt,
   DollarSign,
   CreditCard,
