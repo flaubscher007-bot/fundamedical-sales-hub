@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, Calendar, Clock, MapPin, Navigation, Search, Trash2 } from "lucide-react";
 import { format, isToday, isTomorrow, isPast, parseISO } from "date-fns";
+import CalendarView from "@/components/CalendarView";
 
 const statusColors = {
   Scheduled: "bg-blue-100 text-blue-700",
@@ -30,6 +31,7 @@ export default function Appointments() {
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(emptyApt);
   const [user, setUser] = useState(null);
+  const [showCalendar, setShowCalendar] = useState(false);
   const qc = useQueryClient();
 
   useEffect(() => { base44.auth.me().then(setUser).catch(() => {}); }, []);
@@ -37,6 +39,11 @@ export default function Appointments() {
   const { data: appointments = [] } = useQuery({
     queryKey: ["appointments"],
     queryFn: () => base44.entities.Appointment.list("-date", 200),
+  });
+
+  const { data: followups = [] } = useQuery({
+    queryKey: ["followups"],
+    queryFn: () => base44.entities.FollowUp.list("-due_date", 200),
   });
 
   const { data: clients = [] } = useQuery({
@@ -57,7 +64,18 @@ export default function Appointments() {
   });
 
   const openNew = () => { setEditing(null); setForm(emptyApt); setDialogOpen(true); };
-  const openEdit = (a) => { setEditing(a); setForm(a); setDialogOpen(true); };
+  const openEdit = (a) => {
+    if (a.type === "task") {
+      // Task/FollowUp object
+      setEditing(a);
+      setForm(a);
+    } else {
+      // Appointment object
+      setEditing(a);
+      setForm(a);
+    }
+    setDialogOpen(true);
+  };
   const closeDialog = () => { setDialogOpen(false); setEditing(null); };
 
   const filtered = appointments.filter((a) =>
@@ -80,10 +98,29 @@ export default function Appointments() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <Input placeholder="Search appointments..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-10" />
         </div>
-        <Button onClick={openNew} className="bg-[#00bcd4] hover:bg-[#0097a7]">
-          <Plus className="w-4 h-4 mr-2" /> New Appointment
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            variant={showCalendar ? "default" : "outline"} 
+            onClick={() => setShowCalendar(!showCalendar)}
+            className={showCalendar ? "bg-[#00bcd4] hover:bg-[#0097a7]" : ""}
+          >
+            <Calendar className="w-4 h-4 mr-2" /> Calendar
+          </Button>
+          <Button onClick={openNew} className="bg-[#00bcd4] hover:bg-[#0097a7]">
+            <Plus className="w-4 h-4 mr-2" /> New Appointment
+          </Button>
+        </div>
       </div>
+
+      {showCalendar && (
+        <div className="bg-white rounded-lg p-6 border border-slate-200">
+          <CalendarView 
+            appointments={appointments} 
+            tasks={followups}
+            onEventClick={openEdit}
+          />
+        </div>
+      )}
 
       <div className="space-y-3">
         {filtered.map((apt) => (
