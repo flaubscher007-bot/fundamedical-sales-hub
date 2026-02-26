@@ -1,10 +1,19 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
+    /* FundaDrive Color Scheme */
+    --funda-dark: #081F3F;
+    --funda-primary: #0a1e3a;
+    --funda-secondary: #0d2a52;
+    --funda-accent: #34CCD0;
+    --funda-highlight: #92F21D;
+    --funda-text-primary: #ffffff;
+    --funda-text-secondary: #f0f4f8;
+    --funda-text-muted: #cbd5e1;
+
     --background: 8 65% 12%;
     --foreground: 0 0% 98%;
     --card: 8 65% 18%;
@@ -111,6 +120,6 @@
   }
 
   .funda-gradient {
-    background-color: #0a2540;
+    background-color: var(--funda-primary);
   }
 }

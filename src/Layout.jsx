@@ -119,11 +119,11 @@ export default function Layout({ children, currentPageName }) {
         onClick={() => setSidebarOpen(false)}
         className={`flex items-center gap-3 px-4 py-2.5 rounded-lg mb-1 text-sm font-medium transition-all duration-200 group ${
           isActive
-            ? "bg-[#00bcd4]/20 text-[#00bcd4]"
+            ? "text-[var(--funda-accent)] bg-[var(--funda-accent)]/10"
             : "text-slate-300 hover:bg-white/5 hover:text-white"
         }`}
       >
-        <item.icon className={`w-4 h-4 shrink-0 ${isActive ? "text-[#00bcd4]" : "text-slate-500 group-hover:text-slate-300"}`} />
+        <item.icon className={`w-4 h-4 shrink-0 ${isActive ? "text-[var(--funda-accent)]" : "text-slate-500 group-hover:text-slate-300"}`} />
         <span>{item.name}</span>
         {isActive && <ChevronRight className="w-4 h-4 ml-auto text-[#00bcd4]" />}
       </Link>
@@ -146,12 +146,12 @@ export default function Layout({ children, currentPageName }) {
         sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       } flex flex-col max-h-screen overflow-y-auto`}>
         {/* Logo */}
-        <div className="p-4 sm:p-6 border-b border-white/10 sticky top-0 bg-[#0a2540]">
+        <div className="p-4 sm:p-6 border-b border-white/10 sticky top-0 bg-[var(--funda-primary)]">
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0">
               <h1 className="text-lg sm:text-xl font-bold tracking-wide truncate">
-                <span className="text-[#7ed957]">FUNDA</span>
-                <span className="text-[#00bcd4]">MEDICAL</span>
+                <span style={{color: 'var(--funda-highlight)'}}>FUNDA</span>
+                <span style={{color: 'var(--funda-accent)'}}>MEDICAL</span>
               </h1>
               <p className="text-xs text-slate-400 mt-0.5 truncate">Sales Hub</p>
             </div>
@@ -172,13 +172,13 @@ export default function Layout({ children, currentPageName }) {
                 onClick={() => setPowerBIOpen(o => !o)}
                 className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 group ${
                   isPowerBIActive
-                    ? "bg-[#00bcd4]/20 text-[#00bcd4]"
+                    ? "text-[var(--funda-accent)] bg-[var(--funda-accent)]/10"
                     : "text-slate-300 hover:bg-white/5 hover:text-white"
                 }`}
               >
-                <BarChart2 className={`w-4 h-4 shrink-0 ${isPowerBIActive ? "text-[#00bcd4]" : "text-slate-500 group-hover:text-slate-300"}`} />
+                <BarChart2 className={`w-4 h-4 shrink-0 ${isPowerBIActive ? "text-[var(--funda-accent)]" : "text-slate-500 group-hover:text-slate-300"}`} />
                 <span>Power BI</span>
-                <ChevronDown className={`w-4 h-4 ml-auto transition-transform duration-200 ${powerBIOpen ? "rotate-180" : ""} ${isPowerBIActive ? "text-[#00bcd4]" : "text-slate-500"}`} />
+                <ChevronDown className={`w-4 h-4 ml-auto transition-transform duration-200 ${powerBIOpen ? "rotate-180" : ""} ${isPowerBIActive ? "text-[var(--funda-accent)]" : "text-slate-500"}`} />
               </button>
 
               {powerBIOpen && (
@@ -213,13 +213,13 @@ export default function Layout({ children, currentPageName }) {
                 onClick={() => setMarketingOpen(o => !o)}
                 className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 group ${
                   isMarketingActive
-                    ? "bg-[#00bcd4]/20 text-[#00bcd4]"
+                    ? "text-[var(--funda-accent)] bg-[var(--funda-accent)]/10"
                     : "text-slate-300 hover:bg-white/5 hover:text-white"
                 }`}
               >
-                <Megaphone className={`w-4 h-4 shrink-0 ${isMarketingActive ? "text-[#00bcd4]" : "text-slate-500 group-hover:text-slate-300"}`} />
+                <Megaphone className={`w-4 h-4 shrink-0 ${isMarketingActive ? "text-[var(--funda-accent)]" : "text-slate-500 group-hover:text-slate-300"}`} />
                 <span>Marketing Tools</span>
-                <ChevronDown className={`w-4 h-4 ml-auto transition-transform duration-200 ${marketingOpen ? "rotate-180" : ""} ${isMarketingActive ? "text-[#00bcd4]" : "text-slate-500"}`} />
+                <ChevronDown className={`w-4 h-4 ml-auto transition-transform duration-200 ${marketingOpen ? "rotate-180" : ""} ${isMarketingActive ? "text-[var(--funda-accent)]" : "text-slate-500"}`} />
               </button>
 
               {marketingOpen && (
@@ -233,11 +233,11 @@ export default function Layout({ children, currentPageName }) {
                         onClick={() => setSidebarOpen(false)}
                         className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 group ${
                           isActive
-                            ? "bg-[#00bcd4]/20 text-[#00bcd4]"
+                            ? "text-[var(--funda-accent)] bg-[var(--funda-accent)]/10"
                             : "text-slate-400 hover:bg-white/5 hover:text-white"
                         }`}
                       >
-                        <item.icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? "text-[#00bcd4]" : "text-slate-500 group-hover:text-slate-300"}`} />
+                        <item.icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? "text-[var(--funda-accent)]" : "text-slate-500 group-hover:text-slate-300"}`} />
                         <span>{item.name}</span>
                       </Link>
                     );
@@ -250,9 +250,9 @@ export default function Layout({ children, currentPageName }) {
 
         {/* User */}
         {user && (
-          <div className="p-3 sm:p-4 border-t border-white/10 sticky bottom-0 bg-[#0a2540]">
+          <div className="p-3 sm:p-4 border-t border-white/10 sticky bottom-0 bg-[var(--funda-primary)]">
             <div className="flex items-center gap-2 sm:gap-3">
-              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#00bcd4]/20 flex items-center justify-center text-[#00bcd4] font-semibold text-xs sm:text-sm flex-shrink-0">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-semibold text-xs sm:text-sm flex-shrink-0" style={{backgroundColor: 'var(--funda-accent)', color: 'var(--funda-primary)'}}>
                 {user.full_name?.[0] || user.email?.[0]?.toUpperCase()}
               </div>
               <div className="flex-1 min-w-0 hidden sm:block">
