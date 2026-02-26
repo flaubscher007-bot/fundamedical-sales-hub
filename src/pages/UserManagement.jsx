@@ -27,7 +27,7 @@ export default function UserManagement() {
 
   useEffect(() => {
     base44.auth.me().then(u => {
-      if (u && !['admin', 'Sales Manager'].includes(u.role)) {
+      if (u && !['admin', 'sales_manager'].includes(u.role)) {
         window.location.href = '/';
       }
       setUser(u);
@@ -54,13 +54,11 @@ export default function UserManagement() {
   });
 
   const updateUserMutation = useMutation({
-    mutationFn: (data) => {
-      if (!editingUser?.id) throw new Error('No user selected');
-      return base44.asServiceRole.entities.User.update(editingUser.id, { 
-        full_name: data.full_name, 
-        role: data.role 
-      });
-    },
+    mutationFn: (data) => base44.functions.invoke('updateUserByAdmin', { 
+      userId: editingUser?.id,
+      full_name: data.full_name, 
+      role: data.role 
+    }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["users"] });
       setEditDialogOpen(false);
@@ -69,7 +67,7 @@ export default function UserManagement() {
   });
 
   const deleteUserMutation = useMutation({
-    mutationFn: (userId) => base44.asServiceRole.entities.User.delete(userId),
+    mutationFn: (userId) => base44.functions.invoke('deleteUserByAdmin', { userId }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["users"] });
     },
