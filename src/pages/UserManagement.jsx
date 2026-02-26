@@ -310,7 +310,10 @@ export default function UserManagement() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="admin">Admin</SelectItem>
-                    <SelectItem value="Sales Manager">Sales Manager</SelectItem>
+                    <SelectItem value="business_unit_leader">Business Unit Leader</SelectItem>
+                    <SelectItem value="kac">Key Accounts Consultant (KAC)</SelectItem>
+                    <SelectItem value="bul_manager">BUL Manager</SelectItem>
+                    <SelectItem value="finance_user">Finance User</SelectItem>
                     <SelectItem value="team_member">Team Member</SelectItem>
                   </SelectContent>
                 </Select>
@@ -368,7 +371,10 @@ export default function UserManagement() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="admin">Admin</SelectItem>
-                  <SelectItem value="Sales Manager">Sales Manager</SelectItem>
+                  <SelectItem value="business_unit_leader">Business Unit Leader</SelectItem>
+                  <SelectItem value="kac">Key Accounts Consultant (KAC)</SelectItem>
+                  <SelectItem value="bul_manager">BUL Manager</SelectItem>
+                  <SelectItem value="finance_user">Finance User</SelectItem>
                   <SelectItem value="team_member">Team Member</SelectItem>
                 </SelectContent>
               </Select>
