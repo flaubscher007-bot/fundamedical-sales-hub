@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Pencil, Trash2, DollarSign, Target as TargetIcon, Package, Calendar, CheckCircle, XCircle, Clock, Users, Mail, Phone, Download, Activity, Upload, Send, UserCheck, UserX, TrendingUp } from "lucide-react";
+import { Plus, Pencil, Trash2, DollarSign, Target as TargetIcon, Package, Calendar, CheckCircle, XCircle, Clock, Users, Mail, Phone, Download, Activity, Send, UserCheck, UserX, BarChart3 } from "lucide-react";
 import ActivityLogPanel from "@/components/BULManagement/ActivityLogPanel";
 import PerformanceReportsTab from "@/components/BULManagement/PerformanceReportsTab";
 import GoalsTab from "@/components/goals/GoalsTab";
@@ -316,7 +316,7 @@ export default function BULManagement() {
            {user && ['admin', 'Sales Manager'].includes(user.role) && (
              <>
                <TabsTrigger value="reports" className="flex items-center gap-2">
-                 <TrendingUp className="w-4 h-4" /> Performance Reports
+                 <BarChart3 className="w-4 h-4" /> Performance Reports
                </TabsTrigger>
                <TabsTrigger value="activity" className="flex items-center gap-2">
                  <Activity className="w-4 h-4" /> Activity Log
