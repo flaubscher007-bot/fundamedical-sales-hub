@@ -12,7 +12,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Pencil, Trash2, DollarSign, Target as TargetIcon, Package, Calendar, CheckCircle, XCircle, Clock, Users, Mail, Phone, Download, Activity, Upload, Send, UserCheck, UserX } from "lucide-react";
 import ActivityLogPanel from "@/components/BULManagement/ActivityLogPanel";
 import PerformanceReportsTab from "@/components/BULManagement/PerformanceReportsTab";
-import { useState } from "react";
 
 // Empty states
 const emptyTarget = { bul_name: "", bul_email: "", month: "", revenue_target: "", bookings_target: "", collections_target: "", notes: "" };
