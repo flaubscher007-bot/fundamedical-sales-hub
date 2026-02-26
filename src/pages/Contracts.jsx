@@ -22,7 +22,7 @@ export default function Contracts() {
       </div>
 
       <Tabs value={tab} onValueChange={setTab}>
-        <TabsList className="grid grid-cols-3 w-full max-w-lg">
+        <TabsList className="grid grid-cols-4 w-full max-w-2xl">
           <TabsTrigger value="intake" className="flex items-center gap-2">
             <Briefcase className="w-4 h-4" /> Intake Forms
           </TabsTrigger>
@@ -31,6 +31,9 @@ export default function Contracts() {
           </TabsTrigger>
           <TabsTrigger value="completed" className="flex items-center gap-2">
             <FileText className="w-4 h-4" /> Completed
+          </TabsTrigger>
+          <TabsTrigger value="ai" className="flex items-center gap-2">
+            <Sparkles className="w-4 h-4" /> AI Assistant
           </TabsTrigger>
         </TabsList>
 
@@ -44,6 +47,10 @@ export default function Contracts() {
 
         <TabsContent value="completed" className="mt-4">
           <CompletedContracts />
+        </TabsContent>
+
+        <TabsContent value="ai" className="mt-4">
+          <ContractAIAssistant />
         </TabsContent>
       </Tabs>
     </div>
