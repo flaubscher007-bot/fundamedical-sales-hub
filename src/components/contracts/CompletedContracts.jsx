@@ -36,6 +36,11 @@ export default function CompletedContracts() {
   const [signedBy, setSignedBy] = useState("");
   const [notes, setNotes] = useState("");
   const [saving, setSaving] = useState(false);
+  const [emailDialog, setEmailDialog] = useState(false);
+  const [emailTo, setEmailTo] = useState("");
+  const [sendingEmail, setSendingEmail] = useState(false);
+  const [importing, setImporting] = useState(false);
+  const importRef = useRef(null);
   const canvasRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const qc = useQueryClient();
