@@ -18,7 +18,8 @@ import {
   Menu,
   X,
   LogOut,
-  ChevronRight
+  ChevronRight,
+  BarChart2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
