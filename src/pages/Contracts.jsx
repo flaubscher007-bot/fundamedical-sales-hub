@@ -23,9 +23,12 @@ export default function Contracts() {
       </div>
 
       <Tabs value={tab} onValueChange={setTab}>
-        <TabsList className="grid grid-cols-4 w-full max-w-2xl">
+        <TabsList className="grid grid-cols-5 w-full max-w-3xl">
           <TabsTrigger value="intake" className="flex items-center gap-2">
             <Briefcase className="w-4 h-4" /> Intake Forms
+          </TabsTrigger>
+          <TabsTrigger value="proposals" className="flex items-center gap-2">
+            <DollarSign className="w-4 h-4" /> Proposals
           </TabsTrigger>
           <TabsTrigger value="templates" className="flex items-center gap-2">
             <BookTemplate className="w-4 h-4" /> Templates
@@ -40,6 +43,10 @@ export default function Contracts() {
 
         <TabsContent value="intake" className="mt-4">
           <IntakeForms />
+        </TabsContent>
+
+        <TabsContent value="proposals" className="mt-4">
+          <PricingProposals />
         </TabsContent>
 
         <TabsContent value="templates" className="mt-4">
