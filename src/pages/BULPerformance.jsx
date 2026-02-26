@@ -23,6 +23,7 @@ const EMPTY = {
   balance_payments_collected: 0,
   visits: 0,
   line_items: 0,
+  new_firms_signed: 0,
   notes: "",
 };
 
@@ -33,6 +34,7 @@ const METRICS = [
   { key: "balance_payments_collected", label: "Balance Payments (R)", icon: TrendingUp, color: "text-purple-500", bg: "bg-purple-50", currency: true },
   { key: "visits", label: "Visits", icon: Car, color: "text-orange-500", bg: "bg-orange-50" },
   { key: "line_items", label: "Line Items", icon: ClipboardList, color: "text-slate-600", bg: "bg-slate-100" },
+  { key: "new_firms_signed", label: "New Firms Signed", icon: UserPlus, color: "text-emerald-600", bg: "bg-emerald-50" },
 ];
 
 // Generate last 12 months for filter
