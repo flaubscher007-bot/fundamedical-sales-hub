@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, Pencil, Trash2, AlertCircle } from "lucide-react";
 import RolePermissionMatrix from "@/components/roles/RolePermissionMatrix";
-import { DEFAULT_ROLES, isSystemRole } from "@/lib/rolePermissions";
+import { DEFAULT_ROLES, isSystemRole } from "@/lib/PageNotFound";
 
 export default function RoleManagement() {
   const [dialogOpen, setDialogOpen] = useState(false);

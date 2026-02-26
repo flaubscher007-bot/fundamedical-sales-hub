@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Pencil, Shield, Search } from "lucide-react";
-import { DEFAULT_ROLES } from "@/lib/rolePermissions";
+import { DEFAULT_ROLES } from "@/lib/PageNotFound";
 
 export default function UserRoleManagement() {
   const [searchTerm, setSearchTerm] = useState("");
