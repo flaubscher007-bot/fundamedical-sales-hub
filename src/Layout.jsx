@@ -38,6 +38,7 @@ const mainNavItems = [
   { name: "Expense Tools", icon: Receipt, page: "ExpensesHub" },
   { name: "Finance Tools", icon: DollarSign, page: "Finance" },
   { name: "Alerts", icon: AlertCircle, page: "Alerts" },
+  { name: "Follow-Up Rules", icon: FileText, page: "FollowUpRules" },
   { name: "BUL Management", icon: TrendingUp, page: "BULManagement" },
   { name: "BUL Performance", icon: TrendingUp, page: "BULPerformance" },
   { name: "Company Targets", icon: TrendingUp, page: "CompanyTargets" },
