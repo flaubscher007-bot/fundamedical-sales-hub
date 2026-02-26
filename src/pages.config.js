@@ -61,6 +61,7 @@ import Mileage from './pages/Mileage';
 import PricingProposals from './pages/PricingProposals';
 import ClientContacts from './pages/ClientContacts';
 import Experts from './pages/Experts';
+import SocialMedia from './pages/SocialMedia';
 import __Layout from './Layout.jsx';
 
 
@@ -79,6 +80,7 @@ export const PAGES = {
     "PricingProposals": PricingProposals,
     "ClientContacts": ClientContacts,
     "Experts": Experts,
+    "SocialMedia": SocialMedia,
 }
 
 export const pagesConfig = {
