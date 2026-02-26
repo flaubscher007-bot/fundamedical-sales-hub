@@ -9,8 +9,6 @@ import {
   FileText,
   Car,
   Receipt,
-  Phone,
-  ClipboardList,
   DollarSign,
   CreditCard,
   Stethoscope,
