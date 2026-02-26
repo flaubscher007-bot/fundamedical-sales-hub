@@ -11,7 +11,6 @@ import {
   Receipt,
   Phone,
   ClipboardList,
-  Briefcase,
   DollarSign,
   Wine,
   CreditCard,
