@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { base44 } from "@/api/base44Client";
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, MapPin, Users } from "lucide-react";
 import { format, addMonths, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay } from "date-fns";
 import { Button } from "@/components/ui/button";
@@ -6,6 +7,15 @@ import EventCard from "./EventCard";
 
 export default function CalendarView({ events, selectedDate, onSelectDate, viewMode, onViewModeChange, onEditEvent, onDeleteEvent, currentUser }) {
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  
+  // Subscribe to real-time updates
+  React.useEffect(() => {
+    if (!events) return;
+    const unsubscribe = base44.entities.CalendarEvent.subscribe((event) => {
+      // Calendar will re-render with updated events from parent component
+    });
+    return unsubscribe;
+  }, []);
 
   const getDaysInMonth = () => {
     const start = startOfMonth(currentMonth);
@@ -75,18 +85,28 @@ export default function CalendarView({ events, selectedDate, onSelectDate, viewM
                 </div>
 
                 <div className="space-y-1 text-xs">
-                  {dayEvents.slice(0, 2).map(event => (
-                    <div
-                      key={event.id}
-                      className="bg-[#7ed957] text-black px-2 py-1 rounded text-xs truncate cursor-pointer hover:opacity-80"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onEditEvent(event);
-                      }}
-                    >
-                      {event.title}
-                    </div>
-                  ))}
+                  {dayEvents.slice(0, 2).map(event => {
+                    const eventTypeColors = {
+                      appointment: "bg-blue-300 text-blue-900",
+                      meeting: "bg-purple-300 text-purple-900",
+                      task: "bg-green-300 text-green-900",
+                      personal: "bg-gray-300 text-gray-900",
+                    };
+                    const bgColor = eventTypeColors[event.event_type] || eventTypeColors.appointment;
+                    return (
+                      <div
+                        key={event.id}
+                        className={`${bgColor} px-2 py-1 rounded text-xs truncate cursor-pointer hover:opacity-80`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onEditEvent(event);
+                        }}
+                        title={event.event_type}
+                      >
+                        {event.title}
+                      </div>
+                    );
+                  })}
                   {dayEvents.length > 2 && (
                     <div className="text-gray-600 px-2">+{dayEvents.length - 2} more</div>
                   )}

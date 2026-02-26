@@ -9,12 +9,22 @@ export default function EventCard({ event, onEdit, onDelete, currentUser }) {
   
   const getEventTypeColor = (type) => {
     const colors = {
-      appointment: "border-l-4 border-l-blue-500",
-      meeting: "border-l-4 border-l-purple-500",
-      task: "border-l-4 border-l-green-500",
-      personal: "border-l-4 border-l-gray-500",
+      appointment: "border-l-4 border-l-blue-500 bg-blue-50",
+      meeting: "border-l-4 border-l-purple-500 bg-purple-50",
+      task: "border-l-4 border-l-green-500 bg-green-50",
+      personal: "border-l-4 border-l-gray-500 bg-gray-50",
     };
     return colors[type] || colors.appointment;
+  };
+
+  const getSyncStatusBadge = (syncStatus) => {
+    const badges = {
+      pending: "bg-yellow-100 text-yellow-700",
+      syncing: "bg-blue-100 text-blue-700",
+      synced: "bg-green-100 text-green-700",
+      failed: "bg-red-100 text-red-700",
+    };
+    return badges[syncStatus] || badges.pending;
   };
 
   const getVisibilityBadge = (visibility) => {
@@ -56,13 +66,18 @@ export default function EventCard({ event, onEdit, onDelete, currentUser }) {
               )}
             </div>
 
-            <div className="flex gap-2 mt-2">
+            <div className="flex gap-2 mt-2 flex-wrap">
               <span className={`text-xs px-2 py-1 rounded ${getVisibilityBadge(event.visibility)}`}>
                 {event.visibility}
               </span>
-              {event.is_synced && (
-                <span className="text-xs px-2 py-1 rounded bg-orange-100 text-orange-700">
-                  Synced
+              {event.sync_status && event.sync_status !== 'pending' && (
+                <span className={`text-xs px-2 py-1 rounded ${getSyncStatusBadge(event.sync_status)}`}>
+                  {event.sync_status === 'synced' ? '☁️ Synced' : event.sync_status === 'syncing' ? '⟳ Syncing' : event.sync_status === 'failed' ? '✕ Failed' : 'Pending'}
+                </span>
+              )}
+              {event.invites_sent && (
+                <span className="text-xs px-2 py-1 rounded bg-indigo-100 text-indigo-700">
+                  ✉️ Invites sent
                 </span>
               )}
             </div>
