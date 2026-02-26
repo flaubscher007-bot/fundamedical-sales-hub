@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Mail, Plus, Trash2, Lock, UserX, Edit, Copy, Check, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import { canPerformAction, shouldShowActionButton } from "@/components/entityPermissions";
 
 export default function UserManagement() {
   const [user, setUser] = useState(null);
@@ -148,24 +149,28 @@ export default function UserManagement() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-2xl font-bold text-slate-800">User Management</h2>
-          <p className="text-sm text-slate-600 mt-1">Manage app users and roles</p>
-        </div>
-        <div className="flex gap-2">
-          <Link to={createPageUrl('BULManagement')}>
-            <Button variant="outline" className="border-slate-300">
-              <Users className="w-4 h-4 mr-2" /> BUL Management
-            </Button>
-          </Link>
-          <Button onClick={() => setCreateDialogOpen(true)} className="bg-[#7ed957] hover:bg-[#6bc54f]">
-            <Plus className="w-4 h-4 mr-2" /> Create User
-          </Button>
-          <Button onClick={() => setInviteDialogOpen(true)} className="bg-[#00bcd4] hover:bg-[#0097a7]">
-            <Plus className="w-4 h-4 mr-2" /> Invite User
-          </Button>
-        </div>
-      </div>
+         <div>
+           <h2 className="text-2xl font-bold text-slate-800">User Management</h2>
+           <p className="text-sm text-slate-600 mt-1">Manage app users and roles</p>
+         </div>
+         <div className="flex gap-2">
+           <Link to={createPageUrl('BULManagement')}>
+             <Button variant="outline" className="border-slate-300">
+               <Users className="w-4 h-4 mr-2" /> BUL Management
+             </Button>
+           </Link>
+           {canPerformAction(user?.role, 'User', 'create') && (
+             <Button onClick={() => setCreateDialogOpen(true)} className="bg-[#7ed957] hover:bg-[#6bc54f]">
+               <Plus className="w-4 h-4 mr-2" /> Create User
+             </Button>
+           )}
+           {canPerformAction(user?.role, 'User', 'create') && (
+             <Button onClick={() => setInviteDialogOpen(true)} className="bg-[#00bcd4] hover:bg-[#0097a7]">
+               <Plus className="w-4 h-4 mr-2" /> Invite User
+             </Button>
+           )}
+         </div>
+       </div>
 
       <Card>
         <CardContent className="p-0">
@@ -199,35 +204,41 @@ export default function UserManagement() {
                         {new Date(u.created_date).toLocaleDateString('en-ZA')}
                       </td>
                       <td className="px-6 py-4 text-sm flex gap-2">
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
-                          onClick={() => openEditDialog(u)}
-                          title="Edit user"
-                        >
-                          <Edit className="w-4 h-4 text-slate-600" />
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
-                          onClick={() => resetPasswordMutation.mutate(u.email)}
-                          disabled={resetPasswordMutation.isPending}
-                          title="Send password reset"
-                        >
-                          <Lock className="w-4 h-4 text-amber-600" />
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
-                          onClick={() => {
-                            if (confirm(`Remove ${u.full_name || u.email}?`)) {
-                              deleteUserMutation.mutate(u.id);
-                            }
-                          }}
-                          title="Remove user"
-                        >
-                          <Trash2 className="w-4 h-4 text-red-500" />
-                        </Button>
+                        {canPerformAction(user?.role, 'User', 'edit') && (
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            onClick={() => openEditDialog(u)}
+                            title="Edit user"
+                          >
+                            <Edit className="w-4 h-4 text-slate-600" />
+                          </Button>
+                        )}
+                        {canPerformAction(user?.role, 'User', 'edit') && (
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            onClick={() => resetPasswordMutation.mutate(u.email)}
+                            disabled={resetPasswordMutation.isPending}
+                            title="Send password reset"
+                          >
+                            <Lock className="w-4 h-4 text-amber-600" />
+                          </Button>
+                        )}
+                        {canPerformAction(user?.role, 'User', 'delete') && (
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            onClick={() => {
+                              if (confirm(`Remove ${u.full_name || u.email}?`)) {
+                                deleteUserMutation.mutate(u.id);
+                              }
+                            }}
+                            title="Remove user"
+                          >
+                            <Trash2 className="w-4 h-4 text-red-500" />
+                          </Button>
+                        )}
                       </td>
                     </tr>
                   ))}
