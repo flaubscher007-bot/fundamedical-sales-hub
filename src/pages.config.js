@@ -77,6 +77,7 @@ import SocialMedia from './pages/SocialMedia';
 import AdvancedReporting from './pages/AdvancedReporting';
 import UserManagement from './pages/UserManagement';
 import FollowUpRules from './pages/FollowUpRules';
+import Help from './pages/Help';
 import __Layout from './Layout.jsx';
 
 
@@ -111,6 +112,7 @@ export const PAGES = {
     "AdvancedReporting": AdvancedReporting,
     "UserManagement": UserManagement,
     "FollowUpRules": FollowUpRules,
+    "Help": Help,
 }
 
 export const pagesConfig = {
