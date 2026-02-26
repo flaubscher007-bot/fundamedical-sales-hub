@@ -10,6 +10,7 @@ import BULPerformanceSummary from "@/components/dashboard/BULPerformanceSummary"
 import BULDashboard from "@/components/dashboard/BULDashboard";
 import AdminDashboard from "@/components/dashboard/AdminDashboard";
 import FinanceDashboard from "@/components/dashboard/FinanceDashboard";
+import DashboardCharts from "@/components/dashboard/DashboardCharts";
 import EnhancedOnboardingTour from "@/components/EnhancedOnboardingTour";
 import { format } from "date-fns";
 
@@ -65,6 +66,11 @@ export default function Dashboard() {
   const { data: contracts = [] } = useQuery({
     queryKey: ["contracts"],
     queryFn: () => base44.entities.Contract.list("-created_date", 200),
+  });
+
+  const { data: statements = [] } = useQuery({
+    queryKey: ["statements"],
+    queryFn: () => base44.entities.Statement.list("-statement_month", 500),
   });
 
   const activeClients = clients.filter((c) => c.status === "Active").length;
@@ -126,6 +132,8 @@ export default function Dashboard() {
             </div>
 
             <ContractKPIs contracts={contracts} proposals={proposals} />
+
+            <DashboardCharts clients={clients} statements={statements} contracts={contracts} proposals={proposals} />
 
             <div className="grid lg:grid-cols-2 gap-6">
               <UpcomingAppointments appointments={appointments} />
