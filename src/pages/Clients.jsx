@@ -48,6 +48,7 @@ export default function Clients() {
   const [bulFilter, setBulFilter] = useState("all");
   const [caFilter, setCaFilter] = useState("all");
   const [fcFilter, setFcFilter] = useState("all");
+  const [wizardOpen, setWizardOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingClient, setEditingClient] = useState(null);
   const [form, setForm] = useState(emptyClient);
