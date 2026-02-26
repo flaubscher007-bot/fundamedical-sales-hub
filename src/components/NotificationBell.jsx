@@ -40,9 +40,12 @@ export default function NotificationBell() {
 
   const notificationTypeColors = {
     task_assigned: "border-l-4 border-l-blue-500",
+    task_updated: "border-l-4 border-l-cyan-500",
+    message_received: "border-l-4 border-l-indigo-500",
     leave_approved: "border-l-4 border-l-green-500",
     leave_rejected: "border-l-4 border-l-red-500",
     performance_update: "border-l-4 border-l-purple-500",
+    goal_milestone: "border-l-4 border-l-orange-500",
   };
 
   return (
