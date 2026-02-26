@@ -36,9 +36,8 @@ const mainNavItems = [
   { name: "Appointments", icon: Calendar, page: "Appointments" },
   { name: "Meeting Minutes", icon: ClipboardList, page: "MeetingMinutes" },
   { name: "Follow-Ups", icon: Phone, page: "FollowUps" },
-  { name: "Contracts", icon: FileBadge, page: "Contracts" },
+  { name: "Contract Tools", icon: FileBadge, page: "Contracts" },
   { name: "Expenses", icon: Receipt, page: "ExpensesHub" },
-  { name: "Pricing Proposals", icon: DollarSign, page: "PricingProposals" },
 ];
 
 const marketingItems = [
