@@ -26,7 +26,7 @@ import { Button } from "@/components/ui/button";
 const mainNavItems = [
   { name: "Dashboard", icon: LayoutDashboard, page: "Dashboard" },
   { name: "Clients", icon: Users, page: "Clients" },
-  { name: "Firm Contacts", icon: Phone, page: "ClientContacts" },
+  { name: "Firm Contacts", icon: Users, page: "ClientContacts" },
   { name: "Experts", icon: Stethoscope, page: "Experts" },
   { name: "Appointment Tools", icon: Wrench, page: "AppointmentTools" },
   { name: "Contract Tools", icon: FileBadge, page: "Contracts" },
