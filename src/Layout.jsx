@@ -53,6 +53,9 @@ export default function Layout({ children, currentPageName }) {
   const [marketingOpen, setMarketingOpen] = useState(
     marketingItems.some(i => i.page === currentPageName)
   );
+  const [powerBIOpen, setPowerBIOpen] = useState(
+    powerBIItems.some(i => i.page === currentPageName)
+  );
   const [user, setUser] = useState(null);
 
   useEffect(() => {
