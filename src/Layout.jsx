@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
+import { canAccessPage } from "@/lib/rolePermissions";
 import {
   LayoutDashboard,
   Users,
@@ -67,7 +68,9 @@ export default function Layout({ children, currentPageName }) {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => {});
+    base44.auth.me().then(setUser).catch(() => {
+      base44.auth.redirectToLogin();
+    });
   }, []);
 
   // Auto-expand if current page is under marketing or powerBI
@@ -82,6 +85,10 @@ export default function Layout({ children, currentPageName }) {
 
   const renderNavItem = (item) => {
     const isActive = currentPageName === item.page;
+    const hasAccess = user ? canAccessPage(user.role || "team_member", item.page) : false;
+
+    if (!hasAccess) return null;
+
     return (
       <Link
         key={item.page}
@@ -102,6 +109,7 @@ export default function Layout({ children, currentPageName }) {
 
   const isMarketingActive = marketingItems.some(i => i.page === currentPageName);
   const isPowerBIActive = powerBIItems.some(i => i.page === currentPageName);
+  const userRole = user?.role || "team_member";
 
   return (
     <div className="min-h-screen bg-slate-50 flex pb-safe">
@@ -134,82 +142,86 @@ export default function Layout({ children, currentPageName }) {
           {mainNavItems.map(renderNavItem)}
 
           {/* Power BI Section */}
-          <div className="mt-2 mb-1">
-            <button
-              onClick={() => setPowerBIOpen(o => !o)}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 group ${
-                isPowerBIActive
-                  ? "bg-[#00bcd4]/20 text-[#00bcd4]"
-                  : "text-slate-300 hover:bg-white/5 hover:text-white"
-              }`}
-            >
-              <BarChart2 className={`w-4 h-4 shrink-0 ${isPowerBIActive ? "text-[#00bcd4]" : "text-slate-500 group-hover:text-slate-300"}`} />
-              <span>Power BI</span>
-              <ChevronDown className={`w-4 h-4 ml-auto transition-transform duration-200 ${powerBIOpen ? "rotate-180" : ""} ${isPowerBIActive ? "text-[#00bcd4]" : "text-slate-500"}`} />
-            </button>
+          {(canAccessPage(userRole, "BULDashboard") || canAccessPage(userRole, "FinanceDashboard")) && (
+            <div className="mt-2 mb-1">
+              <button
+                onClick={() => setPowerBIOpen(o => !o)}
+                className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 group ${
+                  isPowerBIActive
+                    ? "bg-[#00bcd4]/20 text-[#00bcd4]"
+                    : "text-slate-300 hover:bg-white/5 hover:text-white"
+                }`}
+              >
+                <BarChart2 className={`w-4 h-4 shrink-0 ${isPowerBIActive ? "text-[#00bcd4]" : "text-slate-500 group-hover:text-slate-300"}`} />
+                <span>Power BI</span>
+                <ChevronDown className={`w-4 h-4 ml-auto transition-transform duration-200 ${powerBIOpen ? "rotate-180" : ""} ${isPowerBIActive ? "text-[#00bcd4]" : "text-slate-500"}`} />
+              </button>
 
-            {powerBIOpen && (
-              <div className="ml-3 mt-1 pl-3 border-l border-white/10 space-y-0.5">
-                {powerBIItems.map(item => {
-                  const isActive = currentPageName === item.page;
-                  return (
-                    <Link
-                      key={item.page}
-                      to={createPageUrl(item.page)}
-                      onClick={() => setSidebarOpen(false)}
-                      className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 group ${
-                        isActive
-                          ? "bg-[#00bcd4]/20 text-[#00bcd4]"
-                          : "text-slate-400 hover:bg-white/5 hover:text-white"
-                      }`}
-                    >
-                      <item.icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? "text-[#00bcd4]" : "text-slate-500 group-hover:text-slate-300"}`} />
-                      <span>{item.name}</span>
-                    </Link>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+              {powerBIOpen && (
+                <div className="ml-3 mt-1 pl-3 border-l border-white/10 space-y-0.5">
+                  {powerBIItems.filter(item => canAccessPage(userRole, item.page)).map(item => {
+                    const isActive = currentPageName === item.page;
+                    return (
+                      <Link
+                        key={item.page}
+                        to={createPageUrl(item.page)}
+                        onClick={() => setSidebarOpen(false)}
+                        className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 group ${
+                          isActive
+                            ? "bg-[#00bcd4]/20 text-[#00bcd4]"
+                            : "text-slate-400 hover:bg-white/5 hover:text-white"
+                        }`}
+                      >
+                        <item.icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? "text-[#00bcd4]" : "text-slate-500 group-hover:text-slate-300"}`} />
+                        <span>{item.name}</span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Marketing Tools Section */}
-          <div className="mt-2 mb-1">
-            <button
-              onClick={() => setMarketingOpen(o => !o)}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 group ${
-                isMarketingActive
-                  ? "bg-[#00bcd4]/20 text-[#00bcd4]"
-                  : "text-slate-300 hover:bg-white/5 hover:text-white"
-              }`}
-            >
-              <Megaphone className={`w-4 h-4 shrink-0 ${isMarketingActive ? "text-[#00bcd4]" : "text-slate-500 group-hover:text-slate-300"}`} />
-              <span>Marketing Tools</span>
-              <ChevronDown className={`w-4 h-4 ml-auto transition-transform duration-200 ${marketingOpen ? "rotate-180" : ""} ${isMarketingActive ? "text-[#00bcd4]" : "text-slate-500"}`} />
-            </button>
+          {marketingItems.some(i => canAccessPage(userRole, i.page)) && (
+            <div className="mt-2 mb-1">
+              <button
+                onClick={() => setMarketingOpen(o => !o)}
+                className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 group ${
+                  isMarketingActive
+                    ? "bg-[#00bcd4]/20 text-[#00bcd4]"
+                    : "text-slate-300 hover:bg-white/5 hover:text-white"
+                }`}
+              >
+                <Megaphone className={`w-4 h-4 shrink-0 ${isMarketingActive ? "text-[#00bcd4]" : "text-slate-500 group-hover:text-slate-300"}`} />
+                <span>Marketing Tools</span>
+                <ChevronDown className={`w-4 h-4 ml-auto transition-transform duration-200 ${marketingOpen ? "rotate-180" : ""} ${isMarketingActive ? "text-[#00bcd4]" : "text-slate-500"}`} />
+              </button>
 
-            {marketingOpen && (
-              <div className="ml-3 mt-1 pl-3 border-l border-white/10 space-y-0.5">
-                {marketingItems.map(item => {
-                  const isActive = currentPageName === item.page;
-                  return (
-                    <Link
-                      key={item.page}
-                      to={createPageUrl(item.page)}
-                      onClick={() => setSidebarOpen(false)}
-                      className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 group ${
-                        isActive
-                          ? "bg-[#00bcd4]/20 text-[#00bcd4]"
-                          : "text-slate-400 hover:bg-white/5 hover:text-white"
-                      }`}
-                    >
-                      <item.icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? "text-[#00bcd4]" : "text-slate-500 group-hover:text-slate-300"}`} />
-                      <span>{item.name}</span>
-                    </Link>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+              {marketingOpen && (
+                <div className="ml-3 mt-1 pl-3 border-l border-white/10 space-y-0.5">
+                  {marketingItems.filter(item => canAccessPage(userRole, item.page)).map(item => {
+                    const isActive = currentPageName === item.page;
+                    return (
+                      <Link
+                        key={item.page}
+                        to={createPageUrl(item.page)}
+                        onClick={() => setSidebarOpen(false)}
+                        className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 group ${
+                          isActive
+                            ? "bg-[#00bcd4]/20 text-[#00bcd4]"
+                            : "text-slate-400 hover:bg-white/5 hover:text-white"
+                        }`}
+                      >
+                        <item.icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? "text-[#00bcd4]" : "text-slate-500 group-hover:text-slate-300"}`} />
+                        <span>{item.name}</span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
         </nav>
 
         {/* User */}
