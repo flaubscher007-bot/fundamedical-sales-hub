@@ -113,14 +113,14 @@ export default function Clients() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap gap-3 items-center justify-between">
-        <div className="flex flex-wrap gap-3 flex-1">
+      <div className="space-y-3">
+        <div className="flex flex-wrap gap-3 items-center">
           <div className="relative flex-1 min-w-[200px] max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <Input placeholder="Search firms, BUL, case admin..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-10" />
+            <Input placeholder="Search firms, BUL, case admin, finance..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-10" />
           </div>
           <Select value={activityFilter} onValueChange={setActivityFilter}>
-            <SelectTrigger className="w-36"><SelectValue placeholder="Activity" /></SelectTrigger>
+            <SelectTrigger className="w-36"><SelectValue placeholder="Status" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Status</SelectItem>
               <SelectItem value="ACTIVE">Active</SelectItem>
@@ -128,17 +128,40 @@ export default function Clients() {
               <SelectItem value="Prospect">Prospect</SelectItem>
             </SelectContent>
           </Select>
+          <div className="ml-auto">
+            <Button onClick={openNew} className="bg-[#00bcd4] hover:bg-[#0097a7]">
+              <Plus className="w-4 h-4 mr-2" /> Add Client
+            </Button>
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-3">
           <Select value={bulFilter} onValueChange={setBulFilter}>
-            <SelectTrigger className="w-48"><SelectValue placeholder="BUL" /></SelectTrigger>
+            <SelectTrigger className="w-52"><SelectValue placeholder="Business Unit Leader" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All BULs</SelectItem>
               {buls.map(b => <SelectItem key={b} value={b}>{b}</SelectItem>)}
             </SelectContent>
           </Select>
+          <Select value={caFilter} onValueChange={setCaFilter}>
+            <SelectTrigger className="w-52"><SelectValue placeholder="Case Administrator" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Case Admins</SelectItem>
+              {caseAdmins.map(ca => <SelectItem key={ca} value={ca}>{ca}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          <Select value={fcFilter} onValueChange={setFcFilter}>
+            <SelectTrigger className="w-52"><SelectValue placeholder="Finance Clerk" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Finance Clerks</SelectItem>
+              {financeClerks.map(fc => <SelectItem key={fc} value={fc}>{fc}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          {(bulFilter !== "all" || caFilter !== "all" || fcFilter !== "all" || activityFilter !== "all" || search) && (
+            <Button variant="ghost" size="sm" className="text-slate-500 text-xs" onClick={() => { setBulFilter("all"); setCaFilter("all"); setFcFilter("all"); setActivityFilter("all"); setSearch(""); }}>
+              Clear Filters
+            </Button>
+          )}
         </div>
-        <Button onClick={openNew} className="bg-[#00bcd4] hover:bg-[#0097a7]">
-          <Plus className="w-4 h-4 mr-2" /> Add Client
-        </Button>
       </div>
 
       <p className="text-xs text-slate-400">Showing {filtered.length} of {clients.length} firms</p>
