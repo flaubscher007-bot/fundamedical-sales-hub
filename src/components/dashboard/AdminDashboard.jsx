@@ -12,7 +12,7 @@ export default function AdminDashboard({ user }) {
     queryFn: () => base44.entities.Client.list(),
   });
 
-  const { data: users: allUsers = [] } = useQuery({
+  const { data: allUsers = [] } = useQuery({
     queryKey: ["users"],
     queryFn: () => base44.entities.User.list(),
   });

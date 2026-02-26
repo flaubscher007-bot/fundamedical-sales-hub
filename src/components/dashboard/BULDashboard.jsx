@@ -111,8 +111,8 @@ export default function BULDashboard({ user }) {
                 </div>
                 <div className="w-full bg-slate-200 h-3 rounded-full overflow-hidden">
                   <div 
-                    className="bg-gradient-to-r from-blue-400 to-blue-600 h-full transition-all duration-500"
-                    style={{ width: `Math.min(bookingsProgress, 100)}%` }}
+                      className="bg-gradient-to-r from-blue-400 to-blue-600 h-full transition-all duration-500"
+                      style={{ width: `${Math.min(bookingsProgress, 100)}%` }}
                   />
                 </div>
               </div>
