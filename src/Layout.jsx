@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import PWAInstallBanner from "@/components/PWAInstallBanner";
+import NotificationBell from "@/components/NotificationBell";
 
 const mainNavItems = [
   { name: "Dashboard", icon: LayoutDashboard, page: "Dashboard" },
@@ -254,6 +255,7 @@ export default function Layout({ children, currentPageName }) {
               {allNavItems.find((i) => i.page === currentPageName)?.name || currentPageName}
             </h2>
           </div>
+          <NotificationBell />
         </header>
         <main className="flex-1 p-4 lg:p-8 overflow-y-auto">
           {children}
