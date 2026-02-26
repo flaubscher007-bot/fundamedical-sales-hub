@@ -25,7 +25,14 @@ export default function BULManagement() {
   const [user, setUser] = useState(null);
   const qc = useQueryClient();
 
-  useEffect(() => { base44.auth.me().then(setUser).catch(() => {}); }, []);
+  useEffect(() => {
+    base44.auth.me().then(u => {
+      if (u && !['admin', 'Sales Manager'].includes(u.role)) {
+        window.location.href = '/';
+      }
+      setUser(u);
+    }).catch(() => window.location.href = '/');
+  }, []);
 
   const { data: targets = [] } = useQuery({
     queryKey: ["targets"],
