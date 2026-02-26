@@ -124,6 +124,45 @@ export default function Layout({ children, currentPageName }) {
         <nav className="flex-1 overflow-y-auto py-4 px-3">
           {mainNavItems.map(renderNavItem)}
 
+          {/* Power BI Section */}
+          <div className="mt-2 mb-1">
+            <button
+              onClick={() => setPowerBIOpen(o => !o)}
+              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 group ${
+                isPowerBIActive
+                  ? "bg-[#00bcd4]/20 text-[#00bcd4]"
+                  : "text-slate-300 hover:bg-white/5 hover:text-white"
+              }`}
+            >
+              <BarChart2 className={`w-4 h-4 shrink-0 ${isPowerBIActive ? "text-[#00bcd4]" : "text-slate-500 group-hover:text-slate-300"}`} />
+              <span>Power BI</span>
+              <ChevronDown className={`w-4 h-4 ml-auto transition-transform duration-200 ${powerBIOpen ? "rotate-180" : ""} ${isPowerBIActive ? "text-[#00bcd4]" : "text-slate-500"}`} />
+            </button>
+
+            {powerBIOpen && (
+              <div className="ml-3 mt-1 pl-3 border-l border-white/10 space-y-0.5">
+                {powerBIItems.map(item => {
+                  const isActive = currentPageName === item.page;
+                  return (
+                    <Link
+                      key={item.page}
+                      to={createPageUrl(item.page)}
+                      onClick={() => setSidebarOpen(false)}
+                      className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 group ${
+                        isActive
+                          ? "bg-[#00bcd4]/20 text-[#00bcd4]"
+                          : "text-slate-400 hover:bg-white/5 hover:text-white"
+                      }`}
+                    >
+                      <item.icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? "text-[#00bcd4]" : "text-slate-500 group-hover:text-slate-300"}`} />
+                      <span>{item.name}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
           {/* Marketing Tools Section */}
           <div className="mt-2 mb-1">
             <button
