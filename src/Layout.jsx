@@ -19,7 +19,8 @@ import {
   X,
   LogOut,
   ChevronRight,
-  BarChart2
+  BarChart2,
+  DollarSign
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import PWAInstallBanner from "@/components/PWAInstallBanner";
