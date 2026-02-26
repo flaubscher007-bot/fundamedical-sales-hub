@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Pencil, Trash2, DollarSign, Target as TargetIcon, Package, Calendar, CheckCircle, XCircle, Clock, Users, Mail, Phone, Download, Activity, Upload, Send, UserCheck, UserX } from "lucide-react";
 import ActivityLogPanel from "@/components/BULManagement/ActivityLogPanel";
 import PerformanceReportsTab from "@/components/BULManagement/PerformanceReportsTab";
+import GoalsTab from "@/components/goals/GoalsTab";
 
 // Empty states
 const emptyTarget = { bul_name: "", bul_email: "", month: "", revenue_target: "", bookings_target: "", collections_target: "", notes: "" };
@@ -299,9 +300,12 @@ export default function BULManagement() {
       <h2 className="text-2xl font-bold text-slate-800">BUL Management</h2>
 
       <Tabs defaultValue="targets" className="w-full">
-         <TabsList className="grid w-full grid-cols-5">
+         <TabsList className="grid w-full grid-cols-6">
            <TabsTrigger value="targets" className="flex items-center gap-2">
              <TargetIcon className="w-4 h-4" /> Targets
+           </TabsTrigger>
+           <TabsTrigger value="goals" className="flex items-center gap-2">
+             <TargetIcon className="w-4 h-4" /> Goals
            </TabsTrigger>
            <TabsTrigger value="leave" className="flex items-center gap-2">
              <Calendar className="w-4 h-4" /> Leave Approval
@@ -433,6 +437,11 @@ export default function BULManagement() {
               ))
             )}
           </div>
+        </TabsContent>
+
+        {/* GOALS TAB */}
+        <TabsContent value="goals" className="space-y-4">
+          <GoalsTab />
         </TabsContent>
 
         {/* LEAVE APPROVAL TAB */}
