@@ -9,11 +9,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Pencil, Trash2, DollarSign, Target as TargetIcon, Package, Calendar, CheckCircle, XCircle, Clock } from "lucide-react";
+import { Plus, Pencil, Trash2, DollarSign, Target as TargetIcon, Package, Calendar, CheckCircle, XCircle, Clock, Users, Mail, Phone } from "lucide-react";
 
 // Empty states
 const emptyTarget = { bul_name: "", bul_email: "", month: "", revenue_target: "", bookings_target: "", collections_target: "", notes: "" };
 const emptyLeave = { bul_name: "", bul_email: "", start_date: "", end_date: "", leave_type: "Annual", reason: "", status: "Pending", notes: "" };
+const emptyTeamAssignment = { person_name: "", person_email: "", role: "Business Unit Leader", phone: "", team: "" };
+
+const ROLES = ["Business Unit Leader", "Finance Clerk", "Case Administrator", "Distribution"];
+const TEAMS = ["Kopano", "Kutlwano", "Sisonke", "Nasira"];
 
 export default function BULManagement() {
   const [targetDialogOpen, setTargetDialogOpen] = useState(false);
@@ -22,6 +26,9 @@ export default function BULManagement() {
   const [editingLeave, setEditingLeave] = useState(null);
   const [targetForm, setTargetForm] = useState(emptyTarget);
   const [leaveForm, setLeaveForm] = useState(emptyLeave);
+  const [teamDialogOpen, setTeamDialogOpen] = useState(false);
+  const [editingTeamAssignment, setEditingTeamAssignment] = useState(null);
+  const [teamForm, setTeamForm] = useState(emptyTeamAssignment);
   const [user, setUser] = useState(null);
   const qc = useQueryClient();
 
@@ -42,6 +49,11 @@ export default function BULManagement() {
   const { data: leaves = [] } = useQuery({
     queryKey: ["leaves"],
     queryFn: () => base44.entities.Leave.list("-start_date", 100),
+  });
+
+  const { data: teamAssignments = [] } = useQuery({
+    queryKey: ["teamAssignments"],
+    queryFn: () => base44.entities.TeamAssignment.list(),
   });
 
   const { data: users = [] } = useQuery({
@@ -72,6 +84,16 @@ export default function BULManagement() {
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["leaves"] }); },
   });
 
+  const saveTeamAssignmentMutation = useMutation({
+    mutationFn: (data) => editingTeamAssignment ? base44.entities.TeamAssignment.update(editingTeamAssignment.id, data) : base44.entities.TeamAssignment.create(data),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["teamAssignments"] }); setTeamDialogOpen(false); },
+  });
+
+  const deleteTeamAssignmentMutation = useMutation({
+    mutationFn: (id) => base44.entities.TeamAssignment.delete(id),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["teamAssignments"] }); },
+  });
+
   const openNewTarget = () => {
     setEditingTarget(null);
     setTargetForm(emptyTarget);
@@ -94,6 +116,18 @@ export default function BULManagement() {
     setEditingLeave(leave);
     setLeaveForm(leave);
     setLeaveDialogOpen(true);
+  };
+
+  const openNewTeamAssignment = () => {
+    setEditingTeamAssignment(null);
+    setTeamForm(emptyTeamAssignment);
+    setTeamDialogOpen(true);
+  };
+
+  const openEditTeamAssignment = (assignment) => {
+    setEditingTeamAssignment(assignment);
+    setTeamForm(assignment);
+    setTeamDialogOpen(true);
   };
 
   const formatCurrency = (value) => {
@@ -127,12 +161,15 @@ export default function BULManagement() {
       <h2 className="text-2xl font-bold text-slate-800">BUL Management</h2>
 
       <Tabs defaultValue="targets" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="targets" className="flex items-center gap-2">
             <TargetIcon className="w-4 h-4" /> Targets
           </TabsTrigger>
           <TabsTrigger value="leave" className="flex items-center gap-2">
             <Calendar className="w-4 h-4" /> Leave Approval
+          </TabsTrigger>
+          <TabsTrigger value="organization" className="flex items-center gap-2">
+            <Users className="w-4 h-4" /> Organization
           </TabsTrigger>
         </TabsList>
 
@@ -270,6 +307,77 @@ export default function BULManagement() {
             )}
           </div>
         </TabsContent>
+
+        {/* ORGANIZATION TAB */}
+        <TabsContent value="organization" className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-semibold text-slate-800">Team Organization</h3>
+            <Button onClick={openNewTeamAssignment} className="bg-[#00bcd4] hover:bg-[#0097a7]">
+              <Plus className="w-4 h-4 mr-2" /> Add Team Member
+            </Button>
+          </div>
+
+          <div className="grid gap-4">
+            {TEAMS.map((teamName) => {
+              const teamMembers = teamAssignments.filter(a => a.team === teamName);
+              return (
+                <Card key={teamName} className="overflow-hidden">
+                  <CardHeader className="bg-gradient-to-r from-[#0a1628] to-[#0f2240] text-white">
+                    <CardTitle className="text-lg">{teamName}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    {teamMembers.length === 0 ? (
+                      <div className="p-6 text-center text-slate-500">No team members assigned</div>
+                    ) : (
+                      <div className="divide-y">
+                        {ROLES.map((role) => {
+                          const roleMembers = teamMembers.filter(m => m.role === role);
+                          if (roleMembers.length === 0) return null;
+                          return (
+                            <div key={role} className="p-4">
+                              <h4 className="text-sm font-semibold text-slate-700 mb-3">{role}</h4>
+                              <div className="space-y-2">
+                                {roleMembers.map((member) => (
+                                  <div key={member.id} className="flex items-start justify-between bg-slate-50 p-3 rounded-lg group">
+                                    <div className="flex-1 min-w-0">
+                                      <p className="font-semibold text-slate-800">{member.person_name}</p>
+                                      <div className="flex flex-col gap-1 mt-2 text-sm text-slate-600">
+                                        {member.person_email && (
+                                          <div className="flex items-center gap-2">
+                                            <Mail className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+                                            <a href={`mailto:${member.person_email}`} className="text-[#00bcd4] hover:underline">{member.person_email}</a>
+                                          </div>
+                                        )}
+                                        {member.phone && (
+                                          <div className="flex items-center gap-2">
+                                            <Phone className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+                                            <a href={`tel:${member.phone}`} className="hover:text-slate-800">{member.phone}</a>
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+                                    <div className="flex gap-1 ml-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                                      <Button variant="ghost" size="icon" onClick={() => openEditTeamAssignment(member)}>
+                                        <Pencil className="w-4 h-4 text-slate-600" />
+                                      </Button>
+                                      <Button variant="ghost" size="icon" onClick={() => deleteTeamAssignmentMutation.mutate(member.id)}>
+                                        <Trash2 className="w-4 h-4 text-red-500" />
+                                      </Button>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </TabsContent>
       </Tabs>
 
       {/* TARGET DIALOG */}
@@ -394,6 +502,55 @@ export default function BULManagement() {
             <Button variant="outline" onClick={() => setLeaveDialogOpen(false)}>Cancel</Button>
             <Button onClick={() => saveLeaveMutation.mutate(leaveForm)} className="bg-[#00bcd4] hover:bg-[#0097a7]" disabled={!leaveForm.bul_name || !leaveForm.start_date || !leaveForm.end_date}>
               {editingLeave ? "Update" : "Create"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* TEAM ASSIGNMENT DIALOG */}
+      <Dialog open={teamDialogOpen} onOpenChange={setTeamDialogOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader><DialogTitle>{editingTeamAssignment ? "Edit Team Member" : "Add Team Member"}</DialogTitle></DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <Label>Name *</Label>
+              <Input value={teamForm.person_name || ""} onChange={(e) => setTeamForm({ ...teamForm, person_name: e.target.value })} placeholder="Full name" />
+            </div>
+            <div>
+              <Label>Email</Label>
+              <Input type="email" value={teamForm.person_email || ""} onChange={(e) => setTeamForm({ ...teamForm, person_email: e.target.value })} placeholder="Email address" />
+            </div>
+            <div>
+              <Label>Phone</Label>
+              <Input value={teamForm.phone || ""} onChange={(e) => setTeamForm({ ...teamForm, phone: e.target.value })} placeholder="Phone number" />
+            </div>
+            <div>
+              <Label>Role *</Label>
+              <Select value={teamForm.role || "Business Unit Leader"} onValueChange={(v) => setTeamForm({ ...teamForm, role: v })}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {ROLES.map(role => (
+                    <SelectItem key={role} value={role}>{role}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Team *</Label>
+              <Select value={teamForm.team || ""} onValueChange={(v) => setTeamForm({ ...teamForm, team: v })}>
+                <SelectTrigger><SelectValue placeholder="Select team" /></SelectTrigger>
+                <SelectContent>
+                  {TEAMS.map(team => (
+                    <SelectItem key={team} value={team}>{team}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setTeamDialogOpen(false)}>Cancel</Button>
+            <Button onClick={() => saveTeamAssignmentMutation.mutate(teamForm)} className="bg-[#00bcd4] hover:bg-[#0097a7]" disabled={!teamForm.person_name || !teamForm.team}>
+              {editingTeamAssignment ? "Update" : "Add"}
             </Button>
           </DialogFooter>
         </DialogContent>
