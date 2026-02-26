@@ -22,6 +22,7 @@ export default function EventForm({ event, onSubmit, onCancel, users = [], curre
     reminder_minutes: 15,
     is_recurring: false,
     recurrence_pattern: "weekly",
+    send_invites: true,
   });
 
   const [attendeeEmail, setAttendeeEmail] = useState("");
@@ -229,6 +230,20 @@ export default function EventForm({ event, onSubmit, onCancel, users = [], curre
               </Select>
             </div>
           </div>
+
+          {formData.attendees.length > 0 && (
+            <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+              <input
+                type="checkbox"
+                checked={formData.send_invites}
+                onChange={(e) => setFormData({...formData, send_invites: e.target.checked})}
+                id="sendInvites"
+              />
+              <label htmlFor="sendInvites" className="text-sm text-blue-900 cursor-pointer">
+                Send email invitations to attendees
+              </label>
+            </div>
+          )}
 
           <div className="flex gap-3 justify-end pt-4 border-t">
             <Button variant="outline" onClick={onCancel}>Cancel</Button>
