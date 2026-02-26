@@ -17,7 +17,10 @@ export default function ProfileTab({ currentUser }) {
   const [message, setMessage] = useState(null);
 
   const updateMutation = useMutation({
-    mutationFn: (data) => base44.auth.updateMe({ full_name: data.full_name }),
+    mutationFn: (data) => base44.auth.updateMe({ 
+      full_name: data.full_name,
+      profile_picture: data.profile_picture
+    }),
     onSuccess: () => {
       setMessage({ type: 'success', text: 'Profile updated successfully!' });
       setEditMode(false);
@@ -27,6 +30,23 @@ export default function ProfileTab({ currentUser }) {
       setMessage({ type: 'error', text: 'Failed to update profile: ' + error.message });
     }
   });
+
+  const handleProfilePictureUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      setProfilePicture(file_url);
+      setFormData(prev => ({ ...prev, profile_picture: file_url }));
+      setMessage({ type: 'success', text: 'Profile picture updated!' });
+    } catch (error) {
+      setMessage({ type: 'error', text: 'Failed to upload picture: ' + error.message });
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleSave = () => {
     if (!formData.full_name.trim()) {
