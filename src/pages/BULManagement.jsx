@@ -11,6 +11,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Pencil, Trash2, DollarSign, Target as TargetIcon, Package, Calendar, CheckCircle, XCircle, Clock, Users, Mail, Phone, Download, Activity, Upload, Send, UserCheck, UserX } from "lucide-react";
 import ActivityLogPanel from "@/components/BULManagement/ActivityLogPanel";
+import PerformanceReportsTab from "@/components/BULManagement/PerformanceReportsTab";
+import { useState } from "react";
 
 // Empty states
 const emptyTarget = { bul_name: "", bul_email: "", month: "", revenue_target: "", bookings_target: "", collections_target: "", notes: "" };
@@ -298,7 +300,7 @@ export default function BULManagement() {
       <h2 className="text-2xl font-bold text-slate-800">BUL Management</h2>
 
       <Tabs defaultValue="targets" className="w-full">
-         <TabsList className="grid w-full grid-cols-4">
+         <TabsList className="grid w-full grid-cols-5">
            <TabsTrigger value="targets" className="flex items-center gap-2">
              <TargetIcon className="w-4 h-4" /> Targets
            </TabsTrigger>
@@ -309,9 +311,14 @@ export default function BULManagement() {
              <Users className="w-4 h-4" /> Organization
            </TabsTrigger>
            {user && ['admin', 'Sales Manager'].includes(user.role) && (
-             <TabsTrigger value="activity" className="flex items-center gap-2">
-               <Activity className="w-4 h-4" /> Activity Log
-             </TabsTrigger>
+             <>
+               <TabsTrigger value="reports" className="flex items-center gap-2">
+                 <TrendingUp className="w-4 h-4" /> Performance Reports
+               </TabsTrigger>
+               <TabsTrigger value="activity" className="flex items-center gap-2">
+                 <Activity className="w-4 h-4" /> Activity Log
+               </TabsTrigger>
+             </>
            )}
          </TabsList>
 
@@ -617,6 +624,16 @@ export default function BULManagement() {
             })}
           </div>
         </TabsContent>
+
+        {/* PERFORMANCE REPORTS TAB */}
+        {user && ['admin', 'Sales Manager'].includes(user.role) && (
+          <TabsContent value="reports" className="space-y-4">
+            <div>
+              <h3 className="text-lg font-semibold text-slate-800 mb-4">Performance Reports</h3>
+              <PerformanceReportsTab />
+            </div>
+          </TabsContent>
+        )}
 
         {/* ACTIVITY LOG TAB */}
         {user && ['admin', 'Sales Manager'].includes(user.role) && (
