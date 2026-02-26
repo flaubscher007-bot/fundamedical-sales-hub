@@ -46,10 +46,17 @@ export default function UserManagement() {
   });
 
   const updateUserMutation = useMutation({
-    mutationFn: (data) => base44.auth.updateMe({ full_name: data.full_name, role: data.role }),
+    mutationFn: (data) => {
+      if (!editingUser?.id) throw new Error('No user selected');
+      return base44.asServiceRole.entities.User.update(editingUser.id, { 
+        full_name: data.full_name, 
+        role: data.role 
+      });
+    },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["users"] });
       setEditDialogOpen(false);
+      setEditingUser(null);
     },
   });
 
