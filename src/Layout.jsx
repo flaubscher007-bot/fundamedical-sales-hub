@@ -39,6 +39,7 @@ const mainNavItems = [
 const powerBIItems = [
   { name: "BUL Dashboard", icon: BarChart2, page: "BULDashboard" },
   { name: "Finance Dashboard", icon: BarChart2, page: "FinanceDashboard" },
+  { name: "Finance Reporting", icon: BarChart2, page: "FinanceReporting" },
 ];
 
 const marketingItems = [
