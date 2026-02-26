@@ -4,6 +4,7 @@ export const ROLE_PERMISSIONS = {
     label: "Admin",
     canAccess: [
       "Dashboard",
+      "Analytics",
       "Clients",
       "ClientContacts",
       "Experts",
@@ -40,6 +41,7 @@ export const ROLE_PERMISSIONS = {
     label: "Sales Manager",
     canAccess: [
       "Dashboard",
+      "Analytics",
       "Clients",
       "ClientContacts",
       "Experts",
@@ -75,6 +77,7 @@ export const ROLE_PERMISSIONS = {
     label: "Senior Management",
     canAccess: [
       "Dashboard",
+      "Analytics",
       "Clients",
       "ClientContacts",
       "Experts",
@@ -110,6 +113,7 @@ export const ROLE_PERMISSIONS = {
     label: "BUL Manager",
     canAccess: [
       "Dashboard",
+      "Analytics",
       "Clients",
       "ClientContacts",
       "Experts",
@@ -174,6 +178,7 @@ export const ROLE_PERMISSIONS = {
     label: "Business Unit Leader",
     canAccess: [
       "Dashboard",
+      "Analytics",
       "Clients",
       "ClientContacts",
       "Experts",
