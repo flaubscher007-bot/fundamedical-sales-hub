@@ -55,6 +55,10 @@ import FollowUps from './pages/FollowUps';
 import Marketing from './pages/Marketing';
 import Mileage from './pages/Mileage';
 import Expenses from './pages/Expenses';
+import IntakeForms from './pages/IntakeForms';
+import PricingProposals from './pages/PricingProposals';
+import EntertainmentProposals from './pages/EntertainmentProposals';
+import BusinessCard from './pages/BusinessCard';
 import __Layout from './Layout.jsx';
 
 
@@ -67,6 +71,10 @@ export const PAGES = {
     "Marketing": Marketing,
     "Mileage": Mileage,
     "Expenses": Expenses,
+    "IntakeForms": IntakeForms,
+    "PricingProposals": PricingProposals,
+    "EntertainmentProposals": EntertainmentProposals,
+    "BusinessCard": BusinessCard,
 }
 
 export const pagesConfig = {
