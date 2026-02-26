@@ -35,12 +35,12 @@ const accountStatusLabel = (status) => {
 };
 
 const emptyClient = {
-  firm_name: "", account_status: "", activity_status: "ACTIVE",
-  case_administrator: "", finance_clerk: "", business_unit_leader: "",
-  contact_person: "", contact_email: "", finance_email: "", legal_clerk_emails: "",
-  contact_phone: "", address: "", city: "", province: "", category: "",
-  special_requirements: "", notes: "",
-};
+   firm_name: "", account_status: "", activity_status: "ACTIVE",
+   assigned_bul: "", case_administrator: "", finance_clerk: "", business_unit_leader: "",
+   contact_person: "", contact_email: "", finance_email: "", legal_clerk_emails: "",
+   contact_phone: "", address: "", city: "", province: "", category: "",
+   special_requirements: "", notes: "",
+ };
 
 export default function Clients() {
   const [search, setSearch] = useState("");
@@ -55,9 +55,14 @@ export default function Clients() {
   const qc = useQueryClient();
 
   const { data: clients = [], isLoading } = useQuery({
-    queryKey: ["clients"],
-    queryFn: () => base44.entities.Client.list("firm_name", 500),
-  });
+     queryKey: ["clients"],
+     queryFn: () => base44.entities.Client.list("firm_name", 500),
+   });
+
+   const { data: users = [] } = useQuery({
+     queryKey: ["users"],
+     queryFn: () => base44.entities.User.list(),
+   });
 
   const saveMutation = useMutation({
     mutationFn: (data) => editingClient
@@ -191,9 +196,9 @@ export default function Clients() {
                     )}
                   </div>
                   <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2">
-                    {c.business_unit_leader && (
+                    {c.assigned_bul && (
                       <span className="text-xs text-slate-500 flex items-center gap-1">
-                        <Briefcase className="w-3 h-3 text-[#00bcd4]" /> BUL: <strong>{c.business_unit_leader}</strong>
+                        <Briefcase className="w-3 h-3 text-[#00bcd4]" /> Assigned: <strong>{c.assigned_bul}</strong>
                       </span>
                     )}
                     {c.case_administrator && (
@@ -288,7 +293,17 @@ export default function Clients() {
             <div>
               <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">FundaMedical Team</p>
               <div className="grid grid-cols-3 gap-3">
-                <div><Label>Business Unit Leader</Label><Input value={form.business_unit_leader} onChange={(e) => setForm({ ...form, business_unit_leader: e.target.value })} /></div>
+                <div>
+                  <Label>Assigned Business Unit Leader</Label>
+                  <Select value={form.assigned_bul || ""} onValueChange={(v) => setForm({ ...form, assigned_bul: v })}>
+                    <SelectTrigger><SelectValue placeholder="Select BUL" /></SelectTrigger>
+                    <SelectContent>
+                      {users.map(user => (
+                        <SelectItem key={user.id} value={user.full_name || user.email}>{user.full_name || user.email}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
                 <div><Label>Case Administrator</Label><Input value={form.case_administrator} onChange={(e) => setForm({ ...form, case_administrator: e.target.value })} /></div>
                 <div><Label>Finance Clerk</Label><Input value={form.finance_clerk} onChange={(e) => setForm({ ...form, finance_clerk: e.target.value })} /></div>
               </div>
