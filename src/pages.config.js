@@ -79,6 +79,7 @@ import PricingProposals from './pages/PricingProposals';
 import SocialMedia from './pages/SocialMedia';
 import UserManagement from './pages/UserManagement';
 import Clients from './pages/Clients';
+import Goals from './pages/Goals';
 import __Layout from './Layout.jsx';
 
 
@@ -115,6 +116,7 @@ export const PAGES = {
     "SocialMedia": SocialMedia,
     "UserManagement": UserManagement,
     "Clients": Clients,
+    "Goals": Goals,
 }
 
 export const pagesConfig = {
