@@ -94,7 +94,7 @@ export default function ClientContacts() {
       c.legal_clerk_emails?.toLowerCase().includes(q) ||
       c.contact_phone?.toLowerCase().includes(q);
     const matchActivity = activityFilter === "all" || c.activity_status === activityFilter;
-    const matchBul = bulFilter === "all" || c.business_unit_leader === bulFilter;
+    const matchBul = bulFilter === "all" || (c.business_unit_leader?.toUpperCase() === bulFilter.toUpperCase());
     const matchFirm = !firmFilter || c.firm_name === firmFilter;
     return matchSearch && matchActivity && matchBul && matchFirm;
   });

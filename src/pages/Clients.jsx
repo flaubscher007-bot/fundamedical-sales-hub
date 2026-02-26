@@ -304,12 +304,12 @@ export default function Clients() {
                   <Select value={form.assigned_bul || ""} onValueChange={(v) => setForm({ ...form, assigned_bul: v })}>
                     <SelectTrigger><SelectValue placeholder="Select BUL" /></SelectTrigger>
                     <SelectContent>
-                      {users.map(user => (
+                      {[...new Map(users.map(user => [(user.full_name || user.email).toUpperCase(), user])).values()].map(user => (
                         <SelectItem key={user.id} value={user.full_name || user.email}>{user.full_name || user.email}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
-                </div>
+                  </div>
                 <div><Label>Case Administrator</Label><Input value={form.case_administrator} onChange={(e) => setForm({ ...form, case_administrator: e.target.value })} /></div>
                 <div><Label>Finance Clerk</Label><Input value={form.finance_clerk} onChange={(e) => setForm({ ...form, finance_clerk: e.target.value })} /></div>
               </div>

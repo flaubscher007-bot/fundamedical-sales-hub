@@ -591,7 +591,7 @@ export default function BULManagement() {
             <div>
               <Label>Business Unit Leader *</Label>
               <Select value={targetForm.bul_name || ""} onValueChange={(value) => {
-                const user = users.find(u => u.full_name === value);
+                const user = users.find(u => (u.full_name || u.email).toUpperCase() === value.toUpperCase());
                 setTargetForm({ ...targetForm, bul_name: value, bul_email: user?.email || "" });
               }}>
                 <SelectTrigger><SelectValue placeholder="Select BUL" /></SelectTrigger>
@@ -643,7 +643,7 @@ export default function BULManagement() {
             <div>
               <Label>Business Unit Leader *</Label>
               <Select value={leaveForm.bul_name || ""} onValueChange={(value) => {
-                const user = users.find(u => u.full_name === value);
+                const user = users.find(u => (u.full_name || u.email).toUpperCase() === value.toUpperCase());
                 setLeaveForm({ ...leaveForm, bul_name: value, bul_email: user?.email || "" });
               }}>
                 <SelectTrigger><SelectValue placeholder="Select BUL" /></SelectTrigger>
