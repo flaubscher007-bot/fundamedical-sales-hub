@@ -81,6 +81,9 @@ export default function Dashboard() {
         <StatsCard title="Expenses" value={`R${totalExpenses.toLocaleString()}`} icon={Receipt} color="red" />
       </div>
 
+      {/* Contract KPIs */}
+      <ContractKPIs contracts={contracts} proposals={proposals} />
+
       {/* Main content */}
       <div className="grid lg:grid-cols-2 gap-6">
         <UpcomingAppointments appointments={appointments} />
