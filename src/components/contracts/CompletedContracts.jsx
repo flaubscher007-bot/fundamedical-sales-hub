@@ -229,12 +229,12 @@ export default function CompletedContracts() {
 
       <div className="space-y-3">
         {filtered.map(c => (
-          <Card key={c.id} className="border-0 shadow-sm hover:shadow-md transition-shadow cursor-pointer" onClick={() => openContract(c)}>
+          <Card key={c.id} className="border-0 shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="p-4 flex items-center gap-4">
-              <div className="p-2.5 rounded-xl bg-[#00bcd4]/10 shrink-0">
+              <div className="p-2.5 rounded-xl bg-[#00bcd4]/10 shrink-0 cursor-pointer" onClick={() => openContract(c)}>
                 {statusIcons[c.status] || <FileText className="w-5 h-5 text-[#00bcd4]" />}
               </div>
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0 cursor-pointer" onClick={() => openContract(c)}>
                 <div className="flex items-center gap-2 flex-wrap">
                   <p className="font-semibold text-slate-800">{c.title}</p>
                   <Badge className={`text-[10px] ${statusColors[c.status]}`}>{c.status}</Badge>
@@ -246,7 +246,18 @@ export default function CompletedContracts() {
                   {c.signed_by && <span className="text-xs text-emerald-600">Signed by: {c.signed_by}</span>}
                 </div>
               </div>
-              <div className="text-right shrink-0">
+              <div className="flex items-center gap-1 shrink-0">
+                <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-[#00bcd4]" title="Print to PDF" onClick={() => printToPDF(c)}>
+                  <Printer className="w-4 h-4" />
+                </Button>
+                <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-green-600" title="Send via WhatsApp" onClick={() => sendWhatsApp(c)}>
+                  <MessageCircle className="w-4 h-4" />
+                </Button>
+                <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-blue-600" title="Send via Email" onClick={() => { setViewing(c); setEmailTo(""); setEmailDialog(true); }}>
+                  <Mail className="w-4 h-4" />
+                </Button>
+              </div>
+              <div className="text-right shrink-0 hidden sm:block cursor-pointer" onClick={() => openContract(c)}>
                 {c.sent_date && <p className="text-xs text-slate-400">Sent: {format(new Date(c.sent_date), "MMM d, yyyy")}</p>}
                 {c.signed_date && <p className="text-xs text-emerald-600">Signed: {format(new Date(c.signed_date), "MMM d, yyyy")}</p>}
                 {c.expiry_date && <p className="text-xs text-amber-600">Expires: {format(new Date(c.expiry_date), "MMM d, yyyy")}</p>}
