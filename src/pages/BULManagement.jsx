@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Pencil, Trash2, DollarSign, Target as TargetIcon, Package, Calendar, CheckCircle, XCircle, Clock, Users, Mail, Phone } from "lucide-react";
+import { Plus, Pencil, Trash2, DollarSign, Target as TargetIcon, Package, Calendar, CheckCircle, XCircle, Clock, Users, Mail, Phone, Download } from "lucide-react";
 
 // Empty states
 const emptyTarget = { bul_name: "", bul_email: "", month: "", revenue_target: "", bookings_target: "", collections_target: "", notes: "" };
@@ -149,6 +149,23 @@ export default function BULManagement() {
     } finally {
       setImportLoading(false);
       e.target.value = '';
+    }
+  };
+
+  const handleDownloadTemplate = async () => {
+    try {
+      const response = await base44.functions.invoke('generateBULTemplate', {});
+      const blob = new Blob([response.data], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'BUL_Team_Template.csv';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      a.remove();
+    } catch (error) {
+      alert('Download failed: ' + error.message);
     }
   };
 
@@ -335,6 +352,9 @@ export default function BULManagement() {
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-semibold text-slate-800">Team Organization</h3>
             <div className="flex gap-2">
+              <Button onClick={handleDownloadTemplate} variant="outline" className="border-slate-300">
+                <Download className="w-4 h-4 mr-2" /> Download Template
+              </Button>
               <label>
                 <input type="file" accept=".xlsx,.xls,.csv" onChange={handleImportFile} disabled={importLoading} style={{ display: 'none' }} />
                 <Button asChild disabled={importLoading} className="bg-slate-600 hover:bg-slate-700">
