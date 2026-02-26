@@ -173,13 +173,112 @@ export default function ClientContacts() {
                 </div>
               )}
 
-              {/* Emails & Phone */}
-              {hasContacts(c) ? (
-                <div className="space-y-3 border-t pt-3">
-                  <EmailList label="Director / Attorney" emails={c.contact_email} icon={Mail} color="text-[#00bcd4]" />
-                  <EmailList label="Finance" emails={c.finance_email} icon={Mail} color="text-emerald-500" />
-                  <EmailList label="Legal Clerks" emails={c.legal_clerk_emails} icon={Mail} color="text-violet-500" />
-                  <PhoneList phones={c.contact_phone} />
+              {/* Structured Contacts */}
+              {(c.director || c.attorney || c.legal_secretary || c.finance_person) ? (
+                <div className="space-y-4 border-t pt-3">
+                  {/* Director */}
+                  {c.director && (
+                    <div className="space-y-2">
+                      <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-600 flex items-center gap-1">
+                        <User className="w-3 h-3 text-slate-500" /> Director
+                      </p>
+                      {c.director.name && <p className="text-xs text-slate-700 font-medium">{c.director.name}</p>}
+                      {c.director.email && (
+                        <div className="flex items-center gap-2 group">
+                          <a href={`mailto:${c.director.email}`} className="text-xs text-[#00bcd4] hover:underline truncate">{c.director.email}</a>
+                          <button onClick={(e) => { e.stopPropagation(); copyToClipboard(c.director.email); }} className="opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Copy className="w-3 h-3 text-slate-400 hover:text-slate-600" />
+                          </button>
+                        </div>
+                      )}
+                      {c.director.phone && (
+                        <div className="flex items-center gap-2 group">
+                          <a href={`tel:${c.director.phone}`} className="text-xs text-slate-600 hover:text-[#00bcd4]">{c.director.phone}</a>
+                          <button onClick={(e) => { e.stopPropagation(); copyToClipboard(c.director.phone); }} className="opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Copy className="w-3 h-3 text-slate-400 hover:text-slate-600" />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Attorney */}
+                  {c.attorney && (
+                    <div className="space-y-2">
+                      <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-600 flex items-center gap-1">
+                        <Briefcase className="w-3 h-3 text-slate-500" /> Attorney
+                      </p>
+                      {c.attorney.name && <p className="text-xs text-slate-700 font-medium">{c.attorney.name}</p>}
+                      {c.attorney.email && (
+                        <div className="flex items-center gap-2 group">
+                          <a href={`mailto:${c.attorney.email}`} className="text-xs text-[#00bcd4] hover:underline truncate">{c.attorney.email}</a>
+                          <button onClick={(e) => { e.stopPropagation(); copyToClipboard(c.attorney.email); }} className="opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Copy className="w-3 h-3 text-slate-400 hover:text-slate-600" />
+                          </button>
+                        </div>
+                      )}
+                      {c.attorney.phone && (
+                        <div className="flex items-center gap-2 group">
+                          <a href={`tel:${c.attorney.phone}`} className="text-xs text-slate-600 hover:text-[#00bcd4]">{c.attorney.phone}</a>
+                          <button onClick={(e) => { e.stopPropagation(); copyToClipboard(c.attorney.phone); }} className="opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Copy className="w-3 h-3 text-slate-400 hover:text-slate-600" />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Legal Secretary */}
+                  {c.legal_secretary && (
+                    <div className="space-y-2">
+                      <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-600 flex items-center gap-1">
+                        <Mail className="w-3 h-3 text-slate-500" /> Legal Secretary
+                      </p>
+                      {c.legal_secretary.name && <p className="text-xs text-slate-700 font-medium">{c.legal_secretary.name}</p>}
+                      {c.legal_secretary.email && (
+                        <div className="flex items-center gap-2 group">
+                          <a href={`mailto:${c.legal_secretary.email}`} className="text-xs text-[#00bcd4] hover:underline truncate">{c.legal_secretary.email}</a>
+                          <button onClick={(e) => { e.stopPropagation(); copyToClipboard(c.legal_secretary.email); }} className="opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Copy className="w-3 h-3 text-slate-400 hover:text-slate-600" />
+                          </button>
+                        </div>
+                      )}
+                      {c.legal_secretary.phone && (
+                        <div className="flex items-center gap-2 group">
+                          <a href={`tel:${c.legal_secretary.phone}`} className="text-xs text-slate-600 hover:text-[#00bcd4]">{c.legal_secretary.phone}</a>
+                          <button onClick={(e) => { e.stopPropagation(); copyToClipboard(c.legal_secretary.phone); }} className="opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Copy className="w-3 h-3 text-slate-400 hover:text-slate-600" />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Finance Person */}
+                  {c.finance_person && (
+                    <div className="space-y-2">
+                      <p className="text-[10px] font-semibold uppercase tracking-wider text-emerald-600 flex items-center gap-1">
+                        <Mail className="w-3 h-3 text-emerald-500" /> Finance Person
+                      </p>
+                      {c.finance_person.name && <p className="text-xs text-slate-700 font-medium">{c.finance_person.name}</p>}
+                      {c.finance_person.email && (
+                        <div className="flex items-center gap-2 group">
+                          <a href={`mailto:${c.finance_person.email}`} className="text-xs text-[#00bcd4] hover:underline truncate">{c.finance_person.email}</a>
+                          <button onClick={(e) => { e.stopPropagation(); copyToClipboard(c.finance_person.email); }} className="opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Copy className="w-3 h-3 text-slate-400 hover:text-slate-600" />
+                          </button>
+                        </div>
+                      )}
+                      {c.finance_person.phone && (
+                        <div className="flex items-center gap-2 group">
+                          <a href={`tel:${c.finance_person.phone}`} className="text-xs text-slate-600 hover:text-[#00bcd4]">{c.finance_person.phone}</a>
+                          <button onClick={(e) => { e.stopPropagation(); copyToClipboard(c.finance_person.phone); }} className="opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Copy className="w-3 h-3 text-slate-400 hover:text-slate-600" />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               ) : (
                 <p className="text-xs text-slate-400 italic border-t pt-3">No contact details on file</p>
