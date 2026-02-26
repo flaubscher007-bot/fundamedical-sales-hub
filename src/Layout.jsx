@@ -18,6 +18,7 @@ import {
   Share2,
   Wrench,
   FileBadge,
+  TrendingUp,
   ChevronDown,
   Menu,
   X,
