@@ -20,25 +20,31 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Email and role are required' }, { status: 400 });
     }
 
-    // Create user with temporary password and role
-    const temporaryPassword = Math.random().toString(36).slice(-12);
-    const result = await base44.asServiceRole.entities.User.create({
-      email,
-      role,
-      full_name: email.split('@')[0]
-    });
+    try {
+      // Check if user already exists
+      const existingUsers = await base44.asServiceRole.entities.User.filter({ email });
+      if (existingUsers && existingUsers.length > 0) {
+        return Response.json({ 
+          success: false, 
+          message: `User with email ${email} already exists` 
+        }, { status: 400 });
+      }
 
-    // Send password reset email to set their own password
-    await base44.integrations.Core.SendEmail({
-      to: email,
-      subject: 'Welcome to FundaMedical Sales Hub - Set Your Password',
-      body: `Hello,\n\nYou've been invited to the FundaMedical Sales Hub.\n\nTemporary Password: ${temporaryPassword}\n\nPlease log in and change your password immediately.\n\nBest regards,\nFundaMedical Team`
-    });
+      // Create user with role
+      const result = await base44.asServiceRole.entities.User.create({
+        email,
+        role,
+        full_name: email.split('@')[0]
+      });
 
-    return Response.json({ 
-      success: true, 
-      message: `User created and invitation sent to ${email}`
-    });
+      return Response.json({ 
+        success: true, 
+        message: `User created successfully with role ${role}`,
+        userId: result.id
+      });
+    } catch (createError) {
+      return Response.json({ error: `Failed to create user: ${createError.message}` }, { status: 500 });
+    }
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }
