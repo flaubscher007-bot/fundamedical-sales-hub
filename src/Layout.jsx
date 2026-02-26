@@ -15,6 +15,7 @@ import {
   DollarSign,
   Wine,
   CreditCard,
+  Stethoscope,
   Menu,
   X,
   LogOut,
