@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Plus, Mail, Phone, MessageCircle, MapPin, Share2, Upload, Pencil } from "lucide-react";
+import { Plus, Mail, Phone, MessageCircle, MapPin, Share2, Upload, Pencil, QrCode } from "lucide-react";
 
 const empty = { full_name: "", title: "Business Unit Leader", email: "", phone: "", whatsapp: "", region: "", profile_photo_url: "", business_card_front_url: "", business_card_back_url: "", assigned_bul: "" };
 
@@ -77,6 +77,20 @@ export default function BusinessCard() {
     window.open(`mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
   };
 
+  const getQRCodeURL = (card) => {
+    const vcard = `BEGIN:VCARD
+VERSION:3.0
+FN:${card.full_name}
+TITLE:${card.title}
+TEL:${card.phone || ""}
+EMAIL:${card.email}
+URL:www.fundamedical.co.za
+ORG:FundaMedical
+NOTE:Medical & Legal Administration Services
+END:VCARD`;
+    return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(vcard)}`;
+  };
+
   return (
     <div className="max-w-2xl mx-auto space-y-8">
       {myCard ? (
@@ -130,12 +144,16 @@ export default function BusinessCard() {
                 </div>
               )}
 
-              <div className="flex gap-3 pt-4 border-t">
+              <div className="grid grid-cols-3 gap-3 pt-4 border-t">
+                <div className="flex flex-col items-center">
+                  <img src={getQRCodeURL(myCard)} alt="QR Code" className="w-20 h-20 border border-slate-300 rounded" />
+                  <p className="text-xs text-slate-500 mt-2">Scan to save</p>
+                </div>
                 <Button onClick={() => shareViaWhatsApp(myCard)} className="flex-1 bg-[#25D366] hover:bg-[#20BD5A]">
-                  <MessageCircle className="w-4 h-4 mr-2" /> Share via WhatsApp
+                  <MessageCircle className="w-4 h-4 mr-2" /> WhatsApp
                 </Button>
                 <Button onClick={() => shareViaEmail(myCard)} variant="outline" className="flex-1">
-                  <Mail className="w-4 h-4 mr-2" /> Share via Email
+                  <Mail className="w-4 h-4 mr-2" /> Email
                 </Button>
               </div>
             </CardContent>

@@ -51,11 +51,13 @@ import Alerts from './pages/Alerts';
 import AppointmentTools from './pages/AppointmentTools';
 import Appointments from './pages/Appointments';
 import BULDashboard from './pages/BULDashboard';
+import BULManagement from './pages/BULManagement';
 import BULPerformance from './pages/BULPerformance';
 import BusinessCard from './pages/BusinessCard';
 import ClientContacts from './pages/ClientContacts';
 import ClientPortal from './pages/ClientPortal';
 import Clients from './pages/Clients';
+import CompanyTargets from './pages/CompanyTargets';
 import Contracts from './pages/Contracts';
 import Dashboard from './pages/Dashboard';
 import EntertainmentProposals from './pages/EntertainmentProposals';
@@ -72,8 +74,6 @@ import MeetingMinutes from './pages/MeetingMinutes';
 import Mileage from './pages/Mileage';
 import PricingProposals from './pages/PricingProposals';
 import SocialMedia from './pages/SocialMedia';
-import BULManagement from './pages/BULManagement';
-import CompanyTargets from './pages/CompanyTargets';
 import __Layout from './Layout.jsx';
 
 
@@ -82,11 +82,13 @@ export const PAGES = {
     "AppointmentTools": AppointmentTools,
     "Appointments": Appointments,
     "BULDashboard": BULDashboard,
+    "BULManagement": BULManagement,
     "BULPerformance": BULPerformance,
     "BusinessCard": BusinessCard,
     "ClientContacts": ClientContacts,
     "ClientPortal": ClientPortal,
     "Clients": Clients,
+    "CompanyTargets": CompanyTargets,
     "Contracts": Contracts,
     "Dashboard": Dashboard,
     "EntertainmentProposals": EntertainmentProposals,
@@ -103,8 +105,6 @@ export const PAGES = {
     "Mileage": Mileage,
     "PricingProposals": PricingProposals,
     "SocialMedia": SocialMedia,
-    "BULManagement": BULManagement,
-    "CompanyTargets": CompanyTargets,
 }
 
 export const pagesConfig = {
