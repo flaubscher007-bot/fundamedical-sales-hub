@@ -16,7 +16,7 @@ const emptyTarget = { bul_name: "", bul_email: "", month: "", revenue_target: ""
 const emptyLeave = { bul_name: "", bul_email: "", start_date: "", end_date: "", leave_type: "Annual", reason: "", status: "Pending", notes: "" };
 const emptyTeamAssignment = { person_name: "", person_email: "", role: "Business Unit Leader", phone: "", team: "" };
 
-const ROLES = ["Business Unit Leader", "Finance Clerk", "Case Administrator", "Distribution"];
+const ROLES = ["Business Unit Leader", "Key Accounts Consultant", "Finance Clerk", "Case Administrator", "Distribution"];
 const TEAMS = ["Kopano", "Kutlwano", "Sisonke", "Nasira"];
 
 export default function BULManagement() {
