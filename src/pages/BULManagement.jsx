@@ -10,6 +10,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Pencil, Trash2, DollarSign, Target as TargetIcon, Package, Calendar, CheckCircle, XCircle, Clock, Users, Mail, Phone, Download, Activity, Send, UserCheck, UserX, BarChart3 } from "lucide-react";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 import ActivityLogPanel from "@/components/BULManagement/ActivityLogPanel";
 import PerformanceReportsTab from "@/components/BULManagement/PerformanceReportsTab";
 import GoalsTab from "@/components/goals/GoalsTab";
@@ -297,7 +299,17 @@ export default function BULManagement() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-slate-800">BUL Management</h2>
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold text-slate-800">BUL Management</h2>
+          <p className="text-sm text-slate-600 mt-1">Manage business unit leaders, targets, and team organization</p>
+        </div>
+        <Link to={createPageUrl('UserManagement')}>
+          <Button variant="outline" className="border-slate-300">
+            <Users className="w-4 h-4 mr-2" /> User Management
+          </Button>
+        </Link>
+      </div>
 
       <Tabs defaultValue="targets" className="w-full">
          <TabsList className="grid w-full grid-cols-6">
@@ -519,7 +531,10 @@ export default function BULManagement() {
         {/* ORGANIZATION TAB */}
          <TabsContent value="organization" className="space-y-4">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-semibold text-slate-800">Team Organization</h3>
+            <div>
+              <h3 className="text-lg font-semibold text-slate-800">Team Organization</h3>
+              <p className="text-sm text-slate-600 mt-1">Manage team members and their assignments</p>
+            </div>
             <div className="flex gap-2 flex-wrap">
               <Button onClick={handleDownloadTemplate} variant="outline" className="border-slate-300">
                 <Download className="w-4 h-4 mr-2" /> Download Template
