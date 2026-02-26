@@ -98,6 +98,21 @@ Deno.serve(async (req) => {
 
   } catch (error) {
     console.error('Sync error:', error);
+    
+    // Create sync failure alert
+    try {
+      await base44.asServiceRole.entities.Alert.create({
+        law_firm: 'System',
+        alert_type: 'sync_failed',
+        severity: 'critical',
+        message: `Daily Statement sync failed: ${error.message}`,
+        status: 'unread',
+        sent_at: new Date().toISOString(),
+      });
+    } catch (alertError) {
+      console.error('Failed to create sync failure alert:', alertError);
+    }
+
     return Response.json({ 
       error: error.message,
       success: false 
