@@ -100,7 +100,7 @@ export default function BULPerformancePage() {
   const bulTotals = {};
   filtered.forEach(r => {
     if (!bulTotals[r.bul_name]) {
-      bulTotals[r.bul_name] = { bookings: 0, reports_delivered: 0, deposits_collected: 0, balance_payments_collected: 0, visits: 0, line_items: 0, firms: 0 };
+      bulTotals[r.bul_name] = { bookings: 0, reports_delivered: 0, deposits_collected: 0, balance_payments_collected: 0, visits: 0, line_items: 0, new_firms_signed: 0, firms: 0 };
     }
     METRICS.forEach(m => { bulTotals[r.bul_name][m.key] += Number(r[m.key]) || 0; });
     bulTotals[r.bul_name].firms += 1;
