@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Download, FileText, Loader2, TrendingUp, DollarSign } from "lucide-react";
 import { format } from "date-fns";
+import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 export default function AdvancedFinancialReporting() {
   const [startDate, setStartDate] = useState(format(new Date(new Date().setMonth(new Date().getMonth() - 3)), 'yyyy-MM-dd'));
