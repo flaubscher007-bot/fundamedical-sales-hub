@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { canAccessPage } from "@/components/rolePermissions";
-import OnboardingTour from "@/components/OnboardingTour";
+import EnhancedOnboardingTour from "@/components/EnhancedOnboardingTour";
 import {
   LayoutDashboard,
   Users,
@@ -131,7 +131,7 @@ export default function Layout({ children, currentPageName }) {
 
   return (
     <div className="min-h-screen bg-slate-50 flex pb-safe">
-      {showOnboarding && <OnboardingTour onComplete={() => setShowOnboarding(false)} />}
+      {showOnboarding && <EnhancedOnboardingTour onComplete={() => setShowOnboarding(false)} />}
       <PWAInstallBanner />
       {sidebarOpen && (
         <div className="fixed inset-0 bg-black/40 z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />
