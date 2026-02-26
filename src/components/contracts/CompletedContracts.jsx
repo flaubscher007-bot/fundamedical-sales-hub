@@ -275,6 +275,26 @@ export default function CompletedContracts() {
         </div>
       )}
 
+      {/* Email Dialog */}
+      <Dialog open={emailDialog} onOpenChange={setEmailDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader><DialogTitle className="flex items-center gap-2"><Mail className="w-5 h-5 text-[#00bcd4]" /> Send Contract via Email</DialogTitle></DialogHeader>
+          <div className="space-y-3 py-2">
+            <p className="text-sm text-slate-600">Sending: <span className="font-medium">{viewing?.title}</span></p>
+            <div>
+              <Label>Recipient Email *</Label>
+              <Input className="mt-1" type="email" value={emailTo} onChange={e => setEmailTo(e.target.value)} placeholder="recipient@lawfirm.co.za" />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEmailDialog(false)}>Cancel</Button>
+            <Button onClick={sendEmail} disabled={!emailTo || sendingEmail} className="bg-[#00bcd4] hover:bg-[#0097a7]">
+              {sendingEmail ? "Sending..." : <><Send className="w-4 h-4 mr-2" /> Send Email</>}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Contract View/Edit Dialog */}
       {viewing && (
         <Dialog open={!!viewing} onOpenChange={() => setViewing(null)}>
