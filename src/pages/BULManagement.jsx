@@ -9,7 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Pencil, Trash2, DollarSign, Target as TargetIcon, Package, Calendar, CheckCircle, XCircle, Clock, Users, Mail, Phone, Download } from "lucide-react";
+import { Plus, Pencil, Trash2, DollarSign, Target as TargetIcon, Package, Calendar, CheckCircle, XCircle, Clock, Users, Mail, Phone, Download, Activity, Upload } from "lucide-react";
+import ActivityLogPanel from "@/components/BULManagement/ActivityLogPanel";
 
 // Empty states
 const emptyTarget = { bul_name: "", bul_email: "", month: "", revenue_target: "", bookings_target: "", collections_target: "", notes: "" };
@@ -33,6 +34,9 @@ export default function BULManagement() {
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
   const [inviteForm, setInviteForm] = useState({ name: "", email: "", role: "Business Unit Leader", method: "email" });
   const [inviting, setInviting] = useState(false);
+  const [bulkInviteDialogOpen, setBulkInviteDialogOpen] = useState(false);
+  const [bulkInviteFile, setBulkInviteFile] = useState(null);
+  const [bulkInviting, setBulkInviting] = useState(false);
   const [user, setUser] = useState(null);
   const qc = useQueryClient();
 
@@ -196,6 +200,51 @@ export default function BULManagement() {
     }
   };
 
+  const handleBulkInviteFile = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setBulkInviting(true);
+    try {
+      const uploadRes = await base44.integrations.Core.UploadFile({ file });
+      const extractResult = await base44.integrations.Core.ExtractDataFromUploadedFile({
+        file_url: uploadRes.file_url,
+        json_schema: {
+          type: 'object',
+          properties: {
+            'Name': { type: 'string' },
+            'Email': { type: 'string' },
+            'Role': { type: 'string' }
+          }
+        }
+      });
+
+      if (extractResult.status === 'success' && Array.isArray(extractResult.output)) {
+        const bulk_emails = extractResult.output
+          .filter(row => row.Name && row.Email && row.Role)
+          .map(row => ({
+            name: row.Name,
+            email: row.Email,
+            role: row.Role
+          }));
+
+        const result = await base44.functions.invoke('inviteTeamMember', {
+          bulk_emails,
+          method: 'email'
+        });
+
+        alert(`Bulk invite completed: ${result.data.success} succeeded, ${result.data.failed} failed`);
+        setBulkInviteDialogOpen(false);
+        setBulkInviteFile(null);
+      }
+    } catch (error) {
+      alert('Bulk invite failed: ' + error.message);
+    } finally {
+      setBulkInviting(false);
+      e.target.value = '';
+    }
+  };
+
   const formatCurrency = (value) => {
     return new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR', minimumFractionDigits: 0 }).format(value || 0);
   };
@@ -227,17 +276,22 @@ export default function BULManagement() {
       <h2 className="text-2xl font-bold text-slate-800">BUL Management</h2>
 
       <Tabs defaultValue="targets" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="targets" className="flex items-center gap-2">
-            <TargetIcon className="w-4 h-4" /> Targets
-          </TabsTrigger>
-          <TabsTrigger value="leave" className="flex items-center gap-2">
-            <Calendar className="w-4 h-4" /> Leave Approval
-          </TabsTrigger>
-          <TabsTrigger value="organization" className="flex items-center gap-2">
-            <Users className="w-4 h-4" /> Organization
-          </TabsTrigger>
-        </TabsList>
+         <TabsList className="grid w-full grid-cols-4">
+           <TabsTrigger value="targets" className="flex items-center gap-2">
+             <TargetIcon className="w-4 h-4" /> Targets
+           </TabsTrigger>
+           <TabsTrigger value="leave" className="flex items-center gap-2">
+             <Calendar className="w-4 h-4" /> Leave Approval
+           </TabsTrigger>
+           <TabsTrigger value="organization" className="flex items-center gap-2">
+             <Users className="w-4 h-4" /> Organization
+           </TabsTrigger>
+           {user && ['admin', 'Sales Manager'].includes(user.role) && (
+             <TabsTrigger value="activity" className="flex items-center gap-2">
+               <Activity className="w-4 h-4" /> Activity Log
+             </TabsTrigger>
+           )}
+         </TabsList>
 
         {/* TARGETS TAB */}
         <TabsContent value="targets" className="space-y-4">
@@ -429,7 +483,7 @@ export default function BULManagement() {
          <TabsContent value="organization" className="space-y-4">
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-semibold text-slate-800">Team Organization</h3>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               <Button onClick={handleDownloadTemplate} variant="outline" className="border-slate-300">
                 <Download className="w-4 h-4 mr-2" /> Download Template
               </Button>
@@ -439,6 +493,14 @@ export default function BULManagement() {
                   <span>{importLoading ? 'Importing...' : 'Import from File'}</span>
                 </Button>
               </label>
+              {user && ['admin', 'Sales Manager'].includes(user.role) && (
+                <label>
+                  <input type="file" accept=".xlsx,.xls,.csv" onChange={handleBulkInviteFile} disabled={bulkInviting} style={{ display: 'none' }} />
+                  <Button asChild disabled={bulkInviting} className="bg-orange-600 hover:bg-orange-700">
+                    <span>{bulkInviting ? 'Processing...' : 'Bulk Invite Users'}</span>
+                  </Button>
+                </label>
+              )}
               <Button onClick={() => setInviteDialogOpen(true)} className="bg-green-600 hover:bg-green-700">
                 <Plus className="w-4 h-4 mr-2" /> Invite User
               </Button>
@@ -687,47 +749,58 @@ export default function BULManagement() {
         </DialogContent>
       </Dialog>
 
+      {/* ACTIVITY LOG TAB */}
+       {user && ['admin', 'Sales Manager'].includes(user.role) && (
+         <TabsContent value="activity" className="space-y-4">
+           <div>
+             <h3 className="text-lg font-semibold text-slate-800 mb-4">Team Activity Log</h3>
+             <ActivityLogPanel />
+           </div>
+         </TabsContent>
+       )}
+      </Tabs>
+
       {/* INVITE USER DIALOG */}
       <Dialog open={inviteDialogOpen} onOpenChange={setInviteDialogOpen}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader><DialogTitle>Invite Team Member</DialogTitle></DialogHeader>
-          <div className="space-y-4 py-4">
-            <div>
-              <Label>Full Name *</Label>
-              <Input value={inviteForm.name} onChange={(e) => setInviteForm({ ...inviteForm, name: e.target.value })} placeholder="Full name" />
-            </div>
-            <div>
-              <Label>Email Address *</Label>
-              <Input type="email" value={inviteForm.email} onChange={(e) => setInviteForm({ ...inviteForm, email: e.target.value })} placeholder="user@example.com" />
-            </div>
-            <div>
-              <Label>Role *</Label>
-              <Select value={inviteForm.role} onValueChange={(v) => setInviteForm({ ...inviteForm, role: v })}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {ROLES.map(role => (
-                    <SelectItem key={role} value={role}>{role}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>Send Invitation Via *</Label>
-              <Select value={inviteForm.method} onValueChange={(v) => setInviteForm({ ...inviteForm, method: v })}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="email">Email</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setInviteDialogOpen(false)}>Cancel</Button>
-            <Button onClick={handleInviteTeamMember} className="bg-green-600 hover:bg-green-700" disabled={inviting}>
-              {inviting ? 'Sending...' : 'Send Invitation'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
+       <DialogContent className="max-w-lg">
+         <DialogHeader><DialogTitle>Invite Team Member</DialogTitle></DialogHeader>
+         <div className="space-y-4 py-4">
+           <div>
+             <Label>Full Name *</Label>
+             <Input value={inviteForm.name} onChange={(e) => setInviteForm({ ...inviteForm, name: e.target.value })} placeholder="Full name" />
+           </div>
+           <div>
+             <Label>Email Address *</Label>
+             <Input type="email" value={inviteForm.email} onChange={(e) => setInviteForm({ ...inviteForm, email: e.target.value })} placeholder="user@example.com" />
+           </div>
+           <div>
+             <Label>Role *</Label>
+             <Select value={inviteForm.role} onValueChange={(v) => setInviteForm({ ...inviteForm, role: v })}>
+               <SelectTrigger><SelectValue /></SelectTrigger>
+               <SelectContent>
+                 {ROLES.map(role => (
+                   <SelectItem key={role} value={role}>{role}</SelectItem>
+                 ))}
+               </SelectContent>
+             </Select>
+           </div>
+           <div>
+             <Label>Send Invitation Via *</Label>
+             <Select value={inviteForm.method} onValueChange={(v) => setInviteForm({ ...inviteForm, method: v })}>
+               <SelectTrigger><SelectValue /></SelectTrigger>
+               <SelectContent>
+                 <SelectItem value="email">Email</SelectItem>
+               </SelectContent>
+             </Select>
+           </div>
+         </div>
+         <DialogFooter>
+           <Button variant="outline" onClick={() => setInviteDialogOpen(false)}>Cancel</Button>
+           <Button onClick={handleInviteTeamMember} className="bg-green-600 hover:bg-green-700" disabled={inviting}>
+             {inviting ? 'Sending...' : 'Send Invitation'}
+           </Button>
+         </DialogFooter>
+       </DialogContent>
       </Dialog>
       </div>
       );
