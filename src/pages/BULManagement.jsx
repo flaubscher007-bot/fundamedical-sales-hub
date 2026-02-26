@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Pencil, Trash2, DollarSign, Target as TargetIcon, Package, Calendar, CheckCircle, XCircle, Clock, Users, Mail, Phone, Download, Activity, Upload } from "lucide-react";
+import { Plus, Pencil, Trash2, DollarSign, Target as TargetIcon, Package, Calendar, CheckCircle, XCircle, Clock, Users, Mail, Phone, Download, Activity, Upload, Send, UserCheck, UserX } from "lucide-react";
 import ActivityLogPanel from "@/components/BULManagement/ActivityLogPanel";
 
 // Empty states
@@ -38,6 +38,7 @@ export default function BULManagement() {
   const [bulkInviteFile, setBulkInviteFile] = useState(null);
   const [bulkInviting, setBulkInviting] = useState(false);
   const [user, setUser] = useState(null);
+  const [sendingInvite, setSendingInvite] = useState(null);
   const qc = useQueryClient();
 
   useEffect(() => {
@@ -269,6 +270,27 @@ export default function BULManagement() {
     if (status === "Approved") return "bg-green-50";
     if (status === "Rejected") return "bg-red-50";
     return "bg-amber-50";
+  };
+
+  const isUserRegistered = (email) => {
+    return users.some(u => u.email?.toLowerCase() === email?.toLowerCase());
+  };
+
+  const handleSendInvite = async (member) => {
+    setSendingInvite(member.id);
+    try {
+      await base44.functions.invoke('inviteTeamMember', {
+        name: member.person_name,
+        email: member.person_email,
+        role: member.role,
+        method: 'email'
+      });
+      alert(`Invitation sent to ${member.person_email}`);
+    } catch (error) {
+      alert('Failed to send invitation: ' + error.message);
+    } finally {
+      setSendingInvite(null);
+    }
   };
 
   return (
@@ -533,7 +555,20 @@ export default function BULManagement() {
                                 {roleMembers.map((member) => (
                                   <div key={member.id} className="flex items-start justify-between bg-slate-50 p-3 rounded-lg group">
                                     <div className="flex-1 min-w-0">
-                                      <p className="font-semibold text-slate-800">{member.person_name}</p>
+                                      <div className="flex items-center gap-2 mb-1">
+                                        <p className="font-semibold text-slate-800">{member.person_name}</p>
+                                        {member.person_email && (
+                                          isUserRegistered(member.person_email) ? (
+                                            <div className="flex items-center gap-1 bg-green-100 text-green-700 px-2 py-0.5 rounded text-xs font-medium">
+                                              <UserCheck className="w-3 h-3" /> App User
+                                            </div>
+                                          ) : (
+                                            <div className="flex items-center gap-1 bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-xs font-medium">
+                                              <UserX className="w-3 h-3" /> Not Registered
+                                            </div>
+                                          )
+                                        )}
+                                      </div>
                                       <div className="flex flex-col gap-1 mt-2 text-sm text-slate-600">
                                         {member.person_email && (
                                           <div className="flex items-center gap-2">
@@ -550,6 +585,17 @@ export default function BULManagement() {
                                       </div>
                                     </div>
                                     <div className="flex gap-1 ml-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                                      {member.person_email && !isUserRegistered(member.person_email) && (
+                                        <Button 
+                                          variant="ghost" 
+                                          size="icon" 
+                                          onClick={() => handleSendInvite(member)}
+                                          disabled={sendingInvite === member.id}
+                                          title="Send invite link"
+                                        >
+                                          <Send className="w-4 h-4 text-blue-600" />
+                                        </Button>
+                                      )}
                                       <Button variant="ghost" size="icon" onClick={() => openEditTeamAssignment(member)}>
                                         <Pencil className="w-4 h-4 text-slate-600" />
                                       </Button>
