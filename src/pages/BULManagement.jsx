@@ -195,7 +195,7 @@ export default function BULManagement() {
     }
     setInviting(true);
     try {
-      await base44.asServiceRole.auth.inviteUser(inviteForm.email, inviteForm.role);
+      await base44.functions.invoke('inviteUserByAdmin', { email: inviteForm.email, role: inviteForm.role });
       alert(`Invitation sent to ${inviteForm.email}`);
       setInviteForm({ name: "", email: "", role: "Business Unit Leader", method: "email" });
       setInviteDialogOpen(false);
@@ -231,7 +231,7 @@ export default function BULManagement() {
 
         for (const row of validRows) {
           try {
-            await base44.asServiceRole.auth.inviteUser(row.Email, row.Role);
+            await base44.functions.invoke('inviteUserByAdmin', { email: row.Email, role: row.Role });
             succeeded++;
           } catch (error) {
             failed++;
@@ -283,7 +283,7 @@ export default function BULManagement() {
   const handleSendInvite = async (member) => {
     setSendingInvite(member.id);
     try {
-      await base44.asServiceRole.auth.inviteUser(member.person_email, member.role);
+      await base44.functions.invoke('inviteUserByAdmin', { email: member.person_email, role: member.role });
       alert(`Invitation sent to ${member.person_email}`);
     } catch (error) {
       alert('Failed to send invitation: ' + error.message);
