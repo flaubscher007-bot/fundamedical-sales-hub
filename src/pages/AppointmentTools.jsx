@@ -23,8 +23,8 @@ import FeedbackDialog from "../components/appointmentTools/FeedbackDialog";
 import ActionPointsPanel from "../components/appointmentTools/ActionPointsPanel";
 import FeedbackPanel from "../components/appointmentTools/FeedbackPanel";
 import SummaryDialog from "../components/appointmentTools/SummaryDialog";
-import MeetingMinutesTab from "../components/appointmentTools/MeetingMinutesTab";
-import FollowUpsTab from "../components/appointmentTools/FollowUpsTab";
+import MeetingMinutesTab from "../components/appointmentTools/MeetingMinutesTab.jsx";
+import FollowUpsTab from "../components/appointmentTools/FollowUpsTab.jsx";
 
 const emptyApt = {
   title: "", client_id: "", client_name: "", date: "", time: "", end_time: "",
