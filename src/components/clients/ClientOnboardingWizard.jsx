@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { base44 } from "@/api/base44Client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,13 +7,14 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, ChevronRight, ChevronLeft, Building2, Users, Mail, AlertCircle } from "lucide-react";
+import { CheckCircle2, ChevronRight, ChevronLeft, Building2, Users, Mail, AlertCircle, Target, Loader } from "lucide-react";
 
 const STEPS = [
   { id: 1, title: "Firm Details", description: "Basic firm information & status", icon: Building2 },
-  { id: 2, title: "FundaMedical Team", description: "Assigned BUL, case admin & finance clerk", icon: Users },
-  { id: 3, title: "Contacts", description: "All email addresses & phone numbers", icon: Mail },
+  { id: 2, title: "Team Assignment", description: "Assign team members & roles", icon: Users },
+  { id: 3, title: "Contacts", description: "Law firm contact information", icon: Mail },
   { id: 4, title: "Special Requirements", description: "Notes and custom instructions", icon: AlertCircle },
+  { id: 5, title: "Initial Tasks", description: "Set up first appointment & target", icon: Target },
 ];
 
 const PROVINCES = ["Western Cape", "KwaZulu-Natal", "Gauteng", "Eastern Cape", "Free State", "Limpopo", "Mpumalanga", "North West", "Northern Cape"];
@@ -20,9 +22,17 @@ const PROVINCES = ["Western Cape", "KwaZulu-Natal", "Gauteng", "Eastern Cape", "
 const emptyForm = {
   firm_name: "", account_status: "", activity_status: "ACTIVE",
   case_administrator: "", finance_clerk: "", business_unit_leader: "",
+  assigned_bul: "",
   contact_person: "", contact_email: "", finance_email: "", legal_clerk_emails: "",
   contact_phone: "", address: "", city: "", province: "", category: "",
   special_requirements: "", notes: "",
+  director: { name: "", email: "", phone: "" },
+  attorney: { name: "", email: "", phone: "" },
+  legal_secretary: { name: "", email: "", phone: "" },
+  finance_person: { name: "", email: "", phone: "" },
+  first_appointment_date: "",
+  first_appointment_notes: "",
+  initial_target_amount: "",
 };
 
 function StepIndicator({ steps, current }) {
@@ -85,8 +95,28 @@ export default function ClientOnboardingWizard({ open, onClose, onSave }) {
   const [step, setStep] = useState(1);
   const [form, setForm] = useState(emptyForm);
   const [errors, setErrors] = useState({});
+  const [teamAssignments, setTeamAssignments] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      setLoading(true);
+      base44.entities.TeamAssignment.list().then(data => {
+        setTeamAssignments(data || []);
+        setLoading(false);
+      }).catch(() => setLoading(false));
+    }
+  }, [open]);
 
   const set = (key, val) => setForm(f => ({ ...f, [key]: val }));
+  const setNested = (parentKey, childKey, val) => setForm(f => ({ 
+    ...f, 
+    [parentKey]: { ...f[parentKey], [childKey]: val } 
+  }));
+
+  const bulMembers = teamAssignments.filter(m => m.role === "Business Unit Leader").map(m => m.person_name).filter(Boolean);
+  const caMembers = teamAssignments.filter(m => m.role === "Case Administrator").map(m => m.person_name).filter(Boolean);
+  const fcMembers = teamAssignments.filter(m => m.role === "Finance Clerk").map(m => m.person_name).filter(Boolean);
 
   const validateStep = () => {
     const errs = {};
@@ -198,17 +228,50 @@ export default function ClientOnboardingWizard({ open, onClose, onSave }) {
           {/* Step 2 – FundaMedical Team */}
           {step === 2 && (
             <FieldGroup>
-              <div className="bg-[#0a1628]/5 rounded-lg p-4 mb-2">
+              <div className="bg-[#0a1628]/5 rounded-lg p-4 mb-4">
                 <p className="text-xs text-slate-600">Assign the internal FundaMedical team members who will be managing this account.</p>
               </div>
               <Field label="Business Unit Leader (BUL)">
-                <Input value={form.business_unit_leader} onChange={e => set("business_unit_leader", e.target.value)} placeholder="e.g. Jane Dlamini" />
+                {loading ? (
+                  <div className="flex items-center gap-2 text-slate-500 py-2"><Loader className="w-4 h-4 animate-spin" /> Loading...</div>
+                ) : bulMembers.length > 0 ? (
+                  <Select value={form.assigned_bul || ""} onValueChange={v => set("assigned_bul", v)}>
+                    <SelectTrigger><SelectValue placeholder="Select BUL" /></SelectTrigger>
+                    <SelectContent>
+                      {bulMembers.map(m => <SelectItem key={m} value={m}>{m}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <Input value={form.assigned_bul} onChange={e => set("assigned_bul", e.target.value)} placeholder="e.g. Dylan, George, Nthabiseng..." />
+                )}
               </Field>
               <Field label="Case Administrator">
-                <Input value={form.case_administrator} onChange={e => set("case_administrator", e.target.value)} placeholder="e.g. Thabo Nkosi" />
+                {loading ? (
+                  <div className="flex items-center gap-2 text-slate-500 py-2"><Loader className="w-4 h-4 animate-spin" /> Loading...</div>
+                ) : caMembers.length > 0 ? (
+                  <Select value={form.case_administrator || ""} onValueChange={v => set("case_administrator", v)}>
+                    <SelectTrigger><SelectValue placeholder="Select Case Admin" /></SelectTrigger>
+                    <SelectContent>
+                      {caMembers.map(m => <SelectItem key={m} value={m}>{m}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <Input value={form.case_administrator} onChange={e => set("case_administrator", e.target.value)} placeholder="Enter name" />
+                )}
               </Field>
               <Field label="Finance Clerk">
-                <Input value={form.finance_clerk} onChange={e => set("finance_clerk", e.target.value)} placeholder="e.g. Priya Pillay" />
+                {loading ? (
+                  <div className="flex items-center gap-2 text-slate-500 py-2"><Loader className="w-4 h-4 animate-spin" /> Loading...</div>
+                ) : fcMembers.length > 0 ? (
+                  <Select value={form.finance_clerk || ""} onValueChange={v => set("finance_clerk", v)}>
+                    <SelectTrigger><SelectValue placeholder="Select Finance Clerk" /></SelectTrigger>
+                    <SelectContent>
+                      {fcMembers.map(m => <SelectItem key={m} value={m}>{m}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <Input value={form.finance_clerk} onChange={e => set("finance_clerk", e.target.value)} placeholder="Enter name" />
+                )}
               </Field>
             </FieldGroup>
           )}
@@ -216,36 +279,40 @@ export default function ClientOnboardingWizard({ open, onClose, onSave }) {
           {/* Step 3 – Contacts */}
           {step === 3 && (
             <FieldGroup>
-              <FormRow>
-                <Field label="Contact Person">
-                  <Input value={form.contact_person} onChange={e => set("contact_person", e.target.value)} placeholder="Primary contact name" />
-                </Field>
-                <Field label="Phone Number">
-                  <Input value={form.contact_phone} onChange={e => set("contact_phone", e.target.value)} placeholder="+27 21 000 0000" />
-                </Field>
-              </FormRow>
-              <Field label="Director / Attorney Emails" error={errors.contact_email}>
-                <Textarea
-                  rows={2}
-                  value={form.contact_email}
-                  onChange={e => set("contact_email", e.target.value)}
-                  placeholder="attorney@firm.co.za, director@firm.co.za"
-                  className={errors.contact_email ? "border-red-400" : ""}
-                />
-                <p className="text-[10px] text-slate-400">Separate multiple emails with commas</p>
-              </Field>
-              <Field label="Finance Email">
-                <Input value={form.finance_email} onChange={e => set("finance_email", e.target.value)} placeholder="finance@firm.co.za" />
-              </Field>
-              <Field label="Legal Clerk Emails">
-                <Textarea
-                  rows={3}
-                  value={form.legal_clerk_emails}
-                  onChange={e => set("legal_clerk_emails", e.target.value)}
-                  placeholder="clerk1@firm.co.za, clerk2@firm.co.za"
-                />
-                <p className="text-[10px] text-slate-400">Separate multiple emails with commas</p>
-              </Field>
+              <div className="grid gap-4">
+                <div className="border rounded-lg p-4 bg-slate-50">
+                  <p className="text-xs font-semibold text-slate-600 mb-3">Director</p>
+                  <FormRow>
+                    <Field label="Name"><Input value={form.director?.name || ""} onChange={e => setNested("director", "name", e.target.value)} placeholder="Name" /></Field>
+                    <Field label="Email"><Input value={form.director?.email || ""} onChange={e => setNested("director", "email", e.target.value)} placeholder="Email" type="email" /></Field>
+                  </FormRow>
+                  <Field label="Phone"><Input value={form.director?.phone || ""} onChange={e => setNested("director", "phone", e.target.value)} placeholder="Phone" /></Field>
+                </div>
+                <div className="border rounded-lg p-4 bg-slate-50">
+                  <p className="text-xs font-semibold text-slate-600 mb-3">Attorney</p>
+                  <FormRow>
+                    <Field label="Name"><Input value={form.attorney?.name || ""} onChange={e => setNested("attorney", "name", e.target.value)} placeholder="Name" /></Field>
+                    <Field label="Email"><Input value={form.attorney?.email || ""} onChange={e => setNested("attorney", "email", e.target.value)} placeholder="Email" type="email" /></Field>
+                  </FormRow>
+                  <Field label="Phone"><Input value={form.attorney?.phone || ""} onChange={e => setNested("attorney", "phone", e.target.value)} placeholder="Phone" /></Field>
+                </div>
+                <div className="border rounded-lg p-4 bg-slate-50">
+                  <p className="text-xs font-semibold text-slate-600 mb-3">Legal Secretary</p>
+                  <FormRow>
+                    <Field label="Name"><Input value={form.legal_secretary?.name || ""} onChange={e => setNested("legal_secretary", "name", e.target.value)} placeholder="Name" /></Field>
+                    <Field label="Email"><Input value={form.legal_secretary?.email || ""} onChange={e => setNested("legal_secretary", "email", e.target.value)} placeholder="Email" type="email" /></Field>
+                  </FormRow>
+                  <Field label="Phone"><Input value={form.legal_secretary?.phone || ""} onChange={e => setNested("legal_secretary", "phone", e.target.value)} placeholder="Phone" /></Field>
+                </div>
+                <div className="border rounded-lg p-4 bg-slate-50">
+                  <p className="text-xs font-semibold text-slate-600 mb-3">Finance Person</p>
+                  <FormRow>
+                    <Field label="Name"><Input value={form.finance_person?.name || ""} onChange={e => setNested("finance_person", "name", e.target.value)} placeholder="Name" /></Field>
+                    <Field label="Email"><Input value={form.finance_person?.email || ""} onChange={e => setNested("finance_person", "email", e.target.value)} placeholder="Email" type="email" /></Field>
+                  </FormRow>
+                  <Field label="Phone"><Input value={form.finance_person?.phone || ""} onChange={e => setNested("finance_person", "phone", e.target.value)} placeholder="Phone" /></Field>
+                </div>
+              </div>
             </FieldGroup>
           )}
 
@@ -275,14 +342,36 @@ export default function ClientOnboardingWizard({ open, onClose, onSave }) {
                 <div className="grid grid-cols-2 gap-x-6 gap-y-1.5 text-xs">
                   <div><span className="text-slate-400">Firm:</span> <strong className="text-slate-700">{form.firm_name || "—"}</strong></div>
                   <div><span className="text-slate-400">Status:</span> <strong className="text-slate-700">{form.activity_status}</strong></div>
-                  <div><span className="text-slate-400">BUL:</span> <strong className="text-slate-700">{form.business_unit_leader || "—"}</strong></div>
+                  <div><span className="text-slate-400">BUL:</span> <strong className="text-slate-700">{form.assigned_bul || "—"}</strong></div>
                   <div><span className="text-slate-400">Case Admin:</span> <strong className="text-slate-700">{form.case_administrator || "—"}</strong></div>
                   <div><span className="text-slate-400">Contact:</span> <strong className="text-slate-700">{form.contact_person || "—"}</strong></div>
                   <div><span className="text-slate-400">Province:</span> <strong className="text-slate-700">{form.province || "—"}</strong></div>
                 </div>
               </div>
-            </FieldGroup>
-          )}
+              </FieldGroup>
+              )}
+
+              {/* Step 5 – Initial Tasks */}
+              {step === 5 && (
+              <FieldGroup>
+              <div className="bg-blue-50 rounded-lg p-4 mb-4 border border-blue-200">
+                <p className="text-xs text-blue-700"><strong>Optional:</strong> Schedule a first appointment and set an initial revenue target.</p>
+              </div>
+              <Field label="First Appointment Date">
+                <Input type="date" value={form.first_appointment_date || ""} onChange={e => set("first_appointment_date", e.target.value)} />
+              </Field>
+              <Field label="Appointment Notes">
+                <Textarea rows={2} value={form.first_appointment_notes || ""} onChange={e => set("first_appointment_notes", e.target.value)} placeholder="Purpose of meeting, topics to discuss, etc." />
+              </Field>
+              <Field label="Initial Revenue Target (ZAR)">
+                <Input type="number" value={form.initial_target_amount || ""} onChange={e => set("initial_target_amount", e.target.value)} placeholder="e.g. 50000" />
+              </Field>
+              <div className="bg-emerald-50 rounded-lg p-4 border border-emerald-200 mt-4">
+                <p className="text-xs font-semibold text-emerald-700 mb-2">✓ Ready to onboard</p>
+                <p className="text-xs text-emerald-600">Click "Complete Onboarding" below to create the client and schedule initial tasks.</p>
+              </div>
+              </FieldGroup>
+              )}
         </div>
 
         {/* Footer */}
