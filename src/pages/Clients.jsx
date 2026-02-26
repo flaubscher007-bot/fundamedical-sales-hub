@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Search, Building2, Mail, Phone, MapPin, Pencil, Trash2, User, UserCog, Briefcase, AlertCircle, ExternalLink } from "lucide-react";
+import { Plus, Search, Building2, Mail, Phone, MapPin, Pencil, Trash2, User, UserCog, Briefcase, AlertCircle, ExternalLink, DollarSign, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import ClientOnboardingWizard from "@/components/clients/ClientOnboardingWizard";
@@ -73,6 +73,11 @@ export default function Clients() {
      queryFn: () => base44.entities.User.list(),
    });
 
+   const { data: statements = [] } = useQuery({
+     queryKey: ["statements"],
+     queryFn: () => base44.entities.Statement.list("statement_month", 500),
+   });
+
   const saveMutation = useMutation({
     mutationFn: (data) => editingClient
       ? base44.entities.Client.update(editingClient.id, data)
@@ -87,8 +92,21 @@ export default function Clients() {
 
   const openNew = () => setWizardOpen(true);
   const handleWizardSave = (data) => { saveMutation.mutate(data); setWizardOpen(false); };
-  const openEdit = (c) => { setEditingClient(c); setForm(c); setDialogOpen(true); };
+  const openEdit = (c) => {
+    const relatedStatements = statements.filter(s => s.law_firm === c.firm_name);
+    const latestStatement = relatedStatements?.[0];
+    let updatedForm = { ...c };
+    if (latestStatement) {
+      updatedForm.account_status = updatedForm.account_status || latestStatement.account_status;
+      updatedForm.assigned_bul = updatedForm.assigned_bul || latestStatement.kac;
+      updatedForm.case_administrator = updatedForm.case_administrator || latestStatement.finance_clerk;
+    }
+    setEditingClient(c);
+    setForm(updatedForm);
+    setDialogOpen(true);
+  };
   const closeDialog = () => { setDialogOpen(false); setEditingClient(null); setForm(emptyClient); };
+  const getClientStatements = (firmName) => statements.filter(s => s.law_firm === firmName).sort((a, b) => new Date(b.statement_month) - new Date(a.statement_month));
 
   const buls = [...new Set(clients.map(c => c.assigned_bul || c.business_unit_leader).filter(Boolean))].sort();
   const caseAdmins = [...new Set(clients.map(c => c.case_administrator).filter(Boolean))].sort();
@@ -274,6 +292,43 @@ export default function Clients() {
           </DialogHeader>
           <div className="space-y-5 py-4">
 
+            {/* Linked Statements Tab */}
+            {editingClient && getClientStatements(editingClient.firm_name).length > 0 && (
+              <div className="border-t pt-4">
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">💰 Related Financial Statements</p>
+                <div className="space-y-2 max-h-48 overflow-y-auto">
+                  {getClientStatements(editingClient.firm_name).map((stmt) => (
+                    <div key={stmt.id} className="border rounded-lg p-3 bg-slate-50 hover:bg-slate-100 transition-colors">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                            <span className="text-xs font-semibold text-slate-700">{stmt.statement_month}</span>
+                            <Badge className={`text-[10px] ${accountStatusColor(stmt.account_status)}`}>{accountStatusLabel(stmt.account_status)}</Badge>
+                          </div>
+                          <div className="grid grid-cols-3 gap-2 text-xs">
+                            <div className="flex items-center gap-1">
+                              <DollarSign className="w-3 h-3 text-green-600" />
+                              <span className="text-slate-600">Dep: <span className="font-semibold">ZAR {stmt.total_deposit?.toLocaleString() || '0'}</span></span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <DollarSign className="w-3 h-3 text-orange-600" />
+                              <span className="text-slate-600">Due: <span className="font-semibold">ZAR {stmt.total_due?.toLocaleString() || '0'}</span></span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <DollarSign className="w-3 h-3 text-slate-600" />
+                              <span className="text-slate-600">Bal: <span className="font-semibold">ZAR {stmt.total_balance?.toLocaleString() || '0'}</span></span>
+                            </div>
+                          </div>
+                          {stmt.comments && <p className="text-[10px] text-slate-500 mt-1 line-clamp-1">{stmt.comments}</p>}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Basic Info */}
             <div>
               <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Firm Details</p>
@@ -316,7 +371,7 @@ export default function Clients() {
               <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">FundaMedical Team</p>
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <Label>Assigned Business Unit Leader</Label>
+                  <Label>Assigned Business Unit Leader {editingClient && getClientStatements(editingClient.firm_name).length > 0 && <span className="text-[10px] text-slate-400">(from statement: {getClientStatements(editingClient.firm_name)[0]?.kac})</span>}</Label>
                   <Select value={form.assigned_bul || ""} onValueChange={(v) => setForm({ ...form, assigned_bul: v })}>
                     <SelectTrigger><SelectValue placeholder="Select BUL" /></SelectTrigger>
                     <SelectContent>
@@ -325,7 +380,7 @@ export default function Clients() {
                       ))}
                     </SelectContent>
                   </Select>
-                  </div>
+                </div>
                 <div><Label>Case Administrator</Label><Input value={form.case_administrator} onChange={(e) => setForm({ ...form, case_administrator: e.target.value })} /></div>
                 <div><Label>Finance Clerk</Label><Input value={form.finance_clerk} onChange={(e) => setForm({ ...form, finance_clerk: e.target.value })} /></div>
               </div>
