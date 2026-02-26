@@ -57,6 +57,11 @@ export default function BULManagement() {
     queryFn: () => base44.entities.TeamAssignment.list(),
   });
 
+  const { data: companyTargets = [] } = useQuery({
+    queryKey: ["companyTargets"],
+    queryFn: () => base44.entities.CompanyTarget.list(),
+  });
+
   const { data: users = [] } = useQuery({
     queryKey: ["users"],
     queryFn: () => base44.entities.User.list(),
