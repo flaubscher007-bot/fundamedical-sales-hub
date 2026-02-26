@@ -232,6 +232,13 @@ export default function Clients() {
         </div>
       )}
 
+      {/* Onboarding Wizard */}
+      <ClientOnboardingWizard
+        open={wizardOpen}
+        onClose={() => setWizardOpen(false)}
+        onSave={handleWizardSave}
+      />
+
       {/* Edit/Add Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
