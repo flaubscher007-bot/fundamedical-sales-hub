@@ -194,8 +194,8 @@ export default function BULManagement() {
     }
     setInviting(true);
     try {
-      const result = await base44.functions.invoke('inviteTeamMember', inviteForm);
-      alert(`Invitation sent to ${inviteForm.email} via ${inviteForm.method}`);
+      await base44.auth.inviteUser(inviteForm.email, inviteForm.role);
+      alert(`Invitation sent to ${inviteForm.email}`);
       setInviteForm({ name: "", email: "", role: "Business Unit Leader", method: "email" });
       setInviteDialogOpen(false);
     } catch (error) {
@@ -225,20 +225,19 @@ export default function BULManagement() {
       });
 
       if (extractResult.status === 'success' && Array.isArray(extractResult.output)) {
-        const bulk_emails = extractResult.output
-          .filter(row => row.Name && row.Email && row.Role)
-          .map(row => ({
-            name: row.Name,
-            email: row.Email,
-            role: row.Role
-          }));
+        const validRows = extractResult.output.filter(row => row.Name && row.Email && row.Role);
+        let succeeded = 0, failed = 0;
 
-        const result = await base44.functions.invoke('inviteTeamMember', {
-          bulk_emails,
-          method: 'email'
-        });
+        for (const row of validRows) {
+          try {
+            await base44.auth.inviteUser(row.Email, row.Role);
+            succeeded++;
+          } catch (error) {
+            failed++;
+          }
+        }
 
-        alert(`Bulk invite completed: ${result.data.success} succeeded, ${result.data.failed} failed`);
+        alert(`Bulk invite completed: ${succeeded} succeeded, ${failed} failed`);
         setBulkInviteDialogOpen(false);
         setBulkInviteFile(null);
       }
@@ -283,12 +282,7 @@ export default function BULManagement() {
   const handleSendInvite = async (member) => {
     setSendingInvite(member.id);
     try {
-      await base44.functions.invoke('inviteTeamMember', {
-        name: member.person_name,
-        email: member.person_email,
-        role: member.role,
-        method: 'email'
-      });
+      await base44.auth.inviteUser(member.person_email, member.role);
       alert(`Invitation sent to ${member.person_email}`);
     } catch (error) {
       alert('Failed to send invitation: ' + error.message);
