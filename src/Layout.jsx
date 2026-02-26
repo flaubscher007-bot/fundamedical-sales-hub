@@ -93,6 +93,7 @@ export default function Layout({ children, currentPageName }) {
   };
 
   const isMarketingActive = marketingItems.some(i => i.page === currentPageName);
+  const isPowerBIActive = powerBIItems.some(i => i.page === currentPageName);
 
   return (
     <div className="min-h-screen bg-slate-50 flex">
