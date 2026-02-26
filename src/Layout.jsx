@@ -12,7 +12,6 @@ import {
   Phone,
   ClipboardList,
   DollarSign,
-  Wine,
   CreditCard,
   Stethoscope,
   Megaphone,
