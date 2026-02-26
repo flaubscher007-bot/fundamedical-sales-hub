@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Pencil, Trash2, DollarSign, Target as TargetIcon, Package, Calendar, CheckCircle, XCircle, Clock, Users, Mail, Phone, Download, Activity, Upload, Send, UserCheck, UserX } from "lucide-react";
+import { Plus, Pencil, Trash2, DollarSign, Target as TargetIcon, Package, Calendar, CheckCircle, XCircle, Clock, Users, Mail, Phone, Download, Activity, Upload, Send, UserCheck, UserX, TrendingUp } from "lucide-react";
 import ActivityLogPanel from "@/components/BULManagement/ActivityLogPanel";
 import PerformanceReportsTab from "@/components/BULManagement/PerformanceReportsTab";
 import GoalsTab from "@/components/goals/GoalsTab";
