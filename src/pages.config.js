@@ -47,34 +47,34 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
-import Dashboard from './pages/Dashboard';
-import Clients from './pages/Clients';
 import Appointments from './pages/Appointments';
-import MeetingMinutes from './pages/MeetingMinutes';
-import FollowUps from './pages/FollowUps';
-import Marketing from './pages/Marketing';
-import Mileage from './pages/Mileage';
-import Expenses from './pages/Expenses';
-import IntakeForms from './pages/IntakeForms';
-import PricingProposals from './pages/PricingProposals';
-import EntertainmentProposals from './pages/EntertainmentProposals';
 import BusinessCard from './pages/BusinessCard';
+import Clients from './pages/Clients';
+import Dashboard from './pages/Dashboard';
+import EntertainmentProposals from './pages/EntertainmentProposals';
+import Expenses from './pages/Expenses';
+import FollowUps from './pages/FollowUps';
+import IntakeForms from './pages/IntakeForms';
+import Marketing from './pages/Marketing';
+import MeetingMinutes from './pages/MeetingMinutes';
+import Mileage from './pages/Mileage';
+import PricingProposals from './pages/PricingProposals';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "Dashboard": Dashboard,
-    "Clients": Clients,
     "Appointments": Appointments,
-    "MeetingMinutes": MeetingMinutes,
-    "FollowUps": FollowUps,
-    "Marketing": Marketing,
-    "Mileage": Mileage,
-    "Expenses": Expenses,
-    "IntakeForms": IntakeForms,
-    "PricingProposals": PricingProposals,
-    "EntertainmentProposals": EntertainmentProposals,
     "BusinessCard": BusinessCard,
+    "Clients": Clients,
+    "Dashboard": Dashboard,
+    "EntertainmentProposals": EntertainmentProposals,
+    "Expenses": Expenses,
+    "FollowUps": FollowUps,
+    "IntakeForms": IntakeForms,
+    "Marketing": Marketing,
+    "MeetingMinutes": MeetingMinutes,
+    "Mileage": Mileage,
+    "PricingProposals": PricingProposals,
 }
 
 export const pagesConfig = {
