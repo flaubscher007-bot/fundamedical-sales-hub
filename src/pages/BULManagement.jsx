@@ -160,15 +160,16 @@ export default function BULManagement() {
   const handleDownloadTemplate = async () => {
     try {
       const response = await base44.functions.invoke('generateBULTemplate', {});
-      const blob = new Blob([response.data], { type: 'text/csv' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'BUL_Team_Template.csv';
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      a.remove();
+      const csvContent = typeof response.data === 'string' ? response.data : JSON.stringify(response.data);
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', 'BUL_Team_Template.csv');
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     } catch (error) {
       alert('Download failed: ' + error.message);
     }
