@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { canAccessPage } from "@/components/rolePermissions";
+import OnboardingTour from "@/components/OnboardingTour";
 import {
   LayoutDashboard,
   Users,
@@ -43,6 +44,7 @@ const mainNavItems = [
   { name: "BUL Performance", icon: TrendingUp, page: "BULPerformance" },
   { name: "Company Targets", icon: TrendingUp, page: "CompanyTargets" },
   { name: "User Management", icon: Users, page: "UserManagement" },
+  { name: "Help", icon: FileText, page: "Help" },
 ];
 
 const powerBIItems = [
@@ -69,9 +71,22 @@ export default function Layout({ children, currentPageName }) {
     powerBIItems.some(i => i.page === currentPageName)
   );
   const [user, setUser] = useState(null);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => {
+    base44.auth.me().then(async (u) => {
+      setUser(u);
+      // Check if user has seen onboarding
+      try {
+        const prefs = await base44.entities.UserPreference.filter({ user_email: u.email });
+        if (!prefs || prefs.length === 0 || !prefs[0].has_seen_onboarding) {
+          setShowOnboarding(true);
+        }
+      } catch (error) {
+        // On first load, show onboarding
+        setShowOnboarding(true);
+      }
+    }).catch(() => {
       base44.auth.redirectToLogin();
     });
   }, []);
@@ -116,6 +131,7 @@ export default function Layout({ children, currentPageName }) {
 
   return (
     <div className="min-h-screen bg-slate-50 flex pb-safe">
+      {showOnboarding && <OnboardingTour onComplete={() => setShowOnboarding(false)} />}
       <PWAInstallBanner />
       {sidebarOpen && (
         <div className="fixed inset-0 bg-black/40 z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />
