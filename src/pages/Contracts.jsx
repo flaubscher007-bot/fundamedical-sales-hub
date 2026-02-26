@@ -17,8 +17,8 @@ export default function Contracts() {
           <FileBadge className="w-6 h-6 text-[#00bcd4]" />
         </div>
         <div>
-          <h1 className="text-xl font-bold text-slate-800">Contracts</h1>
-          <p className="text-sm text-slate-500">Manage intake forms, contract templates and completed contracts</p>
+          <h1 className="text-xl font-bold text-slate-800">Contract Tools</h1>
+          <p className="text-sm text-slate-500">Manage intake forms, pricing proposals, contract templates and completed contracts</p>
         </div>
       </div>
 
