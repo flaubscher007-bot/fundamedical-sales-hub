@@ -73,17 +73,21 @@ export default function Clients() {
   const openEdit = (c) => { setEditingClient(c); setForm(c); setDialogOpen(true); };
   const closeDialog = () => { setDialogOpen(false); setEditingClient(null); setForm(emptyClient); };
 
-  // Unique BULs for filter
   const buls = [...new Set(clients.map(c => c.business_unit_leader).filter(Boolean))].sort();
+  const caseAdmins = [...new Set(clients.map(c => c.case_administrator).filter(Boolean))].sort();
+  const financeClerks = [...new Set(clients.map(c => c.finance_clerk).filter(Boolean))].sort();
 
   const filtered = clients.filter((c) => {
-    const matchSearch =
+    const matchSearch = !search ||
       c.firm_name?.toLowerCase().includes(search.toLowerCase()) ||
       c.business_unit_leader?.toLowerCase().includes(search.toLowerCase()) ||
-      c.case_administrator?.toLowerCase().includes(search.toLowerCase());
+      c.case_administrator?.toLowerCase().includes(search.toLowerCase()) ||
+      c.finance_clerk?.toLowerCase().includes(search.toLowerCase());
     const matchActivity = activityFilter === "all" || c.activity_status === activityFilter;
     const matchBul = bulFilter === "all" || c.business_unit_leader === bulFilter;
-    return matchSearch && matchActivity && matchBul;
+    const matchCa = caFilter === "all" || c.case_administrator === caFilter;
+    const matchFc = fcFilter === "all" || c.finance_clerk === fcFilter;
+    return matchSearch && matchActivity && matchBul && matchCa && matchFc;
   });
 
   return (
