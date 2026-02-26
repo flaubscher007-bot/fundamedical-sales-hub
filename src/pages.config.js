@@ -71,6 +71,7 @@ import FinanceDashboard from './pages/FinanceDashboard';
 import Finance from './pages/Finance';
 import FinanceReporting from './pages/FinanceReporting';
 import Alerts from './pages/Alerts';
+import ClientPortal from './pages/ClientPortal';
 import __Layout from './Layout.jsx';
 
 
@@ -99,6 +100,7 @@ export const PAGES = {
     "Finance": Finance,
     "FinanceReporting": FinanceReporting,
     "Alerts": Alerts,
+    "ClientPortal": ClientPortal,
 }
 
 export const pagesConfig = {
