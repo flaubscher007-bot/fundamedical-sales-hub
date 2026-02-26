@@ -108,4 +108,15 @@
     position: relative;
     z-index: 1;
   }
+
+  .funda-gradient {
+    background: linear-gradient(135deg, #0f3a52 0%, #0d2d3e 50%, #001f2e 100%);
+    background-image: 
+      url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolygon points='60,0 103.9,30 103.9,90 60,120 16.1,90 16.1,30' fill='%237ed957' opacity='0.08'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg width='150' height='150' viewBox='0 0 150 150' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolygon points='75,0 129.9,37.5 129.9,112.5 75,150 20.1,112.5 20.1,37.5' fill='%2300bcd4' opacity='0.06'/%3E%3C/svg%3E");
+    background-size: 400px 400px, 550px 550px;
+    background-position: 0 0, 75px 75px;
+    background-repeat: repeat;
+    background-attachment: fixed;
+  }
 }
