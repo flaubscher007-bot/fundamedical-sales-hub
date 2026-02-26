@@ -44,11 +44,14 @@ export default function BULManagement() {
   const [bulkInviting, setBulkInviting] = useState(false);
   const [user, setUser] = useState(null);
   const [sendingInvite, setSendingInvite] = useState(null);
+  const [editingUser, setEditingUser] = useState(null);
+  const [editForm, setEditForm] = useState({ full_name: "", role: "" });
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
   const qc = useQueryClient();
 
   useEffect(() => {
     base44.auth.me().then(u => {
-      if (u && !['admin', 'Sales Manager'].includes(u.role)) {
+      if (u && !['admin', 'sales_manager', 'senior_management'].includes(u.role)) {
         window.location.href = '/';
       }
       setUser(u);
@@ -111,6 +114,26 @@ export default function BULManagement() {
   const deleteTeamAssignmentMutation = useMutation({
     mutationFn: (id) => base44.entities.TeamAssignment.delete(id),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["teamAssignments"] }); },
+  });
+
+  const updateUserMutation = useMutation({
+    mutationFn: (data) => base44.functions.invoke('updateUserByAdmin', { 
+      userId: editingUser?.id,
+      full_name: data.full_name, 
+      role: data.role 
+    }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["users"] });
+      setEditDialogOpen(false);
+      setEditingUser(null);
+    },
+  });
+
+  const deleteUserMutation = useMutation({
+    mutationFn: (userId) => base44.functions.invoke('deleteUserByAdmin', { userId }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["users"] });
+    },
   });
 
   const openNewTarget = () => {
@@ -307,7 +330,7 @@ export default function BULManagement() {
       </div>
 
       <Tabs defaultValue="targets" className="w-full">
-         <TabsList className="grid w-full grid-cols-6">
+         <TabsList className="grid w-full grid-cols-7">
            <TabsTrigger value="targets" className="flex items-center gap-2">
              <TargetIcon className="w-4 h-4" /> Targets
            </TabsTrigger>
@@ -320,8 +343,11 @@ export default function BULManagement() {
            <TabsTrigger value="organization" className="flex items-center gap-2">
              <Users className="w-4 h-4" /> Organization
            </TabsTrigger>
-           {user && ['admin', 'Sales Manager'].includes(user.role) && (
+           {user && ['admin', 'sales_manager', 'senior_management'].includes(user.role) && (
              <>
+               <TabsTrigger value="management" className="flex items-center gap-2">
+                 <Users className="w-4 h-4" /> Management
+               </TabsTrigger>
                <TabsTrigger value="reports" className="flex items-center gap-2">
                  <BarChart3 className="w-4 h-4" /> Performance Reports
                </TabsTrigger>
@@ -667,8 +693,91 @@ export default function BULManagement() {
           </div>
         </TabsContent>
 
+        {/* MANAGEMENT TAB */}
+        {user && ['admin', 'sales_manager', 'senior_management'].includes(user.role) && (
+          <TabsContent value="management" className="space-y-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-slate-800">Senior Management</h3>
+              {canPerformAction(user?.role, 'User', 'create') && (
+                <Button onClick={() => setInviteDialogOpen(true)} className="bg-green-600 hover:bg-green-700">
+                  <Plus className="w-4 h-4 mr-2" /> Add Management User
+                </Button>
+              )}
+            </div>
+            <Card>
+              <CardContent className="p-0">
+                {users.filter(u => ['admin', 'sales_manager', 'senior_management'].includes(u.role)).length === 0 ? (
+                  <div className="p-12 text-center">
+                    <p className="text-slate-500">No management users yet</p>
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead className="bg-slate-50 border-b border-slate-200">
+                        <tr>
+                          <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Name</th>
+                          <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Email</th>
+                          <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Role</th>
+                          <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Created</th>
+                          <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-200">
+                        {users.filter(u => ['admin', 'sales_manager', 'senior_management'].includes(u.role)).map((u) => (
+                          <tr key={u.id} className="hover:bg-slate-50 transition-colors">
+                            <td className="px-6 py-4 text-sm font-medium text-slate-800">{u.full_name || "-"}</td>
+                            <td className="px-6 py-4 text-sm text-slate-600">{u.email}</td>
+                            <td className="px-6 py-4 text-sm">
+                              <span className="inline-block px-3 py-1 rounded-full bg-[#00bcd4]/10 text-[#00bcd4] text-xs font-medium">
+                                {u.role?.replace('_', ' ').toUpperCase() || "UNKNOWN"}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 text-sm text-slate-500">
+                              {new Date(u.created_date).toLocaleDateString('en-ZA')}
+                            </td>
+                            <td className="px-6 py-4 text-sm flex gap-2">
+                              {canPerformAction(user?.role, 'User', 'edit') && (
+                                <Button 
+                                  variant="ghost" 
+                                  size="icon" 
+                                  onClick={() => {
+                                    setEditingUser(u);
+                                    setEditForm({ full_name: u.full_name || "", role: u.role || "senior_management" });
+                                    setEditDialogOpen(true);
+                                  }}
+                                  title="Edit user"
+                                >
+                                  <Pencil className="w-4 h-4 text-slate-600" />
+                                </Button>
+                              )}
+                              {canPerformAction(user?.role, 'User', 'delete') && (
+                                <Button 
+                                  variant="ghost" 
+                                  size="icon" 
+                                  onClick={() => {
+                                    if (confirm(`Remove ${u.full_name || u.email}?`)) {
+                                      deleteUserMutation.mutate(u.id);
+                                    }
+                                  }}
+                                  title="Remove user"
+                                >
+                                  <Trash2 className="w-4 h-4 text-red-500" />
+                                </Button>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        )}
+
         {/* PERFORMANCE REPORTS TAB */}
-        {user && ['admin', 'Sales Manager'].includes(user.role) && (
+        {user && ['admin', 'sales_manager', 'senior_management'].includes(user.role) && (
           <TabsContent value="reports" className="space-y-4">
             <div>
               <h3 className="text-lg font-semibold text-slate-800 mb-4">Performance Reports</h3>
@@ -678,7 +787,7 @@ export default function BULManagement() {
         )}
 
         {/* ACTIVITY LOG TAB */}
-        {user && ['admin', 'Sales Manager'].includes(user.role) && (
+        {user && ['admin', 'sales_manager', 'senior_management'].includes(user.role) && (
           <TabsContent value="activity" className="space-y-4">
             <div>
               <h3 className="text-lg font-semibold text-slate-800 mb-4">Team Activity Log</h3>
@@ -905,6 +1014,44 @@ export default function BULManagement() {
            </Button>
          </DialogFooter>
        </DialogContent>
+      </Dialog>
+
+      {/* EDIT MANAGEMENT USER DIALOG */}
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader><DialogTitle>Edit Management User</DialogTitle></DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <Label>Full Name</Label>
+              <Input 
+                value={editForm.full_name} 
+                onChange={(e) => setEditForm({ ...editForm, full_name: e.target.value })} 
+                placeholder="Full name"
+              />
+            </div>
+            <div>
+              <Label>Role</Label>
+              <Select value={editForm.role} onValueChange={(v) => setEditForm({ ...editForm, role: v })}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="admin">Admin</SelectItem>
+                  <SelectItem value="sales_manager">Sales Manager</SelectItem>
+                  <SelectItem value="senior_management">Senior Management</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditDialogOpen(false)}>Cancel</Button>
+            <Button 
+              onClick={() => updateUserMutation.mutate(editForm)} 
+              disabled={updateUserMutation.isPending}
+              className="bg-[#00bcd4] hover:bg-[#0097a7]"
+            >
+              {updateUserMutation.isPending ? 'Saving...' : 'Save Changes'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
       </Dialog>
       </div>
       );
