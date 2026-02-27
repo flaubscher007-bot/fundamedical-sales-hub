@@ -116,7 +116,8 @@ export default function ExpertImportManager() {
       setLoading(true);
       const created = [];
       const updated = [];
-      const failed = [];
+      const failedCreations = [];
+      const failedUpdates = [];
 
       // Create new experts
       for (const record of preview.toCreate) {
@@ -124,7 +125,11 @@ export default function ExpertImportManager() {
           const result = await base44.entities.Expert.create(record);
           created.push(result);
         } catch (err) {
-          failed.push({ ...record, error: err.message });
+          failedCreations.push({ 
+            ...record, 
+            error: err.message,
+            type: "creation"
+          });
         }
       }
 
@@ -135,13 +140,24 @@ export default function ExpertImportManager() {
           await base44.entities.Expert.update(id, data);
           updated.push(record);
         } catch (err) {
-          failed.push({ ...record, error: err.message });
+          failedUpdates.push({ 
+            ...record, 
+            error: err.message,
+            type: "update"
+          });
         }
       }
 
-      setResults({ created: created.length, updated: updated.length, failed: failed.length });
+      setResults({ 
+        created: created.length, 
+        updated: updated.length, 
+        failedCreations,
+        failedUpdates,
+        totalFailed: failedCreations.length + failedUpdates.length
+      });
       setPreview(null);
       setFile(null);
+      setValidationErrors([]);
       setLoading(false);
     } catch (err) {
       setError(err.message || "Error during import");
