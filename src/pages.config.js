@@ -63,6 +63,7 @@ import Clients from './pages/Clients';
 import Collaboration from './pages/Collaboration';
 import CompanyTargets from './pages/CompanyTargets';
 import Contracts from './pages/Contracts';
+import CustomReports from './pages/CustomReports';
 import Dashboard from './pages/Dashboard';
 import EntertainmentProposals from './pages/EntertainmentProposals';
 import Expenses from './pages/Expenses';
@@ -80,13 +81,12 @@ import Marketing from './pages/Marketing';
 import MeetingMinutes from './pages/MeetingMinutes';
 import Mileage from './pages/Mileage';
 import PricingProposals from './pages/PricingProposals';
+import RoleManagement from './pages/RoleManagement';
 import SocialMedia from './pages/SocialMedia';
 import TeamCalendar from './pages/TeamCalendar';
 import UserManagement from './pages/UserManagement';
 import UserProfile from './pages/UserProfile';
-import RoleManagement from './pages/RoleManagement';
 import UserRoleManagement from './pages/UserRoleManagement';
-import CustomReports from './pages/CustomReports';
 import __Layout from './Layout.jsx';
 
 
@@ -107,6 +107,7 @@ export const PAGES = {
     "Collaboration": Collaboration,
     "CompanyTargets": CompanyTargets,
     "Contracts": Contracts,
+    "CustomReports": CustomReports,
     "Dashboard": Dashboard,
     "EntertainmentProposals": EntertainmentProposals,
     "Expenses": Expenses,
@@ -124,13 +125,12 @@ export const PAGES = {
     "MeetingMinutes": MeetingMinutes,
     "Mileage": Mileage,
     "PricingProposals": PricingProposals,
+    "RoleManagement": RoleManagement,
     "SocialMedia": SocialMedia,
     "TeamCalendar": TeamCalendar,
     "UserManagement": UserManagement,
     "UserProfile": UserProfile,
-    "RoleManagement": RoleManagement,
     "UserRoleManagement": UserRoleManagement,
-    "CustomReports": CustomReports,
 }
 
 export const pagesConfig = {

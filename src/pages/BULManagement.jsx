@@ -805,13 +805,13 @@ export default function BULManagement() {
             <div>
               <Label>Business Unit Leader *</Label>
               <Select value={targetForm.bul_name || ""} onValueChange={(value) => {
-                const user = users.find(u => (u.full_name || u.email).toUpperCase() === value.toUpperCase());
-                setTargetForm({ ...targetForm, bul_name: value, bul_email: user?.email || "" });
+                const bul = teamAssignments.find(t => t.role === "Business Unit Leader" && t.person_name === value);
+                setTargetForm({ ...targetForm, bul_name: value, bul_email: bul?.person_email || "" });
               }}>
                 <SelectTrigger><SelectValue placeholder="Select BUL" /></SelectTrigger>
                 <SelectContent>
-                  {users.map(user => (
-                    <SelectItem key={user.id} value={user.full_name || user.email}>{user.full_name || user.email}</SelectItem>
+                  {teamAssignments.filter(t => t.role === "Business Unit Leader").map(bul => (
+                    <SelectItem key={bul.id} value={bul.person_name}>{bul.person_name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -857,13 +857,13 @@ export default function BULManagement() {
             <div>
               <Label>Business Unit Leader *</Label>
               <Select value={leaveForm.bul_name || ""} onValueChange={(value) => {
-                const user = users.find(u => (u.full_name || u.email).toUpperCase() === value.toUpperCase());
-                setLeaveForm({ ...leaveForm, bul_name: value, bul_email: user?.email || "" });
+                const bul = teamAssignments.find(t => t.role === "Business Unit Leader" && t.person_name === value);
+                setLeaveForm({ ...leaveForm, bul_name: value, bul_email: bul?.person_email || "" });
               }}>
                 <SelectTrigger><SelectValue placeholder="Select BUL" /></SelectTrigger>
                 <SelectContent>
-                  {users.map(user => (
-                    <SelectItem key={user.id} value={user.full_name || user.email}>{user.full_name || user.email}</SelectItem>
+                  {teamAssignments.filter(t => t.role === "Business Unit Leader").map(bul => (
+                    <SelectItem key={bul.id} value={bul.person_name}>{bul.person_name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
