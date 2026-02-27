@@ -356,33 +356,35 @@ export default function BULManagement() {
       </div>
 
       <Tabs defaultValue="targets" className="w-full">
-         <TabsList className="grid w-full grid-cols-7">
-           <TabsTrigger value="targets" className="flex items-center gap-2">
-             <TargetIcon className="w-4 h-4" /> Targets
-           </TabsTrigger>
-           <TabsTrigger value="goals" className="flex items-center gap-2">
-             <TargetIcon className="w-4 h-4" /> Goals
-           </TabsTrigger>
-           <TabsTrigger value="leave" className="flex items-center gap-2">
-             <Calendar className="w-4 h-4" /> Leave Approval
-           </TabsTrigger>
-           <TabsTrigger value="organization" className="flex items-center gap-2">
-             <Users className="w-4 h-4" /> Organization
-           </TabsTrigger>
-           {user && ['admin', 'sales_manager', 'senior_management'].includes(user.role) && (
-             <>
-               <TabsTrigger value="management" className="flex items-center gap-2">
-                 <Users className="w-4 h-4" /> Management
-               </TabsTrigger>
-               <TabsTrigger value="reports" className="flex items-center gap-2">
-                 <BarChart3 className="w-4 h-4" /> Performance Reports
-               </TabsTrigger>
-               <TabsTrigger value="activity" className="flex items-center gap-2">
-                 <Activity className="w-4 h-4" /> Activity Log
-               </TabsTrigger>
-             </>
-           )}
-         </TabsList>
+         <div className="overflow-x-auto pb-1">
+           <TabsList className="flex w-max min-w-full md:grid md:w-full md:grid-cols-7">
+             <TabsTrigger value="targets" className="flex items-center gap-1.5 whitespace-nowrap">
+               <TargetIcon className="w-4 h-4" /> Targets
+             </TabsTrigger>
+             <TabsTrigger value="goals" className="flex items-center gap-1.5 whitespace-nowrap">
+               <TargetIcon className="w-4 h-4" /> Goals
+             </TabsTrigger>
+             <TabsTrigger value="leave" className="flex items-center gap-1.5 whitespace-nowrap">
+               <Calendar className="w-4 h-4" /> Leave
+             </TabsTrigger>
+             <TabsTrigger value="organization" className="flex items-center gap-1.5 whitespace-nowrap">
+               <Users className="w-4 h-4" /> Organisation
+             </TabsTrigger>
+             {user && ['admin', 'sales_manager', 'senior_management'].includes(user.role) && (
+               <>
+                 <TabsTrigger value="management" className="flex items-center gap-1.5 whitespace-nowrap">
+                   <Users className="w-4 h-4" /> Management
+                 </TabsTrigger>
+                 <TabsTrigger value="reports" className="flex items-center gap-1.5 whitespace-nowrap">
+                   <BarChart3 className="w-4 h-4" /> Reports
+                 </TabsTrigger>
+                 <TabsTrigger value="activity" className="flex items-center gap-1.5 whitespace-nowrap">
+                   <Activity className="w-4 h-4" /> Activity
+                 </TabsTrigger>
+               </>
+             )}
+           </TabsList>
+         </div>
 
         {/* TARGETS TAB */}
          <TabsContent value="targets" className="space-y-4">
