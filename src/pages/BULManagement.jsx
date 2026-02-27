@@ -21,7 +21,11 @@ import { canPerformAction, shouldShowActionButton } from "@/components/entityPer
 // Empty states
 const emptyTarget = { bul_name: "", bul_email: "", month: "", bookings_target: "", reports_target: "", collections_target: "", notes: "" };
 const emptyLeave = { bul_name: "", bul_email: "", start_date: "", end_date: "", leave_type: "Annual", reason: "", status: "Pending", notes: "" };
-const emptyTeamAssignment = { person_name: "", person_email: "", role: "Business Unit Leader", phone: "", team: "" };
+const emptyTeamAssignment = { person_name: "", person_email: "", role: "Senior Management", phone: "", team: "" };
+
+// Senior Management section (only visible to admins)
+const SENIOR_MANAGEMENT_ROLES = ["Senior Management"];
+const OTHER_ROLES = ["Business Unit Leader", "Key Accounts Consultant", "Finance Clerk", "Case Administrator", "Distribution"];
 
 const ROLES = ["Senior Management", "Business Unit Leader", "Key Accounts Consultant", "Finance Clerk", "Case Administrator", "Distribution"];
 const TEAMS = ["Kopano", "Kutlwano", "Sisonke", "Nasira"];
