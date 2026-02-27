@@ -90,7 +90,7 @@ export default function DashboardCharts({ clients, statements, contracts, propos
         {/* Client Status Distribution */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Client Status Distribution</CardTitle>
+            <CardTitle className="text-lg" style={{color: '#34CCD0'}}>Client Status Distribution</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={250}>
