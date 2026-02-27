@@ -7,12 +7,20 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { AlertCircle, Upload, CheckCircle2, AlertTriangle, Loader2, Info, X } from "lucide-react";
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const validateEmail = (email) => {
+  if (!email) return true; // Email is optional
+  return EMAIL_REGEX.test(email);
+};
+
 export default function ExpertImportManager() {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState(null);
   const [results, setResults] = useState(null);
   const [error, setError] = useState(null);
+  const [validationErrors, setValidationErrors] = useState([]);
 
   const handleFileSelect = async (e) => {
     const selectedFile = e.target.files?.[0];
