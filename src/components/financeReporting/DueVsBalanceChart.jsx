@@ -22,7 +22,7 @@ export default function DueVsBalanceChart({ statements }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">Top 10 Firms: Due vs Balance</CardTitle>
+        <CardTitle className="text-lg" style={{color: '#34CCD0'}}>Top 10 Firms: Due vs Balance</CardTitle>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>

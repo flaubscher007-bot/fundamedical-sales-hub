@@ -35,7 +35,7 @@ export default function PaymentStatusDistribution({ statements }) {
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg">Payment Status Distribution</CardTitle>
+          <CardTitle className="text-lg" style={{color: '#34CCD0'}}>Payment Status Distribution</CardTitle>
           <div className="flex gap-2">
             <Button
               size="sm"
@@ -106,19 +106,19 @@ export default function PaymentStatusDistribution({ statements }) {
             {/* Status Breakdown */}
             <div className="mt-6 grid grid-cols-2 md:grid-cols-3 gap-3">
               {statusData.map((item, idx) => (
-                <div key={idx} className="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                <div key={idx} className="p-3 rounded-lg border" style={{backgroundColor: '#0a1e3a', borderColor: '#34CCD0', borderWidth: '1px'}}>
                   <div className="flex items-center gap-2 mb-1">
                     <div
                       className="w-3 h-3 rounded-full"
                       style={{ backgroundColor: COLORS[idx % COLORS.length] }}
                     />
-                    <p className="text-xs font-medium text-slate-700 truncate">
+                    <p className="text-xs font-medium truncate" style={{color: '#92F21D'}}>
                       {item.name}
                     </p>
                   </div>
-                  <p className="text-sm font-bold text-slate-900">
+                  <p className="text-sm font-bold" style={{color: '#34CCD0'}}>
                     {item.count}
-                    <span className="text-xs text-slate-600 font-normal ml-1">
+                    <span className="text-xs font-normal ml-1" style={{color: '#ffffff'}}>
                       ({((item.count / totalFirms) * 100).toFixed(0)}%)
                     </span>
                   </p>
@@ -127,7 +127,7 @@ export default function PaymentStatusDistribution({ statements }) {
             </div>
           </>
         ) : (
-          <div className="flex items-center justify-center h-[300px] text-slate-500">
+          <div className="flex items-center justify-center h-[300px]" style={{color: '#ffffff'}}>
             No status data available
           </div>
         )}

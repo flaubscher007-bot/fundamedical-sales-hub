@@ -20,6 +20,13 @@ export default function MetricCard({ title, value, icon: Icon, color, isCurrency
     slate: "text-slate-600 bg-slate-50",
   };
 
+  const colorStyles = {
+    green: {color: '#92F21D', backgroundColor: 'rgba(146, 242, 29, 0.1)'},
+    orange: {color: '#92F21D', backgroundColor: 'rgba(146, 242, 29, 0.1)'},
+    red: {color: '#92F21D', backgroundColor: 'rgba(146, 242, 29, 0.1)'},
+    slate: {color: '#92F21D', backgroundColor: 'rgba(146, 242, 29, 0.1)'},
+  };
+
   const bgClass = colorClasses[color] || colorClasses.slate;
 
   return (
@@ -27,10 +34,10 @@ export default function MetricCard({ title, value, icon: Icon, color, isCurrency
       <CardContent className="pt-6">
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-xs font-medium text-slate-600 mb-1">{title}</p>
-            <p className="text-2xl font-bold text-slate-900">{formatValue(value)}</p>
+            <p className="text-xs font-medium mb-1" style={{color: '#ffffff'}}>{title}</p>
+            <p className="text-2xl font-bold" style={{color: '#34CCD0'}}>{formatValue(value)}</p>
           </div>
-          <div className={`p-2 rounded-lg ${bgClass}`}>
+          <div className="p-2 rounded-lg" style={colorStyles[color] || colorStyles.slate}>
             <Icon className="w-5 h-5" />
           </div>
         </div>

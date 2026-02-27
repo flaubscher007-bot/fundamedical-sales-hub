@@ -61,15 +61,15 @@ export default function FinanceReporting() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-slate-900">Finance Reporting</h1>
-        <p className="text-sm text-slate-600 mt-1">Key financial metrics and trends</p>
+        <h1 className="text-3xl font-bold" style={{color: '#92F21D', textShadow: '0 0 8px rgba(146, 242, 29, 0.2)'}}>Finance Reporting</h1>
+        <p className="text-sm mt-1" style={{color: '#ffffff'}}>Key financial metrics and trends</p>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg border border-slate-200 p-4">
+      <div className="rounded-lg border p-4" style={{backgroundColor: '#0a1e3a', borderColor: '#34CCD0', borderWidth: '2px'}}>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
-            <label className="text-xs font-medium text-slate-700 block mb-2">Search Firm</label>
+            <label className="text-xs font-medium block mb-2" style={{color: '#92F21D'}}>Search Firm</label>
             <Input
               placeholder="Search law firm..."
               value={searchFirm}
@@ -79,7 +79,7 @@ export default function FinanceReporting() {
           </div>
 
           <div>
-            <label className="text-xs font-medium text-slate-700 block mb-2">Business Unit</label>
+            <label className="text-xs font-medium block mb-2" style={{color: '#92F21D'}}>Business Unit</label>
             <Select value={filterBU} onValueChange={setFilterBU}>
               <SelectTrigger className="h-9">
                 <SelectValue />
@@ -94,7 +94,7 @@ export default function FinanceReporting() {
           </div>
 
           <div>
-            <label className="text-xs font-medium text-slate-700 block mb-2">Status</label>
+            <label className="text-xs font-medium block mb-2" style={{color: '#92F21D'}}>Status</label>
             <Select value={filterStatus} onValueChange={setFilterStatus}>
               <SelectTrigger className="h-9">
                 <SelectValue />
@@ -109,7 +109,7 @@ export default function FinanceReporting() {
           </div>
 
           <div className="flex items-end">
-            <div className="text-xs text-slate-600">
+            <div className="text-xs" style={{color: '#ffffff'}}>
               Showing <span className="font-semibold">{metrics.firmCount}</span> firms
             </div>
           </div>

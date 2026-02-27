@@ -41,7 +41,7 @@ export default function MonthlyTrendChart({ statements }) {
     <div className="space-y-4">
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">12-Month Trend: Total Due vs Balance</CardTitle>
+          <CardTitle className="text-lg" style={{color: '#34CCD0'}}>12-Month Trend: Total Due vs Balance</CardTitle>
         </CardHeader>
         <CardContent>
           {monthlyData.length > 0 ? (
@@ -85,24 +85,24 @@ export default function MonthlyTrendChart({ statements }) {
               </LineChart>
             </ResponsiveContainer>
           ) : (
-            <div className="flex items-center justify-center h-[300px] text-slate-500">
+            <div className="flex items-center justify-center h-[300px]" style={{color: '#ffffff'}}>
               No trend data available
             </div>
           )}
-          <p className="text-xs text-slate-500 text-center mt-2">Click on the chart to drill down into a specific month</p>
+          <p className="text-xs text-center mt-2" style={{color: '#ffffff'}}>Click on the chart to drill down into a specific month</p>
         </CardContent>
       </Card>
 
       {/* Drill-down details */}
       {drillDownData && (
-        <Card className="border-l-4 border-l-blue-600 bg-blue-50">
+        <Card style={{borderLeft: '4px solid #34CCD0', backgroundColor: '#0a1e3a'}}>
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="text-base">
+                <CardTitle className="text-base" style={{color: '#34CCD0'}}>
                   Drill-down: {drillDownData.month}
                 </CardTitle>
-                <p className="text-xs text-slate-600 mt-1">
+                <p className="text-xs mt-1" style={{color: '#ffffff'}}>
                   {drillDownData.count} firm{drillDownData.count !== 1 ? "s" : ""} in this month
                 </p>
               </div>
@@ -118,14 +118,14 @@ export default function MonthlyTrendChart({ statements }) {
           <CardContent>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-xs text-slate-600 font-medium">Total Due</p>
-                <p className="text-2xl font-bold text-orange-600">
+                <p className="text-xs font-medium" style={{color: '#ffffff'}}>Total Due</p>
+                <p className="text-2xl font-bold" style={{color: '#92F21D'}}>
                   {formatCurrency(drillDownData.totalDue)}
                 </p>
               </div>
               <div>
-                <p className="text-xs text-slate-600 font-medium">Total Balance</p>
-                <p className="text-2xl font-bold text-red-600">
+                <p className="text-xs font-medium" style={{color: '#ffffff'}}>Total Balance</p>
+                <p className="text-2xl font-bold" style={{color: '#92F21D'}}>
                   {formatCurrency(drillDownData.totalBalance)}
                 </p>
               </div>

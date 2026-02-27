@@ -38,7 +38,7 @@ export default function AgingAnalysisChart({ statements }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">Balance Aging Analysis</CardTitle>
+        <CardTitle className="text-lg" style={{color: '#34CCD0'}}>Balance Aging Analysis</CardTitle>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>
@@ -64,8 +64,8 @@ export default function AgingAnalysisChart({ statements }) {
                 className="h-2 rounded-full mb-1 mx-auto"
                 style={{ width: "30px", backgroundColor: colors[idx] }}
               />
-              <p className="text-slate-600">{item.bucket}</p>
-              <p className="font-semibold">{formatCurrency(item.value)}</p>
+              <p style={{color: '#ffffff'}}>{item.bucket}</p>
+              <p className="font-semibold" style={{color: '#92F21D'}}>{formatCurrency(item.value)}</p>
             </div>
           ))}
         </div>

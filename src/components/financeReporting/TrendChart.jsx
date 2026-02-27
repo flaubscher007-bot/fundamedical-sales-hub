@@ -31,7 +31,7 @@ export default function TrendChart({ statements, filteredStatements }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">Trend Analysis (Last 30 Days)</CardTitle>
+        <CardTitle className="text-lg" style={{color: '#34CCD0'}}>Trend Analysis (Last 30 Days)</CardTitle>
       </CardHeader>
       <CardContent>
         {trendData.length > 0 ? (
@@ -68,7 +68,7 @@ export default function TrendChart({ statements, filteredStatements }) {
             </LineChart>
           </ResponsiveContainer>
         ) : (
-          <div className="flex items-center justify-center h-[300px] text-slate-500">
+          <div className="flex items-center justify-center h-[300px]" style={{color: '#ffffff'}}>
             No trend data available with current filters
           </div>
         )}
