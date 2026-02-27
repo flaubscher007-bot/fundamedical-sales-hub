@@ -50,8 +50,6 @@ const expertItems = [
 ];
 
 const mainNavItems = [
-  { name: "Experts", icon: Stethoscope, page: "Experts" },
-  { name: "Import Experts", icon: Upload, page: "ExpertImportManager" },
   { name: "Appointment Tools", icon: Wrench, page: "AppointmentTools" },
   { name: "Contract Tools", icon: FileBadge, page: "Contracts" },
   { name: "Expense Tools", icon: Receipt, page: "ExpensesHub" },
