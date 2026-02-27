@@ -50,6 +50,8 @@ export default function Experts() {
   const [scheduleExpert, setScheduleExpert] = useState(null);
   const [view, setView] = useState("experts"); // "experts" | "schedule"
 
+  const hasActiveFilters = search || disciplineFilter !== "all" || activeFilter !== "all" || selectedBul !== "all";
+
   const qc = useQueryClient();
 
   const { data: experts = [] } = useQuery({
