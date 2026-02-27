@@ -215,4 +215,29 @@
       @apply p-8;
     }
   }
+
+  /* Page headings */
+  h2 {
+    color: #92F21D;
+    text-shadow: 0 0 8px rgba(146, 242, 29, 0.2);
+  }
+
+  /* Table text colors */
+  table {
+    @apply text-white;
+  }
+
+  table thead th {
+    @apply text-[#92F21D];
+  }
+
+  table tbody td {
+    @apply text-white;
+  }
+
+  table tbody td.text-slate-800,
+  table tbody td.text-slate-600,
+  table tbody td.text-slate-500 {
+    @apply text-white;
+  }
 }

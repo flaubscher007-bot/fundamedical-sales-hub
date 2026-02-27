@@ -148,8 +148,8 @@ export default function UserManagement() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
          <div>
-           <h2 className="text-2xl font-bold text-slate-800">User Management</h2>
-           <p className="text-sm text-slate-600 mt-1">Manage app users and roles</p>
+           <h2 className="text-2xl font-bold text-[#92F21D]">User Management</h2>
+           <p className="text-sm text-white mt-1">Manage app users and roles</p>
          </div>
          <div className="flex gap-2">
            <Link to={createPageUrl('BULManagement')}>
@@ -181,26 +181,26 @@ export default function UserManagement() {
               <table className="w-full">
                 <thead className="bg-slate-50 border-b border-slate-200">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Name</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Email</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Role</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Created</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700">Actions</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-[#92F21D]">Name</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-[#92F21D]">Email</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-[#92F21D]">Role</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-[#92F21D]">Created</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-[#92F21D]">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200">
                   {users.map((u) => (
-                    <tr key={u.id} className="hover:bg-slate-50 transition-colors">
-                      <td className="px-6 py-4 text-sm font-medium text-slate-800">{u.full_name || "-"}</td>
-                      <td className="px-6 py-4 text-sm text-slate-600">{u.email}</td>
-                      <td className="px-6 py-4 text-sm">
-                        <span className="inline-block px-3 py-1 rounded-full bg-[#00bcd4]/10 text-[#00bcd4] text-xs font-medium">
-                          {u.role || "team_member"}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-slate-500">
-                        {new Date(u.created_date).toLocaleDateString('en-ZA')}
-                      </td>
+                     <tr key={u.id} className="hover:bg-slate-50 transition-colors">
+                       <td className="px-6 py-4 text-sm font-medium text-[#92F21D]">{u.full_name || "-"}</td>
+                       <td className="px-6 py-4 text-sm text-white">{u.email}</td>
+                       <td className="px-6 py-4 text-sm">
+                         <span className="inline-block px-3 py-1 rounded-full bg-[#00bcd4]/10 text-[#00bcd4] text-xs font-medium">
+                           {u.role || "team_member"}
+                         </span>
+                       </td>
+                       <td className="px-6 py-4 text-sm text-white">
+                         {new Date(u.created_date).toLocaleDateString('en-ZA')}
+                       </td>
                       <td className="px-6 py-4 text-sm flex gap-2">
                         {canPerformAction(user?.role, 'User', 'edit') && (
                           <Button 
