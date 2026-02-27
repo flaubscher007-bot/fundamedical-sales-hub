@@ -383,6 +383,34 @@
   .text-black,
   [style="color: #000"],
   [style*="color: black"] {
-    color: #34CCD0 !important;
+    color: #92F21D !important;
+  }
+
+  /* Override all grey and muted text colors to white */
+  .text-gray-100,
+  .text-gray-200,
+  .text-gray-300,
+  .text-gray-400,
+  .text-gray-500,
+  .text-gray-600,
+  .text-gray-700,
+  .text-gray-800,
+  .text-gray-900,
+  [style*="color: #666"],
+  [style*="color: #555"],
+  [style*="color: #777"],
+  [style*="color: #888"],
+  [style*="color: #999"],
+  [style*="color: #aaa"],
+  [style*="color: #bbb"],
+  [style*="color: #ccc"],
+  [style*="color: #ddd"],
+  [style*="color: #eee"] {
+    color: #ffffff !important;
+  }
+
+  /* All remaining text should be lime green or white */
+  * {
+    --text-black: #92F21D !important;
   }
 }
