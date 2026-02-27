@@ -827,12 +827,12 @@ export default function BULManagement() {
               }} />
             </div>
             <div>
-              <Label>Revenue Target (ZAR)</Label>
-              <Input type="number" placeholder="0" value={targetForm.revenue_target || ""} onChange={(e) => setTargetForm({ ...targetForm, revenue_target: e.target.value })} />
-            </div>
-            <div>
               <Label>Bookings Target</Label>
               <Input type="number" placeholder="0" value={targetForm.bookings_target || ""} onChange={(e) => setTargetForm({ ...targetForm, bookings_target: e.target.value })} />
+            </div>
+            <div>
+              <Label>Reports Target</Label>
+              <Input type="number" placeholder="0" value={targetForm.reports_target || ""} onChange={(e) => setTargetForm({ ...targetForm, reports_target: e.target.value })} />
             </div>
             <div>
               <Label>Collections Target (ZAR)</Label>
