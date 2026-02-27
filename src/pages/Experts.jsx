@@ -126,6 +126,13 @@ export default function Experts() {
 
       {view === "experts" && (
         <>
+          {/* Refresh Button */}
+          <div className="flex justify-end">
+            <Button onClick={() => refetch()} size="sm" variant="outline" style={{ color: "#34CCD0", borderColor: "#34CCD0" }}>
+              Refresh Data
+            </Button>
+          </div>
+
           {/* Filters */}
           <Card style={{ borderColor: "#34CCD0", backgroundColor: "rgba(8, 31, 63, 0.5)" }}>
             <CardContent className="p-4">
