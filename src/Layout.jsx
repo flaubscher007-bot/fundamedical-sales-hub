@@ -127,7 +127,7 @@ export default function Layout({ children, currentPageName }) {
         className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 group ${
           isActive
             ? "bg-[var(--funda-accent)]/20 text-[var(--funda-accent)]"
-            : "text-slate-400 hover:bg-white/5 hover:text-white"
+            : "text-[#92F21D] hover:bg-white/5 hover:text-white"
         }`}
       >
         <item.icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? "text-[var(--funda-accent)]" : "text-slate-500 group-hover:text-slate-300"}`} />
@@ -162,7 +162,7 @@ export default function Layout({ children, currentPageName }) {
         className={`flex items-center gap-3 px-4 py-2.5 rounded-lg mb-1 text-sm font-medium transition-all duration-200 group ${
           isActive
             ? "text-[var(--funda-accent)] bg-[var(--funda-accent)]/10"
-            : "text-slate-300 hover:bg-white/5 hover:text-white"
+            : "text-[#92F21D] hover:bg-white/5 hover:text-white"
         }`}
       >
         <item.icon className={`w-4 h-4 shrink-0 ${isActive ? "text-[var(--funda-accent)]" : "text-slate-500 group-hover:text-slate-300"}`} />
@@ -217,7 +217,7 @@ export default function Layout({ children, currentPageName }) {
                 className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 group ${
                   isDashboardsActive
                     ? "text-[var(--funda-accent)] bg-[var(--funda-accent)]/10"
-                    : "text-slate-300 hover:bg-white/5 hover:text-white"
+                    : "text-[#92F21D] hover:bg-white/5 hover:text-white"
                 }`}
               >
                 <LayoutDashboard className={`w-4 h-4 shrink-0 ${isDashboardsActive ? "text-[var(--funda-accent)]" : "text-slate-500 group-hover:text-slate-300"}`} />
@@ -241,7 +241,7 @@ export default function Layout({ children, currentPageName }) {
                 className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 group ${
                   isClientsActive
                     ? "text-[var(--funda-accent)] bg-[var(--funda-accent)]/10"
-                    : "text-slate-300 hover:bg-white/5 hover:text-white"
+                    : "text-[#92F21D] hover:bg-white/5 hover:text-white"
                 }`}
               >
                 <Users className={`w-4 h-4 shrink-0 ${isClientsActive ? "text-[var(--funda-accent)]" : "text-slate-500 group-hover:text-slate-300"}`} />
@@ -266,7 +266,7 @@ export default function Layout({ children, currentPageName }) {
                 className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 group ${
                   isMarketingActive
                     ? "text-[var(--funda-accent)] bg-[var(--funda-accent)]/10"
-                    : "text-slate-300 hover:bg-white/5 hover:text-white"
+                    : "text-[#92F21D] hover:bg-white/5 hover:text-white"
                 }`}
               >
                 <Megaphone className={`w-4 h-4 shrink-0 ${isMarketingActive ? "text-[var(--funda-accent)]" : "text-slate-500 group-hover:text-slate-300"}`} />
@@ -286,7 +286,7 @@ export default function Layout({ children, currentPageName }) {
                         className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 group ${
                           isActive
                             ? "text-[var(--funda-accent)] bg-[var(--funda-accent)]/10"
-                            : "text-slate-400 hover:bg-white/5 hover:text-white"
+                            : "text-[#92F21D] hover:bg-white/5 hover:text-white"
                         }`}
                       >
                         <item.icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? "text-[var(--funda-accent)]" : "text-slate-500 group-hover:text-slate-300"}`} />

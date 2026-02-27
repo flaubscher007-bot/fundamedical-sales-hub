@@ -56,11 +56,13 @@ import BULDashboard from './pages/BULDashboard';
 import BULManagement from './pages/BULManagement';
 import BULPerformance from './pages/BULPerformance';
 import BusinessCard from './pages/BusinessCard';
+import CBRImportManager from './pages/CBRImportManager';
 import ClientContacts from './pages/ClientContacts';
 import ClientInsights from './pages/ClientInsights';
 import ClientPortal from './pages/ClientPortal';
 import Clients from './pages/Clients';
 import Collaboration from './pages/Collaboration';
+import CollectionsReport from './pages/CollectionsReport';
 import CompanyTargets from './pages/CompanyTargets';
 import Contracts from './pages/Contracts';
 import CustomReports from './pages/CustomReports';
@@ -79,6 +81,7 @@ import Help from './pages/Help';
 import IntakeForms from './pages/IntakeForms';
 import Marketing from './pages/Marketing';
 import MeetingMinutes from './pages/MeetingMinutes';
+import MessageCentre from './pages/MessageCentre';
 import Mileage from './pages/Mileage';
 import PricingProposals from './pages/PricingProposals';
 import RoleManagement from './pages/RoleManagement';
@@ -87,9 +90,6 @@ import TeamCalendar from './pages/TeamCalendar';
 import UserManagement from './pages/UserManagement';
 import UserProfile from './pages/UserProfile';
 import UserRoleManagement from './pages/UserRoleManagement';
-import MessageCentre from './pages/MessageCentre';
-import CollectionsReport from './pages/CollectionsReport';
-import CBRImportManager from './pages/CBRImportManager';
 import __Layout from './Layout.jsx';
 
 
@@ -103,11 +103,13 @@ export const PAGES = {
     "BULManagement": BULManagement,
     "BULPerformance": BULPerformance,
     "BusinessCard": BusinessCard,
+    "CBRImportManager": CBRImportManager,
     "ClientContacts": ClientContacts,
     "ClientInsights": ClientInsights,
     "ClientPortal": ClientPortal,
     "Clients": Clients,
     "Collaboration": Collaboration,
+    "CollectionsReport": CollectionsReport,
     "CompanyTargets": CompanyTargets,
     "Contracts": Contracts,
     "CustomReports": CustomReports,
@@ -126,6 +128,7 @@ export const PAGES = {
     "IntakeForms": IntakeForms,
     "Marketing": Marketing,
     "MeetingMinutes": MeetingMinutes,
+    "MessageCentre": MessageCentre,
     "Mileage": Mileage,
     "PricingProposals": PricingProposals,
     "RoleManagement": RoleManagement,
@@ -134,9 +137,6 @@ export const PAGES = {
     "UserManagement": UserManagement,
     "UserProfile": UserProfile,
     "UserRoleManagement": UserRoleManagement,
-    "MessageCentre": MessageCentre,
-    "CollectionsReport": CollectionsReport,
-    "CBRImportManager": CBRImportManager,
 }
 
 export const pagesConfig = {
