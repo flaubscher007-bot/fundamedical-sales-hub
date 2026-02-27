@@ -229,6 +229,7 @@
 
   table thead th {
     @apply text-[#92F21D];
+    background-color: #0a2d52;
   }
 
   table tbody td {
