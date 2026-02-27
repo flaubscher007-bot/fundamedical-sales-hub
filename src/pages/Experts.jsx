@@ -66,46 +66,28 @@ export default function Experts() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold" style={{color: '#92F21D', textShadow: '0 0 8px rgba(146, 242, 29, 0.2)'}}>Experts</h1>
-          <p className="text-sm mt-0.5" style={{color: '#ffffff'}}>{experts.length} medico-legal experts · 2026 visit schedule</p>
-        </div>
-        <div className="flex gap-2">
-          <Button
-            variant={view === "experts" ? "default" : "outline"}
-            size="sm"
-            onClick={() => setView("experts")}
-            className={view === "experts" ? "bg-[#00bcd4] hover:bg-[#0097a7]" : ""}
-          >
-            <Stethoscope className="w-4 h-4 mr-1" /> Experts
-          </Button>
-          <Button
-            variant={view === "schedule" ? "default" : "outline"}
-            size="sm"
-            onClick={() => setView("schedule")}
-            className={view === "schedule" ? "bg-[#00bcd4] hover:bg-[#0097a7]" : ""}
-          >
-            <Calendar className="w-4 h-4 mr-1" /> BUL Schedule
-          </Button>
-          <Button size="sm" onClick={openNew} className="bg-[#7ed957] hover:bg-[#6bc94a] text-white">
-            <Plus className="w-4 h-4 mr-1" /> Add Expert
-          </Button>
-        </div>
-      </div>
+       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+         <div>
+           <h1 className="text-2xl font-bold" style={{color: '#92F21D', textShadow: '0 0 8px rgba(146, 242, 29, 0.2)'}}>Expert Directory</h1>
+           <p className="text-sm mt-0.5" style={{color: '#ffffff'}}>{filtered.length} of {experts.length} experts</p>
+         </div>
+         <div className="flex gap-2">
+           <Button onClick={() => refetch()} size="sm" variant="outline" style={{ color: "#34CCD0", borderColor: "#34CCD0" }}>
+             Refresh
+           </Button>
+           <Button size="sm" onClick={openNew} className="bg-[#7ed957] hover:bg-[#6bc94a] text-white">
+             <Plus className="w-4 h-4 mr-1" /> Add Expert
+           </Button>
+         </div>
+       </div>
 
-      {view === "schedule" && (
-        <ExpertSchedulePanel experts={experts} rotation={ROTATION} months={MONTHS} buls={BULS} />
-      )}
-
-      {view === "experts" && (
-        <>
-          {/* Refresh Button */}
-          <div className="flex justify-end">
-            <Button onClick={() => refetch()} size="sm" variant="outline" style={{ color: "#34CCD0", borderColor: "#34CCD0" }}>
-              Refresh Data
-            </Button>
-          </div>
+       <>
+         {/* Refresh Button */}
+         <div className="flex justify-end">
+           <Button onClick={() => refetch()} size="sm" variant="outline" style={{ color: "#34CCD0", borderColor: "#34CCD0" }}>
+             Refresh Data
+           </Button>
+         </div>
 
           {/* Filters */}
           <Card style={{ borderColor: "#34CCD0", backgroundColor: "rgba(8, 31, 63, 0.5)" }}>
