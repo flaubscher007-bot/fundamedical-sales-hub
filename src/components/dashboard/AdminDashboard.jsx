@@ -131,13 +131,13 @@ export default function AdminDashboard({ user }) {
         </Card>
 
         <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Recent Activity</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-slate-500">All systems operational</p>
-          </CardContent>
-        </Card>
+           <CardHeader>
+             <CardTitle className="text-base">Recent Activity</CardTitle>
+           </CardHeader>
+           <CardContent>
+             <p className="text-sm" style={{color: '#ffffff'}}>All systems operational</p>
+           </CardContent>
+         </Card>
       </div>
     </div>
   );
