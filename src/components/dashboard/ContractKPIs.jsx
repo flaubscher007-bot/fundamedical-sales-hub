@@ -80,7 +80,7 @@ export default function ContractKPIs({ contracts, proposals }) {
                  <span className="text-xs" style={{color: '#ffffff'}}>{k.label}</span>
                </div>
               <p className={`text-2xl font-bold ${k.color}`}>{k.value}</p>
-              {k.sub && <p className="text-xs text-slate-400 mt-0.5">{k.sub}</p>}
+              {k.sub && <p className="text-xs mt-0.5" style={{color: '#ffffff'}}>{k.sub}</p>}
             </CardContent>
           </Card>
         ))}
