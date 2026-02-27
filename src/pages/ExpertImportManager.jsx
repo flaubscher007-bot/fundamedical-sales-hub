@@ -60,6 +60,26 @@ export default function ExpertImportManager() {
 
       const records = Array.isArray(extractResponse.output) ? extractResponse.output : [extractResponse.output];
       
+      // Validate emails
+      const errors = [];
+      records.forEach((record, index) => {
+        if (record.email && !validateEmail(record.email)) {
+          errors.push({
+            row: index + 2,
+            name: record.name,
+            email: record.email,
+            error: "Invalid email format"
+          });
+        }
+      });
+
+      if (errors.length > 0) {
+        setValidationErrors(errors);
+        setError(`Found ${errors.length} email validation error(s). Please review and correct them.`);
+        setLoading(false);
+        return;
+      }
+
       // Fetch existing experts
       const existingExperts = await base44.entities.Expert.list();
 
@@ -81,6 +101,7 @@ export default function ExpertImportManager() {
       });
 
       setPreview({ toCreate, toUpdate, total: records.length });
+      setValidationErrors([]);
       setLoading(false);
     } catch (err) {
       setError(err.message || "Error processing file");
