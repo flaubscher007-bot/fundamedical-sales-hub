@@ -15,6 +15,7 @@ import { createPageUrl } from "@/utils";
 import ActivityLogPanel from "@/components/BULManagement/ActivityLogPanel";
 import PerformanceReportsTab from "@/components/BULManagement/PerformanceReportsTab";
 import GoalsTab from "@/components/goals/GoalsTab";
+import DailyActualsTab from "@/components/BULManagement/DailyActualsTab";
 import { canPerformAction, shouldShowActionButton } from "@/components/entityPermissions";
 
 // Empty states
