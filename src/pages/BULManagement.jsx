@@ -36,6 +36,7 @@ export default function BULManagement() {
   const [editingTeamAssignment, setEditingTeamAssignment] = useState(null);
   const [teamForm, setTeamForm] = useState(emptyTeamAssignment);
   const [importLoading, setImportLoading] = useState(false);
+  const [targetImportLoading, setTargetImportLoading] = useState(false);
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
   const [inviteForm, setInviteForm] = useState({ name: "", email: "", role: "Business Unit Leader", method: "email" });
   const [inviting, setInviting] = useState(false);
