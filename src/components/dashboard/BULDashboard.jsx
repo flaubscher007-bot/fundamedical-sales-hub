@@ -71,7 +71,7 @@ export default function BULDashboard({ user }) {
         <div className="grid lg:grid-cols-2 gap-6">
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
+              <CardTitle className="text-lg flex items-center gap-2" style={{color: '#34CCD0'}}>
                 <Target className="w-5 h-5 text-green-500" />
                 Revenue Progress
               </CardTitle>
@@ -79,8 +79,8 @@ export default function BULDashboard({ user }) {
             <CardContent className="space-y-4">
               <div>
                 <div className="flex justify-between mb-2">
-                  <span className="text-sm text-slate-600">Collected vs Target</span>
-                  <span className="font-bold">{revenueProgress.toFixed(0)}%</span>
+                  <span className="text-sm" style={{color: '#ffffff'}}>Collected vs Target</span>
+                  <span className="font-bold" style={{color: '#92F21D'}}>{revenueProgress.toFixed(0)}%</span>
                 </div>
                 <div className="w-full bg-slate-200 h-3 rounded-full overflow-hidden">
                   <div 
