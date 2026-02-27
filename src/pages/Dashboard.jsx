@@ -116,7 +116,7 @@ export default function Dashboard() {
                  <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">
                    Welcome back, <span className="text-[#92F21D]">{user?.full_name?.split(" ")[0] || "Team"}</span>
                  </h1>
-                 <p className="text-slate-300 mt-1 sm:mt-2 text-xs sm:text-sm">
+                 <p style={{color: '#ffffff'}} className="mt-1 sm:mt-2 text-xs sm:text-sm">
                    Here's your activity overview for {format(new Date(), "MMMM yyyy")}
                  </p>
                </div>
