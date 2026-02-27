@@ -117,8 +117,8 @@ export default function BULDashboard({ user }) {
                 </div>
               </div>
               <div className="flex justify-between text-sm">
-                <span>{currentPerformance?.bookings || 0}</span>
-                <span className="text-slate-500">of {currentTarget.bookings_target}</span>
+                <span style={{color: '#ffffff'}}>{currentPerformance?.bookings || 0}</span>
+                <span style={{color: '#ffffff'}}>of {currentTarget.bookings_target}</span>
               </div>
             </CardContent>
           </Card>
