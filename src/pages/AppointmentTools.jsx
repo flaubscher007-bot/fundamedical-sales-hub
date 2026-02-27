@@ -198,6 +198,46 @@ export default function AppointmentTools() {
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div><Label>Title *</Label><Input className="mt-1" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} /></div>
+
+            <div className="border-t pt-4">
+              <Label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" checked={form.is_recurring || false} onChange={e => setForm({ ...form, is_recurring: e.target.checked })} className="rounded" />
+                <span>Make this a recurring appointment</span>
+              </Label>
+            </div>
+
+            {form.is_recurring && (
+              <div className="space-y-3 bg-slate-50 p-3 rounded">
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label>Repeat Pattern</Label>
+                    <Select value={form.recurrence_pattern || ""} onValueChange={v => setForm({ ...form, recurrence_pattern: v })}>
+                      <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="daily">Daily</SelectItem>
+                        <SelectItem value="weekly">Weekly</SelectItem>
+                        <SelectItem value="biweekly">Bi-weekly</SelectItem>
+                        <SelectItem value="monthly">Monthly</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>End Date</Label>
+                    <Input className="mt-1" type="date" value={form.recurrence_end_date || ""} onChange={e => setForm({ ...form, recurrence_end_date: e.target.value })} />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="border-t pt-4">
+              <Label>Client Contact Email (for reminders)</Label>
+              <Input className="mt-1" type="email" value={form.client_contact_email || ""} onChange={e => setForm({ ...form, client_contact_email: e.target.value })} placeholder="client@lawfirm.co.za" />
+            </div>
+
+            <div>
+              <Label>Expert Contact Email (for reminders)</Label>
+              <Input className="mt-1" type="email" value={form.expert_contact_email || ""} onChange={e => setForm({ ...form, expert_contact_email: e.target.value })} placeholder="expert@funda.co.za" />
+            </div>
             <div>
               <Label>Client</Label>
               <Select value={form.client_id || ""} onValueChange={v => {
