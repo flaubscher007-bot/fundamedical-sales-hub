@@ -30,10 +30,9 @@ export default function BusinessCard() {
 
   const saveMutation = useMutation({
     mutationFn: (data) => {
-      const payload = { ...data, owner_email: user?.email };
-      return editing ? base44.entities.BusinessCard.update(editing.id, payload) : base44.entities.BusinessCard.create(payload);
+      return editing ? base44.entities.BusinessCard.update(editing.id, data) : base44.entities.BusinessCard.create(data);
     },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["businesscards"] }); setDialogOpen(false); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["users"] }); setDialogOpen(false); },
   });
 
   const handlePhoto = async (e) => {
