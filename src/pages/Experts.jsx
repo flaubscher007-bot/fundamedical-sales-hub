@@ -25,14 +25,11 @@ export default function Experts() {
   const [search, setSearch] = useState("");
   const [disciplineFilter, setDisciplineFilter] = useState("all");
   const [activeFilter, setActiveFilter] = useState("all");
-  const [selectedBul, setSelectedBul] = useState("all");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingExpert, setEditingExpert] = useState(null);
   const [form, setForm] = useState(emptyForm);
-  const [scheduleExpert, setScheduleExpert] = useState(null);
-  const [view, setView] = useState("experts"); // "experts" | "schedule"
 
-  const hasActiveFilters = search || disciplineFilter !== "all" || activeFilter !== "all" || selectedBul !== "all";
+  const hasActiveFilters = search || disciplineFilter !== "all" || activeFilter !== "all";
 
   const qc = useQueryClient();
 
