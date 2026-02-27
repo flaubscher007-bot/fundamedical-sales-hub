@@ -358,7 +358,9 @@ export default function BULManagement() {
         let created = 0, failed = 0;
         for (const row of validRows) {
           try {
-            const month = row.month.length === 7 ? `${row.month}-01` : row.month;
+            // Normalize date: handle YYYY/MM/DD, YYYY-MM-DD, YYYY-MM formats
+            let month = String(row.month).replace(/\//g, '-').trim();
+            if (month.length === 7) month = `${month}-01`; // YYYY-MM → YYYY-MM-01
             await base44.entities.Target.create({
               bul_name: row.bul_name,
               bul_email: row.bul_email || '',
