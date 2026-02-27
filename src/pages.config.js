@@ -91,6 +91,7 @@ import UserManagement from './pages/UserManagement';
 import UserProfile from './pages/UserProfile';
 import UserRoleManagement from './pages/UserRoleManagement';
 import ExpertImportManager from './pages/ExpertImportManager';
+import ExpertDetails from './pages/ExpertDetails';
 import __Layout from './Layout.jsx';
 
 
@@ -139,6 +140,7 @@ export const PAGES = {
     "UserProfile": UserProfile,
     "UserRoleManagement": UserRoleManagement,
     "ExpertImportManager": ExpertImportManager,
+    "ExpertDetails": ExpertDetails,
 }
 
 export const pagesConfig = {
