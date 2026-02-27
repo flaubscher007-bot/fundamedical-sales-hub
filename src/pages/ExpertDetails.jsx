@@ -301,13 +301,16 @@ export default function ExpertDetails() {
             <TabsTrigger value="appointments" className="rounded-none border-b-2 data-[state=active]:border-[#34CCD0]" style={{ color: "#92F21D" }}>
               <Calendar className="w-4 h-4 mr-2" /> Appointments
             </TabsTrigger>
+            <TabsTrigger value="profile" className="rounded-none border-b-2 data-[state=active]:border-[#34CCD0]" style={{ color: "#92F21D" }}>
+              <FileText className="w-4 h-4 mr-2" /> Profile
+            </TabsTrigger>
+            <TabsTrigger value="reviews" className="rounded-none border-b-2 data-[state=active]:border-[#34CCD0]" style={{ color: "#92F21D" }}>
+              <Star className="w-4 h-4 mr-2" /> Reviews
+            </TabsTrigger>
             <TabsTrigger value="schedule" className="rounded-none border-b-2 data-[state=active]:border-[#34CCD0]" style={{ color: "#92F21D" }}>
               <Clock className="w-4 h-4 mr-2" /> 2026 Schedule
             </TabsTrigger>
-            <TabsTrigger value="notes" className="rounded-none border-b-2 data-[state=active]:border-[#34CCD0]" style={{ color: "#92F21D" }}>
-                <FileText className="w-4 h-4 mr-2" /> Notes & Specs
-              </TabsTrigger>
-              <TabsTrigger value="contracts" className="rounded-none border-b-2 data-[state=active]:border-[#34CCD0]" style={{ color: "#92F21D" }}>
+            <TabsTrigger value="contracts" className="rounded-none border-b-2 data-[state=active]:border-[#34CCD0]" style={{ color: "#92F21D" }}>
                 <FileText className="w-4 h-4 mr-2" /> Contracts
               </TabsTrigger>
             </TabsList>
