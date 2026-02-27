@@ -31,7 +31,7 @@ export default function PendingFollowUps({ followUps }) {
     <Card className="border-0 shadow-sm">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-base font-semibold">Pending Follow-Ups</CardTitle>
+          <CardTitle className="text-base font-semibold" style={{color: '#34CCD0'}}>Pending Follow-Ups</CardTitle>
           <Link to={createPageUrl("FollowUps")} className="text-xs text-[#00bcd4] hover:underline font-medium">
             View All
           </Link>
