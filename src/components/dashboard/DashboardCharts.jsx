@@ -109,7 +109,7 @@ export default function DashboardCharts({ clients, statements, contracts, propos
         {/* BUL Performance */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Top BULs by Client Count</CardTitle>
+            <CardTitle className="text-lg" style={{color: '#34CCD0'}}>Top BULs by Client Count</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={250}>
