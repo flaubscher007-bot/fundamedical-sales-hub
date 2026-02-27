@@ -275,6 +275,11 @@ export default function Experts() {
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
+                              <Link to={createPageUrl("ExpertDetails") + `?id=${expert.id}`}>
+                                <Button size="icon" variant="ghost" className="h-7 w-7">
+                                  <Eye className="w-3.5 h-3.5 text-[#92F21D]" />
+                                </Button>
+                              </Link>
                               <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => openEdit(expert)}>
                                 <Pencil className="w-3.5 h-3.5 text-slate-400" />
                               </Button>
