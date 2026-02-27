@@ -100,8 +100,8 @@ export default function ContractKPIs({ contracts, proposals }) {
                 return (
                   <div key={c.id} className="flex items-center justify-between text-sm">
                     <div>
-                      <span className="font-medium text-slate-700">{c.title}</span>
-                      <span className="text-slate-400 ml-2 text-xs">{c.client_name}</span>
+                      <span className="font-medium" style={{color: '#92F21D'}}>{c.title}</span>
+                      <span className="ml-2 text-xs" style={{color: '#ffffff'}}>{c.client_name}</span>
                     </div>
                     <Badge className={days <= 7 ? "bg-red-100 text-red-700" : "bg-amber-100 text-amber-700"}>
                       {days === 0 ? "Today" : `${days}d`}
