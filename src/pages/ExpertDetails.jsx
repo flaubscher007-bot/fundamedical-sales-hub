@@ -111,7 +111,7 @@ export default function ExpertDetails() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-start justify-between">
-        <div>
+        <div className="flex-1">
           <Button variant="ghost" onClick={() => navigate(-1)} style={{ color: "#34CCD0" }} className="mb-4">
             <ArrowLeft className="w-4 h-4 mr-2" /> Back to Experts
           </Button>
@@ -123,7 +123,86 @@ export default function ExpertDetails() {
             {expert.active || "YES"}
           </Badge>
         </div>
+        <Button 
+          onClick={handleEditBasic} 
+          variant="outline" 
+          size="sm"
+          style={{ color: "#34CCD0", borderColor: "#34CCD0" }}
+        >
+          <Edit2 className="w-4 h-4 mr-2" /> Edit Details
+        </Button>
       </div>
+
+      {/* Edit Basic Info Dialog */}
+      <Dialog open={isEditingBasic} onOpenChange={setIsEditingBasic}>
+        <DialogContent style={{ backgroundColor: "#081F3F", borderColor: "#34CCD0" }}>
+          <DialogHeader>
+            <DialogTitle style={{ color: "#92F21D" }}>Edit Expert Details</DialogTitle>
+          </DialogHeader>
+          {editedExpert && (
+            <div className="space-y-4">
+              <div>
+                <label style={{ color: "#92F21D" }} className="text-sm font-semibold">Active Status</label>
+                <Select value={editedExpert.active || "YES"} onValueChange={(value) => setEditedExpert({...editedExpert, active: value})}>
+                  <SelectTrigger style={{ borderColor: "#34CCD0", color: "#ffffff" }}>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="YES">Active</SelectItem>
+                    <SelectItem value="SEMI-ACTIVE">Semi-Active</SelectItem>
+                    <SelectItem value="NO">Inactive</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <label style={{ color: "#92F21D" }} className="text-sm font-semibold">Email</label>
+                <Input 
+                  value={editedExpert.email || ""} 
+                  onChange={(e) => setEditedExpert({...editedExpert, email: e.target.value})}
+                  style={{ borderColor: "#34CCD0", backgroundColor: "rgba(52, 204, 208, 0.05)", color: "#ffffff" }}
+                />
+              </div>
+
+              <div>
+                <label style={{ color: "#92F21D" }} className="text-sm font-semibold">Phone</label>
+                <Input 
+                  value={editedExpert.phone || ""} 
+                  onChange={(e) => setEditedExpert({...editedExpert, phone: e.target.value})}
+                  style={{ borderColor: "#34CCD0", backgroundColor: "rgba(52, 204, 208, 0.05)", color: "#ffffff" }}
+                />
+              </div>
+
+              <div>
+                <label style={{ color: "#92F21D" }} className="text-sm font-semibold">Address</label>
+                <Input 
+                  value={editedExpert.address || ""} 
+                  onChange={(e) => setEditedExpert({...editedExpert, address: e.target.value})}
+                  style={{ borderColor: "#34CCD0", backgroundColor: "rgba(52, 204, 208, 0.05)", color: "#ffffff" }}
+                />
+              </div>
+
+              <div className="flex gap-2 pt-4">
+                <Button 
+                  onClick={handleSaveBasic} 
+                  disabled={isSaving}
+                  style={{ backgroundColor: "#92F21D", color: "#081F3F" }}
+                  className="flex-1"
+                >
+                  <Save className="w-4 h-4 mr-2" /> Save Changes
+                </Button>
+                <Button 
+                  onClick={() => setIsEditingBasic(false)} 
+                  variant="outline"
+                  style={{ color: "#34CCD0", borderColor: "#34CCD0" }}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Contact Info Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
