@@ -303,6 +303,32 @@ export default function BULManagement() {
     return users.some(u => u.email?.toLowerCase() === email?.toLowerCase());
   };
 
+  const downloadCSV = (content, filename) => {
+    const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleDownloadTargetsTemplate = () => {
+    const header = 'bul_name,bul_email,month,bookings_target,reports_target,collections_target,notes';
+    const example = 'John Smith,john@example.com,2026-03-01,50,40,150000,Optional notes here';
+    downloadCSV(`${header}\n${example}`, 'Targets_Template.csv');
+  };
+
+  const handleExportTargets = () => {
+    const header = 'bul_name,bul_email,month,bookings_target,reports_target,collections_target,notes';
+    const rows = targets.map(t =>
+      [t.bul_name, t.bul_email, t.month, t.bookings_target || 0, t.reports_target || 0, t.collections_target || 0, t.notes || '']
+        .map(v => `"${String(v).replace(/"/g, '""')}"`)
+        .join(',')
+    );
+    downloadCSV([header, ...rows].join('\n'), 'Targets_Export.csv');
+  };
+
   const handleSendInvite = async (member) => {
     setSendingInvite(member.id);
     try {
