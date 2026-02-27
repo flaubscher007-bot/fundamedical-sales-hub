@@ -65,11 +65,11 @@ export default function DashboardCharts({ clients, statements, contracts, propos
 
   return (
     <div className="space-y-6">
-      {/* Client Growth */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Client Growth Trend</CardTitle>
-        </CardHeader>
+       {/* Client Growth */}
+       <Card>
+         <CardHeader>
+           <CardTitle className="text-lg" style={{color: '#34CCD0'}}>Client Growth Trend</CardTitle>
+         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={clientGrowth}>
