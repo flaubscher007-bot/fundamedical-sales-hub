@@ -170,6 +170,7 @@ export default function ExpertImportManager() {
     setPreview(null);
     setResults(null);
     setError(null);
+    setValidationErrors([]);
   };
 
   return (
