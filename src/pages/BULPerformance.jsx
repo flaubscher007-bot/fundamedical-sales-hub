@@ -63,6 +63,16 @@ export default function BULPerformancePage() {
     queryFn: () => base44.entities.BULPerformance.list("-month", 500),
   });
 
+  const { data: targets = [] } = useQuery({
+    queryKey: ["targets"],
+    queryFn: () => base44.entities.Target.list(),
+  });
+
+  const { data: dailyActuals = [] } = useQuery({
+    queryKey: ["daily-actuals"],
+    queryFn: () => base44.entities.DailyActual.list("-date", 1000),
+  });
+
   const saveMutation = useMutation({
     mutationFn: (data) => editing
       ? base44.entities.BULPerformance.update(editing.id, data)
