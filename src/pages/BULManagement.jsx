@@ -362,11 +362,21 @@ export default function BULManagement() {
          <TabsContent value="targets" className="space-y-4">
            <div className="flex justify-between items-center mb-4">
              <h3 className="text-lg font-semibold text-slate-800">Targets & Performance</h3>
-             {canPerformAction(user?.role, 'Target', 'create') && (
-               <Button onClick={openNewTarget} className="bg-[#00bcd4] hover:bg-[#0097a7]">
-                 <Plus className="w-4 h-4 mr-2" /> Add BUL Target
+             <div className="flex gap-2">
+               <Button variant="outline" onClick={handleDownloadTargetsTemplate} className="border-slate-300">
+                 <Download className="w-4 h-4 mr-2" /> Download Template
                </Button>
-             )}
+               {targets.length > 0 && (
+                 <Button variant="outline" onClick={handleExportTargets} className="border-slate-300">
+                   <Download className="w-4 h-4 mr-2" /> Export Targets
+                 </Button>
+               )}
+               {canPerformAction(user?.role, 'Target', 'create') && (
+                 <Button onClick={openNewTarget} className="bg-[#00bcd4] hover:bg-[#0097a7]">
+                   <Plus className="w-4 h-4 mr-2" /> Add BUL Target
+                 </Button>
+               )}
+             </div>
            </div>
 
           {/* Company Targets Overview */}
