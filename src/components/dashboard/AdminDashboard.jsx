@@ -4,6 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, TrendingUp, AlertCircle, CheckCircle2, DollarSign, BarChart3 } from "lucide-react";
 import StatsCard from "@/components/dashboard/StatsCard";
+import TeamPerformanceDashboard from "@/components/dashboard/TeamPerformanceDashboard";
 import { format } from "date-fns";
 
 export default function AdminDashboard({ user }) {
