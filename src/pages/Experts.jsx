@@ -202,41 +202,33 @@ export default function Experts() {
                   </thead>
                   <tbody style={{borderColor: '#34CCD0', borderTopWidth: '1px'}}>
                     {filtered.map(expert => {
-                      const marBul = ROTATION["Mar"]?.[expert.cohort] || "—";
-                      return (
-                        <tr key={expert.id} style={{borderColor: '#34CCD0', borderBottomWidth: '1px'}}>
-                          <td className="px-4 py-3 font-medium" style={{color: '#92F21D'}}>{expert.name}</td>
-                          <td className="px-4 py-3" style={{color: '#ffffff'}}>{expert.discipline}</td>
-                          <td className="px-4 py-3">
-                            <Badge className={`border text-xs ${activeColors[expert.active] || activeColors.YES}`}>
-                              {expert.active || "YES"}
-                            </Badge>
-                          </td>
-                          <td className="px-4 py-3" style={{color: '#ffffff'}}>{expert.cohort}</td>
-                          <td className="px-4 py-3">
-                            <span className="font-medium text-[#34CCD0]">{marBul}</span>
-                          </td>
-                          <td className="px-4 py-3 text-xs" style={{color: '#ffffff'}}>
-                            {expert.email || expert.phone || <span className="italic">No contact yet</span>}
-                          </td>
-                          <td className="px-4 py-3">
-                            <div className="flex gap-1">
-                              <Link to={createPageUrl("ExpertDetails") + `?id=${expert.id}`}>
-                                <Button size="icon" variant="ghost" className="h-7 w-7">
-                                  <Eye className="w-3.5 h-3.5 text-[#92F21D]" />
-                                </Button>
-                              </Link>
-                              <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => openEdit(expert)}>
-                                <Pencil className="w-3.5 h-3.5 text-slate-400" />
-                              </Button>
-                              <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => setScheduleExpert(expert)}>
-                                <Calendar className="w-3.5 h-3.5 text-[#00bcd4]" />
-                              </Button>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
+                       return (
+                         <tr key={expert.id} style={{borderColor: '#34CCD0', borderBottomWidth: '1px'}}>
+                           <td className="px-4 py-3 font-medium" style={{color: '#92F21D'}}>{expert.name}</td>
+                           <td className="px-4 py-3" style={{color: '#ffffff'}}>{expert.discipline}</td>
+                           <td className="px-4 py-3">
+                             <Badge className={`border text-xs ${activeColors[expert.active] || activeColors.YES}`}>
+                               {expert.active || "YES"}
+                             </Badge>
+                           </td>
+                           <td className="px-4 py-3 text-xs" style={{color: '#ffffff'}}>{expert.email || "—"}</td>
+                           <td className="px-4 py-3 text-xs" style={{color: '#ffffff'}}>{expert.phone || "—"}</td>
+                           <td className="px-4 py-3 text-xs" style={{color: '#ffffff'}}>{expert.address || "—"}</td>
+                           <td className="px-4 py-3">
+                             <div className="flex gap-1">
+                               <Link to={createPageUrl("ExpertDetails") + `?id=${expert.id}`}>
+                                 <Button size="icon" variant="ghost" className="h-7 w-7">
+                                   <Eye className="w-3.5 h-3.5 text-[#92F21D]" />
+                                 </Button>
+                               </Link>
+                               <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => openEdit(expert)}>
+                                 <Pencil className="w-3.5 h-3.5 text-slate-400" />
+                               </Button>
+                             </div>
+                           </td>
+                         </tr>
+                       );
+                     })}
                   </tbody>
                 </table>
                 {filtered.length === 0 && (
