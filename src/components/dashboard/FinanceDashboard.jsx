@@ -55,7 +55,7 @@ export default function FinanceDashboard({ user }) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-slate-600">Review account thresholds and client standings immediately.</p>
+            <p className="text-sm" style={{color: '#ffffff'}}>Review account thresholds and client standings immediately.</p>
           </CardContent>
         </Card>
       )}
