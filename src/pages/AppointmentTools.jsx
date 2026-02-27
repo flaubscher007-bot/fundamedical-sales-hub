@@ -157,7 +157,7 @@ export default function AppointmentTools() {
                 <p className="mt-3" style={{color: '#ffffff'}}>No appointments found</p>
                 <Button onClick={openNew} variant="outline" className="mt-4">Schedule an Appointment</Button>
               </div>
-            ) : filtered.length > 0 && filtered.map(apt => (
+            ) : filtered.map(apt => (
               <AppointmentCard
                 key={apt.id}
                 apt={apt}
