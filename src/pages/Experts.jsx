@@ -18,20 +18,20 @@ import { Link } from "react-router-dom";
 const ROTATION = {
   Jan: { 1: "Nthabi", 2: "Kyle", 3: "Dylan", 4: "Duran" },
   Feb: { 1: "Kyle", 2: "Dylan", 3: "Duran", 4: "Nthabi" },
-  Mar: { 1: "Dylan", 2: "Duran", 3: "Nthabi", 4: "George/Jacques" },
-  Apr: { 1: "Duran", 2: "Nthabi", 3: "George/Jacques", 4: "Dylan" },
-  May: { 1: "Nthabi", 2: "George/Jacques", 3: "Dylan", 4: "Duran" },
-  Jun: { 1: "George/Jacques", 2: "Dylan", 3: "Duran", 4: "Nthabi" },
-  Jul: { 1: "Dylan", 2: "Duran", 3: "Nthabi", 4: "George/Jacques" },
-  Aug: { 1: "Duran", 2: "Nthabi", 3: "George/Jacques", 4: "Dylan" },
-  Sep: { 1: "Nthabi", 2: "George/Jacques", 3: "Dylan", 4: "Duran" },
-  Oct: { 1: "George/Jacques", 2: "Dylan", 3: "Duran", 4: "Nthabi" },
-  Nov: { 1: "Dylan", 2: "Duran", 3: "Nthabi", 4: "George/Jacques" },
-  Dec: { 1: "Duran", 2: "Nthabi", 3: "George/Jacques", 4: "Dylan" },
+  Mar: { 1: "Dylan", 2: "Duran", 3: "Nthabi", 4: "Kyle" },
+  Apr: { 1: "Duran", 2: "Nthabi", 3: "Kyle", 4: "Dylan" },
+  May: { 1: "Nthabi", 2: "Kyle", 3: "Dylan", 4: "Duran" },
+  Jun: { 1: "Kyle", 2: "Dylan", 3: "Duran", 4: "Nthabi" },
+  Jul: { 1: "Dylan", 2: "Duran", 3: "Nthabi", 4: "Kyle" },
+  Aug: { 1: "Duran", 2: "Nthabi", 3: "Kyle", 4: "Dylan" },
+  Sep: { 1: "Nthabi", 2: "Kyle", 3: "Dylan", 4: "Duran" },
+  Oct: { 1: "Kyle", 2: "Dylan", 3: "Duran", 4: "Nthabi" },
+  Nov: { 1: "Dylan", 2: "Duran", 3: "Nthabi", 4: "Kyle" },
+  Dec: { 1: "Duran", 2: "Nthabi", 3: "Kyle", 4: "Dylan" },
 };
 
-const MONTHS = ["Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const BULS = ["Dylan", "Duran", "Nthabi", "George/Jacques"];
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const BULS = ["Nthabi", "Kyle", "Dylan", "Duran"];
 
 const activeColors = {
   YES: "bg-green-100 text-green-700 border-green-200",
