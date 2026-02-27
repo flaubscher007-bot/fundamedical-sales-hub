@@ -87,13 +87,13 @@ export default function FinanceDashboard({ user }) {
       <div className="grid lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Collection Health</CardTitle>
+            <CardTitle className="text-base" style={{color: '#34CCD0'}}>Collection Health</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
               <div className="flex justify-between mb-2 text-sm">
-                <span>Recent Collections</span>
-                <span className="font-semibold">85%</span>
+                <span style={{color: '#ffffff'}}>Recent Collections</span>
+                <span className="font-semibold" style={{color: '#92F21D'}}>85%</span>
               </div>
               <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
                 <div className="bg-green-500 h-2 w-[85%]" />
