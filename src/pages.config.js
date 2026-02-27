@@ -90,6 +90,7 @@ import TeamCalendar from './pages/TeamCalendar';
 import UserManagement from './pages/UserManagement';
 import UserProfile from './pages/UserProfile';
 import UserRoleManagement from './pages/UserRoleManagement';
+import ExpertImportManager from './pages/ExpertImportManager';
 import __Layout from './Layout.jsx';
 
 
@@ -137,6 +138,7 @@ export const PAGES = {
     "UserManagement": UserManagement,
     "UserProfile": UserProfile,
     "UserRoleManagement": UserRoleManagement,
+    "ExpertImportManager": ExpertImportManager,
 }
 
 export const pagesConfig = {
