@@ -365,6 +365,94 @@ export default function ExpertDetails() {
             </div>
           </TabsContent>
 
+          {/* Profile Tab */}
+          <TabsContent value="profile" className="p-6 space-y-6">
+            {expert.biography && (
+              <div>
+                <h3 style={{ color: "#92F21D" }} className="text-lg font-semibold mb-3">Biography</h3>
+                <div style={{ backgroundColor: "rgba(52, 204, 208, 0.05)", borderColor: "#34CCD0", borderWidth: "1px" }} className="rounded-lg p-4">
+                  <p style={{ color: "#ffffff" }} className="whitespace-pre-wrap">{expert.biography}</p>
+                </div>
+              </div>
+            )}
+
+            {expert.specializations && expert.specializations.length > 0 && (
+              <div>
+                <h3 style={{ color: "#92F21D" }} className="text-lg font-semibold mb-3">Areas of Specialization</h3>
+                <div className="flex flex-wrap gap-2">
+                  {expert.specializations.map((spec, idx) => (
+                    <Badge key={idx} style={{ backgroundColor: "#34CCD0", color: "#081F3F" }}>
+                      {spec}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {expert.publications && expert.publications.length > 0 && (
+              <div>
+                <h3 style={{ color: "#92F21D" }} className="text-lg font-semibold mb-3">Publications</h3>
+                <div className="space-y-3">
+                  {expert.publications.map((pub, idx) => (
+                    <div key={idx} className="p-3 rounded-lg border" style={{ borderColor: "#34CCD0", backgroundColor: "rgba(52, 204, 208, 0.05)" }}>
+                      <p style={{ color: "#92F21D" }} className="font-semibold">{pub.title}</p>
+                      {pub.journal && <p style={{ color: "#34CCD0" }} className="text-sm">{pub.journal}</p>}
+                      {pub.year && <p style={{ color: "#ffffff" }} className="text-xs mt-1">Year: {pub.year}</p>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </TabsContent>
+
+          {/* Reviews Tab */}
+          <TabsContent value="reviews" className="p-6">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h3 style={{ color: "#92F21D" }} className="text-lg font-semibold mb-2">Expert Reviews</h3>
+                  {avgRating && (
+                    <div className="flex items-center gap-2">
+                      <div className="flex gap-1">
+                        {[...Array(5)].map((_, i) => (
+                          <Star key={i} className="w-5 h-5" fill={i < Math.round(avgRating) ? "#92F21D" : "none"} style={{ color: i < Math.round(avgRating) ? "#92F21D" : "#ffffff" }} />
+                        ))}
+                      </div>
+                      <span style={{ color: "#ffffff" }} className="ml-2">{avgRating} avg ({reviews.length} reviews)</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {reviews.length > 0 ? (
+                <div className="space-y-3">
+                  {reviews.map(review => (
+                    <div key={review.id} className="p-4 rounded-lg border" style={{ borderColor: "#34CCD0", backgroundColor: "rgba(52, 204, 208, 0.05)" }}>
+                      <div className="flex items-start justify-between mb-2">
+                        <div>
+                          <p style={{ color: "#92F21D" }} className="font-semibold">{review.client_name}</p>
+                          <p style={{ color: "#ffffff" }} className="text-sm">{review.review_date && new Date(review.review_date).toLocaleDateString()}</p>
+                        </div>
+                        <div className="flex gap-1">
+                          {[...Array(5)].map((_, i) => (
+                            <Star key={i} className="w-4 h-4" fill={i < review.rating ? "#92F21D" : "none"} style={{ color: i < review.rating ? "#92F21D" : "#ffffff" }} />
+                          ))}
+                        </div>
+                      </div>
+                      {review.review_text && (
+                        <p style={{ color: "#ffffff" }} className="text-sm mt-2">{review.review_text}</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div style={{ backgroundColor: "rgba(52, 204, 208, 0.05)", borderColor: "#34CCD0", borderWidth: "1px" }} className="rounded-lg p-6 text-center">
+                  <p style={{ color: "#ffffff" }}>No reviews yet. Reviews will appear here after appointments are completed.</p>
+                </div>
+              )}
+            </div>
+          </TabsContent>
+
           {/* Schedule Tab */}
           <TabsContent value="schedule" className="p-6">
             <h3 style={{ color: "#92F21D" }} className="text-lg font-semibold mb-4">2026 Visit Schedule</h3>
