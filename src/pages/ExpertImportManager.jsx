@@ -66,16 +66,31 @@ export default function ExpertImportManager() {
         }
       });
 
-      // Validate emails
+      // Validate emails and handle multiple emails separated by newlines
       const errors = [];
       records.forEach((record, index) => {
-        if (record.email && !validateEmail(record.email)) {
-          errors.push({
-            row: index + 2,
-            name: record.name,
-            email: record.email,
-            error: "Invalid email format"
-          });
+        if (record.email) {
+          // Split by newline and clean up whitespace
+          const emails = record.email.split('\n').map(e => e.trim()).filter(e => e);
+          
+          if (emails.length === 0) {
+            record.email = "";
+          } else {
+            // Check if all emails are valid
+            const invalidEmails = emails.filter(e => !validateEmail(e));
+            
+            if (invalidEmails.length > 0) {
+              errors.push({
+                row: index + 2,
+                name: record.name,
+                email: record.email,
+                error: `Invalid email(s): ${invalidEmails.join(", ")}`
+              });
+            } else {
+              // Join multiple valid emails with semicolon
+              record.email = emails.join("; ");
+            }
+          }
         }
       });
 
