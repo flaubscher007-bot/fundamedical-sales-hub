@@ -323,16 +323,16 @@ export default function Layout({ children, currentPageName }) {
       <div className="flex-1 flex flex-col min-h-screen min-w-0">
         <header className="sticky top-0 z-30 border-b px-4 lg:px-8 h-16 flex items-center justify-between" style={{background: 'linear-gradient(135deg, rgba(8, 31, 63, 0.95) 0%, rgba(10, 45, 82, 0.95) 100%)', backdropFilter: 'blur(10px)', borderColor: 'rgba(52, 204, 208, 0.2)'}}>
           <div className="flex items-center gap-4">
-            <button onClick={() => setSidebarOpen(true)} className="lg:hidden text-slate-600 hover:text-slate-900">
+            <button onClick={() => setSidebarOpen(true)} className="lg:hidden" style={{color: '#34CCD0'}}>
               <Menu className="w-6 h-6" />
             </button>
-            <h2 className="text-lg font-semibold text-slate-800">
+            <h2 className="text-lg font-semibold" style={{color: '#92F21D', textShadow: '0 0 8px rgba(146, 242, 29, 0.2)'}}>
               {allNavItems.find((i) => i.page === currentPageName)?.name || currentPageName}
             </h2>
           </div>
           <NotificationBell />
         </header>
-        <main className="flex-1 p-4 lg:p-8 overflow-y-auto">
+        <main className="flex-1 p-4 lg:p-8 overflow-y-auto" style={{background: 'linear-gradient(135deg, #081F3F 0%, #0a2d52 100%)', backgroundAttachment: 'fixed', minHeight: '100vh'}}>
           {children}
         </main>
       </div>
