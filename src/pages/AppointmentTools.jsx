@@ -25,6 +25,7 @@ import FeedbackPanel from "../components/appointmentTools/FeedbackPanel";
 import SummaryDialog from "../components/appointmentTools/SummaryDialog";
 import MeetingMinutesTab from "../components/appointmentTools/MeetingMinutesTab.jsx";
 import FollowUpsTab from "../components/appointmentTools/FollowUpsTab.jsx";
+import ExpertScheduleSection from "../components/appointmentTools/ExpertScheduleSection";
 
 const emptyApt = {
   title: "", client_id: "", client_name: "", date: "", time: "", end_time: "",
@@ -120,11 +121,16 @@ export default function AppointmentTools() {
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="flex w-full flex-wrap gap-1 h-auto">
           <TabsTrigger value="appointments">Appointments</TabsTrigger>
+          <TabsTrigger value="expert-schedule">Expert Schedule</TabsTrigger>
           <TabsTrigger value="meeting-minutes">Meeting Minutes</TabsTrigger>
           <TabsTrigger value="follow-ups">Follow-Ups</TabsTrigger>
           <TabsTrigger value="action-points">Action Points</TabsTrigger>
           <TabsTrigger value="feedback">Feedback</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="expert-schedule" className="mt-4">
+          <ExpertScheduleSection />
+        </TabsContent>
 
         <TabsContent value="appointments" className="mt-4 space-y-4">
           {/* Search & Filters */}
