@@ -187,11 +187,11 @@ export default function Layout({ children, currentPageName }) {
         <div className="fixed inset-0 bg-black/40 z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}
 
-      <aside className={`fixed lg:static inset-y-0 left-0 z-50 w-full sm:w-72 funda-gradient text-white transform transition-transform duration-300 ease-in-out ${
+      <aside className={`fixed lg:static inset-y-0 left-0 z-50 w-full sm:w-72 text-white transform transition-transform duration-300 ease-in-out ${
         sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-      } flex flex-col max-h-screen overflow-y-auto`}>
+      } flex flex-col max-h-screen overflow-y-auto`} style={{background: 'linear-gradient(135deg, #081F3F 0%, #0a2d52 100%)', backgroundAttachment: 'fixed'}}>
         {/* Logo */}
-        <div className="p-4 sm:p-6 border-b border-white/10 sticky top-0 bg-[var(--funda-primary)]">
+        <div className="p-4 sm:p-6 border-b border-white/10 sticky top-0" style={{background: 'linear-gradient(135deg, #081F3F 0%, #0a2d52 100%)', backdropFilter: 'blur(10px)'}}>
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0">
               <h1 className="text-lg sm:text-xl font-black tracking-widest truncate" style={{letterSpacing: '0.05em'}}>
@@ -302,7 +302,7 @@ export default function Layout({ children, currentPageName }) {
 
         {/* User */}
         {user && (
-          <div className="p-3 sm:p-4 border-t border-white/10 sticky bottom-0 bg-[var(--funda-primary)]">
+          <div className="p-3 sm:p-4 border-t border-white/10 sticky bottom-0" style={{background: 'linear-gradient(135deg, #081F3F 0%, #0a2d52 100%)'}}>
             <div className="flex items-center gap-2 sm:gap-3">
               <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-semibold text-xs sm:text-sm flex-shrink-0" style={{backgroundColor: 'var(--funda-accent)', color: 'var(--funda-primary)'}}>
                 {user.full_name?.[0] || user.email?.[0]?.toUpperCase()}
@@ -321,7 +321,7 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Main */}
       <div className="flex-1 flex flex-col min-h-screen min-w-0">
-        <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-slate-100 px-4 lg:px-8 h-16 flex items-center justify-between">
+        <header className="sticky top-0 z-30 border-b px-4 lg:px-8 h-16 flex items-center justify-between" style={{background: 'linear-gradient(135deg, rgba(8, 31, 63, 0.95) 0%, rgba(10, 45, 82, 0.95) 100%)', backdropFilter: 'blur(10px)', borderColor: 'rgba(52, 204, 208, 0.2)'}}>
           <div className="flex items-center gap-4">
             <button onClick={() => setSidebarOpen(true)} className="lg:hidden text-slate-600 hover:text-slate-900">
               <Menu className="w-6 h-6" />
