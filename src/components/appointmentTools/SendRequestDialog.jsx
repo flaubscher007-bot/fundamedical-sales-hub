@@ -49,9 +49,10 @@ export default function SendRequestDialog({ open, onClose, appointment }) {
           </div>
           <div className="flex gap-3 pt-2">
             <Button
-              className="flex-1 bg-blue-600 hover:bg-blue-700"
+              className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
               disabled={!email || !!loading}
               onClick={() => send("email")}
+              title={!email ? "Please enter recipient email" : "Send via email"}
             >
               {loading === "email" ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : done === "email" ? <CheckCircle2 className="w-4 h-4 mr-2" /> : <Mail className="w-4 h-4 mr-2" />}
               {done === "email" ? "Sent!" : "Send Email"}
@@ -60,9 +61,10 @@ export default function SendRequestDialog({ open, onClose, appointment }) {
               className="flex-1 bg-green-600 hover:bg-green-700"
               disabled={!!loading}
               onClick={() => send("whatsapp")}
+              title="Send via WhatsApp"
             >
               {loading === "whatsapp" ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : done === "whatsapp" ? <CheckCircle2 className="w-4 h-4 mr-2" /> : <MessageCircle className="w-4 h-4 mr-2" />}
-              {done === "whatsapp" ? "Opened!" : "WhatsApp"}
+              {done === "whatsapp" ? "Opened!" : "Send WhatsApp"}
             </Button>
           </div>
         </div>
