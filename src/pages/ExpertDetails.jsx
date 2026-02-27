@@ -258,9 +258,12 @@ export default function ExpertDetails() {
               <Clock className="w-4 h-4 mr-2" /> 2026 Schedule
             </TabsTrigger>
             <TabsTrigger value="notes" className="rounded-none border-b-2 data-[state=active]:border-[#34CCD0]" style={{ color: "#92F21D" }}>
-              <FileText className="w-4 h-4 mr-2" /> Notes
-            </TabsTrigger>
-          </TabsList>
+                <FileText className="w-4 h-4 mr-2" /> Notes & Specs
+              </TabsTrigger>
+              <TabsTrigger value="contracts" className="rounded-none border-b-2 data-[state=active]:border-[#34CCD0]" style={{ color: "#92F21D" }}>
+                <FileText className="w-4 h-4 mr-2" /> Contracts
+              </TabsTrigger>
+            </TabsList>
 
           {/* Appointments Tab */}
           <TabsContent value="appointments" className="p-6 space-y-4">
