@@ -49,10 +49,10 @@ export default function BULDashboard({ user }) {
       {/* Welcome */}
       <div className="relative rounded-2xl p-6 lg:p-8 text-white overflow-hidden" style={{ background: "linear-gradient(135deg, #00bcd4 0%, #0097a7 100%)" }}>
         <div className="relative z-10">
-          <h1 className="text-3xl font-bold mb-2">
+          <h1 className="text-3xl font-bold mb-2" style={{color: '#92F21D'}}>
             {user?.full_name}, let's crush those targets! 🎯
           </h1>
-          <p className="text-cyan-100">
+          <p style={{color: '#ffffff'}}>
             {format(new Date(), "MMMM yyyy")} performance at a glance
           </p>
         </div>
