@@ -128,7 +128,7 @@ export default function DashboardCharts({ clients, statements, contracts, propos
       {/* Revenue Trends */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Revenue Trends (ZAR 000s)</CardTitle>
+          <CardTitle className="text-lg" style={{color: '#34CCD0'}}>Revenue Trends (ZAR 000s)</CardTitle>
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={300}>
