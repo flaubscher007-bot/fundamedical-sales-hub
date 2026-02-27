@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Plus, Pencil, Trash2, TrendingUp, BookOpen, FileText, DollarSign, Car, ClipboardList, UserPlus } from "lucide-react";
 import { format, startOfMonth, subMonths } from "date-fns";
 import BULPerformanceCharts from "@/components/charts/BULPerformanceCharts";
+import AICoachingPanel from "@/components/BULManagement/AICoachingPanel";
 
 const EMPTY = {
   bul_name: "",
