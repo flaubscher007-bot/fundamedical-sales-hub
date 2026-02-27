@@ -737,14 +737,92 @@ export default function BULManagement() {
             </div>
           </div>
 
+          {/* SENIOR MANAGEMENT SECTION */}
+          {user && ['admin', 'sales_manager', 'senior_management'].includes(user.role) && (
+            <Card className="overflow-hidden mb-4">
+              <CardHeader className="bg-gradient-to-r from-purple-900 to-purple-800 text-white">
+                <CardTitle className="text-lg">Senior Management</CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                {teamAssignments.filter(a => a.role === "Senior Management").length === 0 ? (
+                  <div className="p-6 text-center text-slate-500">No senior management members assigned</div>
+                ) : (
+                  <div className="divide-y">
+                    <div className="p-4">
+                      <div className="space-y-2">
+                        {teamAssignments.filter(a => a.role === "Senior Management").map((member) => (
+                          <div key={member.id} className="flex items-start justify-between bg-slate-50 p-3 rounded-lg group">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 mb-1">
+                                <p className="font-semibold text-slate-800">{member.person_name}</p>
+                                {member.person_email && (
+                                  isUserRegistered(member.person_email) ? (
+                                    <div className="flex items-center gap-1 bg-green-100 text-green-700 px-2 py-0.5 rounded text-xs font-medium">
+                                      <UserCheck className="w-3 h-3" /> App User
+                                    </div>
+                                  ) : (
+                                    <div className="flex items-center gap-1 bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-xs font-medium">
+                                      <UserX className="w-3 h-3" /> Not Registered
+                                    </div>
+                                  )
+                                )}
+                              </div>
+                              <div className="flex flex-col gap-1 mt-2 text-sm text-slate-600">
+                                {member.person_email && (
+                                  <div className="flex items-center gap-2">
+                                    <Mail className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+                                    <a href={`mailto:${member.person_email}`} className="text-[#00bcd4] hover:underline">{member.person_email}</a>
+                                  </div>
+                                )}
+                                {member.phone && (
+                                  <div className="flex items-center gap-2">
+                                    <Phone className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+                                    <a href={`tel:${member.phone}`} className="hover:text-slate-800">{member.phone}</a>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                            <div className="flex gap-1 ml-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                              {member.person_email && !isUserRegistered(member.person_email) && canPerformAction(user?.role, 'User', 'create') && (
+                                <Button 
+                                  variant="ghost" 
+                                  size="icon" 
+                                  onClick={() => handleSendInvite(member)}
+                                  disabled={sendingInvite === member.id}
+                                  title="Send invite link"
+                                >
+                                  <Send className="w-4 h-4 text-blue-600" />
+                                </Button>
+                              )}
+                              {canPerformAction(user?.role, 'TeamAssignment', 'edit') && (
+                                <Button variant="ghost" size="icon" onClick={() => openEditTeamAssignment(member)}>
+                                  <Pencil className="w-4 h-4 text-slate-600" />
+                                </Button>
+                              )}
+                              {canPerformAction(user?.role, 'TeamAssignment', 'delete') && (
+                                <Button variant="ghost" size="icon" onClick={() => deleteTeamAssignmentMutation.mutate(member.id)}>
+                                  <Trash2 className="w-4 h-4 text-red-500" />
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
           <div className="grid gap-4">
-            {TEAMS.map((teamName) => {
-              const teamMembers = teamAssignments.filter(a => a.team === teamName);
-              return (
-                <Card key={teamName} className="overflow-hidden">
-                  <CardHeader className="bg-gradient-to-r from-[#0a1628] to-[#0f2240] text-white">
-                    <CardTitle className="text-lg">{teamName}</CardTitle>
-                  </CardHeader>
+             {TEAMS.map((teamName) => {
+               const teamMembers = teamAssignments.filter(a => a.team === teamName && a.role !== "Senior Management");
+               return (
+                 <Card key={teamName} className="overflow-hidden">
+                   <CardHeader className="bg-gradient-to-r from-[#0a1628] to-[#0f2240] text-white">
+                     <CardTitle className="text-lg">{teamName}</CardTitle>
+                   </CardHeader>
                   <CardContent className="p-0">
                     {teamMembers.length === 0 ? (
                       <div className="p-6 text-center text-slate-500">No team members assigned</div>
