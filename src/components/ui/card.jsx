@@ -7,7 +7,12 @@ const Card = React.forwardRef(({ className, ...props }, ref) => (
   <div
     ref={ref}
     className={cn("rounded-xl border bg-card text-card-foreground shadow", className)}
-    style={{backgroundColor: '#92F21D', borderColor: '#34CCD0', color: '#000000', borderWidth: '2px'}}
+    style={{
+      backgroundColor: 'var(--card-bg, #92F21D)',
+      borderColor: '#34CCD0',
+      color: '#000000',
+      borderWidth: '2px'
+    }}
     {...props} />
 ))
 Card.displayName = "Card"
