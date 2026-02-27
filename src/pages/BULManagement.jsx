@@ -18,7 +18,7 @@ import GoalsTab from "@/components/goals/GoalsTab";
 import { canPerformAction, shouldShowActionButton } from "@/components/entityPermissions";
 
 // Empty states
-const emptyTarget = { bul_name: "", bul_email: "", month: "", revenue_target: "", bookings_target: "", collections_target: "", notes: "" };
+const emptyTarget = { bul_name: "", bul_email: "", month: "", bookings_target: "", reports_target: "", collections_target: "", notes: "" };
 const emptyLeave = { bul_name: "", bul_email: "", start_date: "", end_date: "", leave_type: "Annual", reason: "", status: "Pending", notes: "" };
 const emptyTeamAssignment = { person_name: "", person_email: "", role: "Business Unit Leader", phone: "", team: "" };
 
