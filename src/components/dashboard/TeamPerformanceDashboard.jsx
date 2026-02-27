@@ -103,8 +103,8 @@ export default function TeamPerformanceDashboard() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-bold text-white">Team Performance vs Targets</h2>
-          <p className="text-sm text-slate-400 mt-0.5">Actuals vs monthly targets per person</p>
+          <h2 className="text-xl font-bold text-[#92F21D]">Team Performance vs Targets</h2>
+          <p className="text-sm text-white mt-0.5">Actuals vs monthly targets per person</p>
         </div>
         <Select value={selectedMonth} onValueChange={setSelectedMonth}>
           <SelectTrigger className="w-44 bg-white">
@@ -129,7 +129,7 @@ export default function TeamPerformanceDashboard() {
         ].map(({ label, icon: Icon, actual, target, format: fmt, color }) => {
           const pct = target > 0 ? Math.round((actual / target) * 100) : 0;
           return (
-            <Card key={label} className="bg-white">
+            <Card key={label} className="bg-[#081F3F] border-2 border-[#34CCD0]">
               <CardContent className="pt-5 pb-4">
                 <div className="flex items-start justify-between mb-3">
                   <div>
@@ -149,7 +149,7 @@ export default function TeamPerformanceDashboard() {
       </div>
 
       {/* Per-Person Table */}
-      <Card className="bg-white">
+      <Card className="bg-[#081F3F] border-2 border-[#34CCD0]">
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
             <Target className="w-4 h-4 text-[#34CCD0]" />
