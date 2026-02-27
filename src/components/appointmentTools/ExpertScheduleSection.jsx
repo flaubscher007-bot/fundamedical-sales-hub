@@ -22,6 +22,26 @@ export default function ExpertScheduleSection() {
 
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
+  useEffect(() => {
+    // Load appointments and BUL mappings on mount
+    const loadData = async () => {
+      try {
+        const apts = await base44.entities.Appointment.list();
+        setAppointments(apts || []);
+
+        const mappings = await base44.entities.BULNameMapping.list();
+        const map = {};
+        mappings?.forEach(m => {
+          map[m.first_name] = m.full_name;
+        });
+        setBulMappings(map);
+      } catch (err) {
+        console.error('Error loading data:', err);
+      }
+    };
+    loadData();
+  }, []);
+
   const handleFileSelect = async (e) => {
     const selectedFile = e.target.files?.[0];
     if (!selectedFile) return;
@@ -191,14 +211,6 @@ export default function ExpertScheduleSection() {
 
                 {syncBatchId && <SyncStatusPanel syncBatchId={syncBatchId} />}
 
-        {/* Calendar and upcoming appointments */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="lg:col-span-2">
-            <ScheduleCalendarView appointments={appointments} month={selectedMonth} year={2026} />
-          </div>
-          <UpcomingAppointmentsList appointments={appointments} limit={15} />
-        </div>
-
                 <Button
             onClick={handleImportSchedule}
             disabled={!file || loading}
@@ -210,6 +222,14 @@ export default function ExpertScheduleSection() {
           </Button>
         </CardContent>
       </Card>
+
+      {/* Calendar and upcoming appointments */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-2">
+          <ScheduleCalendarView appointments={appointments} month={selectedMonth} year={2026} />
+        </div>
+        <UpcomingAppointmentsList appointments={appointments} limit={15} />
+      </div>
     </div>
   );
 }
