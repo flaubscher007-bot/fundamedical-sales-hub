@@ -4,7 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { AlertCircle, Upload, CheckCircle2, AlertTriangle, Loader2 } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { AlertCircle, Upload, CheckCircle2, AlertTriangle, Loader2, Info, X } from "lucide-react";
 
 export default function ExpertImportManager() {
   const [file, setFile] = useState(null);
