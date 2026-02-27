@@ -116,15 +116,15 @@ export default function AdminDashboard({ user }) {
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-slate-600">Database Status</span>
+              <span style={{color: '#ffffff'}}>Database Status</span>
               <CheckCircle2 className="w-5 h-5 text-green-500" />
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-slate-600">API Status</span>
+              <span style={{color: '#ffffff'}}>API Status</span>
               <CheckCircle2 className="w-5 h-5 text-green-500" />
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-slate-600">Automation Service</span>
+              <span style={{color: '#ffffff'}}>Automation Service</span>
               <CheckCircle2 className="w-5 h-5 text-green-500" />
             </div>
           </CardContent>
