@@ -96,8 +96,8 @@ export default function AdminDashboard({ user }) {
             {bulStats.slice(0, 5).map((bul, idx) => (
               <div key={idx} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
                 <div>
-                  <p className="font-semibold text-slate-800">{bul.name}</p>
-                  <p className="text-sm text-slate-500">{bul.bookings} bookings</p>
+                  <p className="font-semibold" style={{color: '#92F21D'}}>{bul.name}</p>
+                  <p className="text-sm" style={{color: '#ffffff'}}>{bul.bookings} bookings</p>
                 </div>
                 <div className="text-right">
                   <p className="font-bold text-green-600">R{bul.revenue.toLocaleString()}</p>
