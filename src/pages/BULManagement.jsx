@@ -454,6 +454,14 @@ export default function BULManagement() {
                  </Button>
                )}
                {canPerformAction(user?.role, 'Target', 'create') && (
+                 <label>
+                   <input type="file" accept=".xlsx,.xls,.csv" onChange={handleImportTargets} disabled={targetImportLoading} style={{ display: 'none' }} />
+                   <Button asChild variant="outline" disabled={targetImportLoading} className="border-slate-300 cursor-pointer">
+                     <span>{targetImportLoading ? 'Importing...' : 'Import Targets'}</span>
+                   </Button>
+                 </label>
+               )}
+               {canPerformAction(user?.role, 'Target', 'create') && (
                  <Button onClick={openNewTarget} className="bg-[#00bcd4] hover:bg-[#0097a7]">
                    <Plus className="w-4 h-4 mr-2" /> Add BUL Target
                  </Button>
