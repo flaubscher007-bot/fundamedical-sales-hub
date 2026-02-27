@@ -56,7 +56,7 @@ export default function AppointmentCard({ apt, onEdit, onSendRequest, onConfirm,
                 <Navigation className="w-3.5 h-3.5" />
               </a>
             )}
-            <Button size="icon" variant="ghost" className="w-8 h-8 text-slate-400 hover:text-blue-600" title="Send Meeting Request" onClick={() => onSendRequest(apt)}>
+            <Button size="icon" variant="ghost" className="w-8 h-8 text-slate-400 hover:text-blue-600" title="Send via Email or WhatsApp" onClick={() => onSendRequest(apt)}>
               <Mail className="w-3.5 h-3.5" />
             </Button>
             <Button size="icon" variant="ghost" className="w-8 h-8 text-slate-400 hover:text-green-600" title="Confirm Attendance" onClick={() => onConfirm(apt)}>
