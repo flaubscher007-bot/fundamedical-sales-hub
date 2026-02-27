@@ -330,6 +330,59 @@ export default function BULManagement() {
     downloadCSV([header, ...rows].join('\n'), 'Targets_Export.csv');
   };
 
+  const handleImportTargets = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setTargetImportLoading(true);
+    try {
+      const uploadRes = await base44.integrations.Core.UploadFile({ file });
+      const extractResult = await base44.integrations.Core.ExtractDataFromUploadedFile({
+        file_url: uploadRes.file_url,
+        json_schema: {
+          type: 'object',
+          properties: {
+            bul_name: { type: 'string' },
+            bul_email: { type: 'string' },
+            month: { type: 'string' },
+            bookings_target: { type: 'number' },
+            reports_target: { type: 'number' },
+            collections_target: { type: 'number' },
+            notes: { type: 'string' }
+          }
+        }
+      });
+
+      if (extractResult.status === 'success' && Array.isArray(extractResult.output)) {
+        const validRows = extractResult.output.filter(r => r.bul_name && r.month);
+        let created = 0, failed = 0;
+        for (const row of validRows) {
+          try {
+            const month = row.month.length === 7 ? `${row.month}-01` : row.month;
+            await base44.entities.Target.create({
+              bul_name: row.bul_name,
+              bul_email: row.bul_email || '',
+              month,
+              bookings_target: parseInt(row.bookings_target) || 0,
+              reports_target: parseInt(row.reports_target) || 0,
+              collections_target: parseFloat(row.collections_target) || 0,
+              notes: row.notes || ''
+            });
+            created++;
+          } catch { failed++; }
+        }
+        qc.invalidateQueries({ queryKey: ['targets'] });
+        alert(`Import complete: ${created} targets created${failed > 0 ? `, ${failed} failed` : ''}`);
+      } else {
+        alert('Could not parse file. Please use the downloaded template.');
+      }
+    } catch (error) {
+      alert('Import failed: ' + error.message);
+    } finally {
+      setTargetImportLoading(false);
+      e.target.value = '';
+    }
+  };
+
   const handleSendInvite = async (member) => {
     setSendingInvite(member.id);
     try {
