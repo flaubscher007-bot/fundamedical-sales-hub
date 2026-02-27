@@ -304,7 +304,7 @@ export default function Layout({ children, currentPageName }) {
         {user && (
           <div className="p-3 sm:p-4 border-t border-white/10 sticky bottom-0" style={{background: 'linear-gradient(135deg, #081F3F 0%, #0a2d52 100%)'}}>
             <div className="flex items-center gap-2 sm:gap-3">
-              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-semibold text-xs sm:text-sm flex-shrink-0" style={{backgroundColor: 'var(--funda-accent)', color: 'var(--funda-primary)'}}>
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-semibold text-xs sm:text-sm flex-shrink-0" style={{backgroundColor: '#34CCD0', color: '#081F3F'}}>
                 {user.full_name?.[0] || user.email?.[0]?.toUpperCase()}
               </div>
               <div className="flex-1 min-w-0 hidden sm:block">
