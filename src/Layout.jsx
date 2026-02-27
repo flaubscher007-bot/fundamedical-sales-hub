@@ -230,6 +230,29 @@ export default function Layout({ children, currentPageName }) {
             </div>
           )}
 
+          {/* Clients Section */}
+          {hasClientAccess && (
+            <div className="mb-1">
+              <button
+                onClick={() => setClientsOpen(o => !o)}
+                className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 group ${
+                  isClientsActive
+                    ? "text-[var(--funda-accent)] bg-[var(--funda-accent)]/10"
+                    : "text-slate-300 hover:bg-white/5 hover:text-white"
+                }`}
+              >
+                <Users className={`w-4 h-4 shrink-0 ${isClientsActive ? "text-[var(--funda-accent)]" : "text-slate-500 group-hover:text-slate-300"}`} />
+                <span>Clients</span>
+                <ChevronDown className={`w-4 h-4 ml-auto transition-transform duration-200 ${clientsOpen ? "rotate-180" : ""} ${isClientsActive ? "text-[var(--funda-accent)]" : "text-slate-500"}`} />
+              </button>
+              {clientsOpen && (
+                <div className="ml-3 mt-1 pl-3 border-l border-white/10 space-y-0.5">
+                  {clientItems.map(renderSubNavItem)}
+                </div>
+              )}
+            </div>
+          )}
+
           {mainNavItems.map(renderNavItem)}
 
           {/* Marketing Tools Section */}
