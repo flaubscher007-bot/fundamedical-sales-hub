@@ -189,6 +189,11 @@
       @apply text-base;
     }
 
+    h1, h2 {
+      color: #92F21D;
+      text-shadow: 0 0 8px rgba(146, 242, 29, 0.2);
+    }
+
     /* Card spacing for mobile */
     [class*="grid"] {
       @apply gap-3;
