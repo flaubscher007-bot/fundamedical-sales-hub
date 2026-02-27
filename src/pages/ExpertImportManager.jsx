@@ -40,14 +40,13 @@ export default function ExpertImportManager() {
         json_schema: {
           type: "object",
           properties: {
-            name: { type: "string" },
-            discipline: { type: "string" },
-            active: { type: "string" },
-            cohort: { type: "number" },
-            email: { type: "string" },
-            phone: { type: "string" },
-            address: { type: "string" },
-            notes: { type: "string" },
+            name: { type: "string", description: "Expert name from EXPERT NAME column" },
+            discipline: { type: "string", description: "Discipline from DISCIPLINE column" },
+            active: { type: "string", description: "Active status from ACTIVE column (YES, SEMI-ACTIVE, or NO)" },
+            email: { type: "string", description: "Email from EXPERT EMAIL (FREE TEXT) column" },
+            phone: { type: "string", description: "Phone from CONTACT column" },
+            address: { type: "string", description: "Address from ADDRESS column" },
+            notes: { type: "string", description: "Notes from SPECIFICATIONS column" },
           },
         },
       });
