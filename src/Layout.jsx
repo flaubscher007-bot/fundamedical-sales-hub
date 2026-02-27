@@ -68,7 +68,7 @@ const marketingItems = [
   { name: "Social Media Posts", icon: Share2, page: "SocialMedia" },
 ];
 
-const allNavItems = [...dashboardItems, ...mainNavItems, ...marketingItems];
+const allNavItems = [...dashboardItems, ...clientItems, ...mainNavItems, ...marketingItems];
 
 export default function Layout({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
