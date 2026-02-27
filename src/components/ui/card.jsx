@@ -1,20 +1,25 @@
-
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
-const Card = React.forwardRef(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("rounded-xl border bg-card text-card-foreground shadow", className)}
-    style={{
-      backgroundColor: 'var(--card-bg, #92F21D)',
-      borderColor: '#34CCD0',
-      color: '#000000',
-      borderWidth: '2px'
-    }}
-    {...props} />
-))
+const Card = React.forwardRef(({ className, ...props }, ref) => {
+  const cardBg = typeof window !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--card-bg').trim() || '#92F21D' : '#92F21D';
+  const bgColor = cardBg.startsWith('#') ? cardBg : '#92F21D';
+  const rgb = bgColor === '#92F21D' ? '146, 242, 29' : '52, 204, 208';
+  
+  return (
+    <div
+      ref={ref}
+      className={cn("rounded-xl border bg-card text-card-foreground shadow", className)}
+      style={{
+        backgroundColor: `rgba(${rgb}, 0.3)`,
+        borderColor: 'rgba(52, 204, 208, 0.3)',
+        color: '#000000',
+        borderWidth: '2px'
+      }}
+      {...props} />
+  )
+})
 Card.displayName = "Card"
 
 const CardHeader = React.forwardRef(({ className, ...props }, ref) => (
