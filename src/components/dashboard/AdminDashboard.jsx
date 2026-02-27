@@ -80,6 +80,9 @@ export default function AdminDashboard({ user }) {
         </Card>
       )}
 
+      {/* Team Performance vs Targets */}
+      <TeamPerformanceDashboard />
+
       {/* Top Performing BULs */}
       <Card>
         <CardHeader>
