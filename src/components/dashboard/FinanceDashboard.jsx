@@ -101,8 +101,8 @@ export default function FinanceDashboard({ user }) {
             </div>
             <div>
               <div className="flex justify-between mb-2 text-sm">
-                <span>Payment Aging</span>
-                <span className="font-semibold">62%</span>
+                <span style={{color: '#ffffff'}}>Payment Aging</span>
+                <span className="font-semibold" style={{color: '#92F21D'}}>62%</span>
               </div>
               <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
                 <div className="bg-amber-500 h-2 w-[62%]" />
