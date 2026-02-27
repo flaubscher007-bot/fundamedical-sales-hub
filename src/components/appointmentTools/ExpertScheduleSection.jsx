@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Upload, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
+import SyncStatusPanel from "./SyncStatusPanel";
 
 export default function ExpertScheduleSection() {
   const [file, setFile] = useState(null);
@@ -13,6 +14,7 @@ export default function ExpertScheduleSection() {
   const [error, setError] = useState(null);
   const [results, setResults] = useState(null);
   const [selectedMonth, setSelectedMonth] = useState("March");
+  const [syncBatchId, setSyncBatchId] = useState(null);
 
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
@@ -71,6 +73,17 @@ export default function ExpertScheduleSection() {
       if (importResponse.data.status === 'success') {
         setResults(importResponse.data.results);
         setFile(null);
+        
+        // Now sync the schedule to appointments with two-way sync
+        const batchId = `sync_${Date.now()}`;
+        setSyncBatchId(batchId);
+        
+        await base44.functions.invoke('syncExpertSchedule', {
+          scheduleData,
+          month: selectedMonth,
+          year: 2026,
+          syncBatchId: batchId
+        });
       } else {
         setError(importResponse.data.message);
       }
