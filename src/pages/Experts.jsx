@@ -240,33 +240,6 @@ export default function Experts() {
         </>
       )}
 
-      {/* Expert Detail / Schedule Dialog */}
-      {scheduleExpert && (
-        <Dialog open={!!scheduleExpert} onOpenChange={() => setScheduleExpert(null)}>
-          <DialogContent className="max-w-lg">
-            <DialogHeader>
-            <DialogTitle style={{color: '#92F21D'}}>{scheduleExpert.name}</DialogTitle>
-            <p className="text-sm" style={{color: '#ffffff'}}>{scheduleExpert.discipline} · Cohort {scheduleExpert.cohort}</p>
-            </DialogHeader>
-            <div className="space-y-4">
-            <p className="text-sm font-semibold" style={{color: '#92F21D'}}>2026 Visit Schedule</p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {MONTHS.map(month => {
-                  const bul = ROTATION[month]?.[scheduleExpert.cohort] || "—";
-                  return (
-                    <div key={month} className="rounded-lg p-3 text-center border" style={{backgroundColor: '#0a1e3a', borderColor: '#34CCD0', borderWidth: '1px'}}>
-                      <p className="text-xs font-medium" style={{color: '#92F21D'}}>{month}</p>
-                      <p className="text-sm font-bold text-[#34CCD0] mt-1">{bul}</p>
-                    </div>
-                  );
-                })}
-              </div>
-              <CreateAppointmentsButton expert={scheduleExpert} rotation={ROTATION} months={MONTHS} />
-            </div>
-          </DialogContent>
-        </Dialog>
-      )}
-
       {/* Edit/Add Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-md">
