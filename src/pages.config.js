@@ -70,6 +70,8 @@ import Dashboard from './pages/Dashboard';
 import EntertainmentProposals from './pages/EntertainmentProposals';
 import Expenses from './pages/Expenses';
 import ExpensesHub from './pages/ExpensesHub';
+import ExpertDetails from './pages/ExpertDetails';
+import ExpertImportManager from './pages/ExpertImportManager';
 import Experts from './pages/Experts';
 import Finance from './pages/Finance';
 import FinanceDashboard from './pages/FinanceDashboard';
@@ -90,8 +92,6 @@ import TeamCalendar from './pages/TeamCalendar';
 import UserManagement from './pages/UserManagement';
 import UserProfile from './pages/UserProfile';
 import UserRoleManagement from './pages/UserRoleManagement';
-import ExpertImportManager from './pages/ExpertImportManager';
-import ExpertDetails from './pages/ExpertDetails';
 import __Layout from './Layout.jsx';
 
 
@@ -119,6 +119,8 @@ export const PAGES = {
     "EntertainmentProposals": EntertainmentProposals,
     "Expenses": Expenses,
     "ExpensesHub": ExpensesHub,
+    "ExpertDetails": ExpertDetails,
+    "ExpertImportManager": ExpertImportManager,
     "Experts": Experts,
     "Finance": Finance,
     "FinanceDashboard": FinanceDashboard,
@@ -139,8 +141,6 @@ export const PAGES = {
     "UserManagement": UserManagement,
     "UserProfile": UserProfile,
     "UserRoleManagement": UserRoleManagement,
-    "ExpertImportManager": ExpertImportManager,
-    "ExpertDetails": ExpertDetails,
 }
 
 export const pagesConfig = {
