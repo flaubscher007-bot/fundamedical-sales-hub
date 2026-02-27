@@ -15,10 +15,10 @@ export default function StatsCard({ title, value, icon: Icon, color = "teal", tr
     <Card className="p-5 border-0 shadow-sm hover:shadow-md transition-shadow duration-300">
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">{title}</p>
-          <p className="text-2xl font-bold text-slate-900 mt-2">{value}</p>
+          <p className="text-xs font-medium uppercase tracking-wider" style={{color: '#92F21D'}}>{title}</p>
+          <p className="text-2xl font-bold mt-2" style={{color: '#ffffff'}}>{value}</p>
           {trend && (
-            <p className="text-xs text-emerald-600 font-medium mt-1">{trend}</p>
+            <p className="text-xs font-medium mt-1" style={{color: '#92F21D'}}>{trend}</p>
           )}
         </div>
         <div className={`p-3 rounded-xl ${colorMap[color]}`}>
