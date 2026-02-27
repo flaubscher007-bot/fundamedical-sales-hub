@@ -72,100 +72,34 @@ export default function BusinessCard() {
     window.open(`mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
   };
 
-  const getQRCodeURL = (card) => {
+  const getQRCodeURL = (user) => {
     const vcard = `BEGIN:VCARD
 VERSION:3.0
-FN:${card.full_name}
-TITLE:${card.title}
-TEL:${card.phone || ""}
-EMAIL:${card.email}
+FN:${user.full_name}
+TITLE:${user.role}
+TEL:${user.phone || ""}
+EMAIL:${user.email}
 URL:www.fundamedical.co.za
 ORG:FundaMedical
 NOTE:Medical & Legal Administration Services
 END:VCARD`;
-    return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(vcard)}`;
+    return `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(vcard)}`;
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-8">
-      {myCard ? (
-        <div>
-          {/* Digital Business Card */}
-          <Card className="border-0 shadow-lg overflow-hidden">
-            <div className="funda-gradient p-8 text-center relative">
-              <div className="absolute top-4 right-4">
-                <Button variant="ghost" size="icon" className="text-white/60 hover:text-white" onClick={() => openEdit(myCard)}>
-                  <Pencil className="w-4 h-4" />
-                </Button>
-              </div>
-              {myCard.profile_photo_url ? (
-                <img src={myCard.profile_photo_url} alt={myCard.full_name} className="w-24 h-24 rounded-full mx-auto object-cover border-4 border-[#00bcd4]/30" />
-              ) : (
-                <div className="w-24 h-24 rounded-full mx-auto bg-[#00bcd4]/20 flex items-center justify-center text-3xl font-bold text-[#00bcd4]">
-                  {myCard.full_name?.[0]}
-                </div>
-              )}
-              <h2 className="text-2xl font-bold text-white mt-4">{myCard.full_name}</h2>
-              <p className="text-[#00bcd4] font-medium mt-1">{myCard.title}</p>
-              <div className="mt-2">
-                <p className="text-xl font-bold">
-                  <span className="text-[#7ed957]">FUNDA</span>
-                  <span className="text-[#00bcd4]">MEDICAL</span>
-                </p>
-                <p className="text-xs text-slate-400 mt-0.5">Medical & Legal Administration Services</p>
-              </div>
-            </div>
-            <CardContent className="p-6 space-y-4">
-              <div className="flex items-center gap-3 text-sm text-slate-600">
-                <div className="p-2 rounded-lg bg-[#00bcd4]/10"><Mail className="w-4 h-4 text-[#00bcd4]" /></div>
-                <span>{myCard.email}</span>
-              </div>
-              {myCard.phone && (
-                <div className="flex items-center gap-3 text-sm text-slate-600">
-                  <div className="p-2 rounded-lg bg-[#00bcd4]/10"><Phone className="w-4 h-4 text-[#00bcd4]" /></div>
-                  <a href={`tel:${myCard.phone}`}>{myCard.phone}</a>
-                </div>
-              )}
-              {myCard.whatsapp && (
-                <div className="flex items-center gap-3 text-sm text-slate-600">
-                  <div className="p-2 rounded-lg bg-[#7ed957]/10"><MessageCircle className="w-4 h-4 text-[#7ed957]" /></div>
-                  <a href={`https://wa.me/${myCard.whatsapp.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">{myCard.whatsapp}</a>
-                </div>
-              )}
-              {myCard.region && (
-                <div className="flex items-center gap-3 text-sm text-slate-600">
-                  <div className="p-2 rounded-lg bg-slate-100"><MapPin className="w-4 h-4 text-slate-500" /></div>
-                  <span>{myCard.region}</span>
-                </div>
-              )}
-
-              <div className="grid grid-cols-3 gap-3 pt-4 border-t">
-                <div className="flex flex-col items-center">
-                  <img src={getQRCodeURL(myCard)} alt="QR Code" className="w-20 h-20 border border-slate-300 rounded" />
-                  <p className="text-xs text-slate-500 mt-2">Scan to save</p>
-                </div>
-                <Button onClick={() => shareViaWhatsApp(myCard)} className="flex-1 bg-[#25D366] hover:bg-[#20BD5A]">
-                  <MessageCircle className="w-4 h-4 mr-2" /> WhatsApp
-                </Button>
-                <Button onClick={() => shareViaEmail(myCard)} variant="outline" className="flex-1">
-                  <Mail className="w-4 h-4 mr-2" /> Email
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      ) : (
-        <div className="text-center py-20">
-          <div className="w-20 h-20 rounded-full bg-[#00bcd4]/10 flex items-center justify-center mx-auto">
-            <Share2 className="w-8 h-8 text-[#00bcd4]" />
+    <div className="space-y-8">
+      <div>
+        <h2 className="text-2xl font-bold text-[#92F21D] mb-6">Business Cards</h2>
+        {bulKacUsers.length > 0 ? (
+          <div className="grid grid-cols-1 gap-6">
+            {bulKacUsers.map(u => (
+              <BusinessCardDisplay key={u.id} user={u} onEdit={() => { setEditing(u); setForm({ full_name: u.full_name, email: u.email, phone: u.phone || "", title: u.role || "" }); setDialogOpen(true); }} />
+            ))}
           </div>
-          <h3 className="text-xl font-semibold text-slate-800 mt-6">Create Your Digital Business Card</h3>
-          <p className="text-slate-500 mt-2">Set up your professional card to share with clients</p>
-          <Button onClick={openNew} className="bg-[#00bcd4] hover:bg-[#0097a7] mt-6">
-            <Plus className="w-4 h-4 mr-2" /> Create Business Card
-          </Button>
-        </div>
-      )}
+        ) : (
+          <p style={{ color: "#ffffff" }}>No BULs or KACs found</p>
+        )}
+      </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-lg">
