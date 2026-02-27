@@ -216,13 +216,18 @@
     }
   }
 
-  /* Page headings */
-  h2 {
+  /* Global text color overrides for dark theme */
+  h1, h2, h3, h4, h5, h6 {
     color: #92F21D;
     text-shadow: 0 0 8px rgba(146, 242, 29, 0.2);
   }
 
-  /* Table text colors */
+  /* Default text should be white on dark backgrounds */
+  p, span, div {
+    color: #ffffff;
+  }
+
+  /* Table styling */
   table {
     @apply text-white;
   }
@@ -236,9 +241,72 @@
     @apply text-white;
   }
 
-  table tbody td.text-slate-800,
-  table tbody td.text-slate-600,
-  table tbody td.text-slate-500 {
+  /* Override slate colors for visibility */
+  .text-slate-50,
+  .text-slate-100,
+  .text-slate-200,
+  .text-slate-300,
+  .text-slate-400,
+  .text-slate-500,
+  .text-slate-600,
+  .text-slate-700,
+  .text-slate-800,
+  .text-slate-900 {
+    color: inherit;
+  }
+
+  /* Card content text */
+  [class*="card"] p,
+  [class*="card"] span,
+  [class*="card"] div {
+    color: #ffffff;
+  }
+
+  /* Labels and form text */
+  label {
     @apply text-white;
+  }
+
+  /* List items */
+  li {
+    @apply text-white;
+  }
+
+  /* Make grey text visible - convert to white */
+  .text-slate-400,
+  .text-slate-500,
+  .text-slate-600 {
+    @apply text-white;
+  }
+
+  /* Dialogs and modals */
+  [role="dialog"] {
+    background-color: #081F3F;
+  }
+
+  [role="dialog"] p,
+  [role="dialog"] span,
+  [role="dialog"] div {
+    color: #ffffff;
+  }
+
+  [role="dialog"] h2 {
+    color: #92F21D;
+  }
+
+  /* Stats and metrics - make numbers white/cyan */
+  .text-2xl,
+  .text-3xl,
+  .text-4xl {
+    color: #ffffff;
+  }
+
+  /* Links */
+  a {
+    color: #34CCD0;
+  }
+
+  a:hover {
+    color: #92F21D;
   }
 }
