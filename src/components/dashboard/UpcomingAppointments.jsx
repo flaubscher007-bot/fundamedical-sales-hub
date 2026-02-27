@@ -24,7 +24,7 @@ export default function UpcomingAppointments({ appointments }) {
       </CardHeader>
       <CardContent className="space-y-3">
         {upcoming.length === 0 ? (
-          <p className="text-sm text-slate-400 text-center py-4">No upcoming appointments</p>
+          <p className="text-sm text-center py-4" style={{color: '#ffffff'}}>No upcoming appointments</p>
         ) : (
           upcoming.map((apt) => (
             <div key={apt.id} className="flex items-center gap-4 p-3 rounded-lg bg-slate-50 hover:bg-slate-100 transition-colors group">
