@@ -113,12 +113,12 @@ export default function FinanceDashboard({ user }) {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Monthly Trend</CardTitle>
+            <CardTitle className="text-base" style={{color: '#34CCD0'}}>Monthly Trend</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-slate-600 mb-3">Total deposits this month</p>
+            <p className="text-sm mb-3" style={{color: '#ffffff'}}>Total deposits this month</p>
             <p className="text-2xl font-bold text-green-600">R{totalDeposits.toLocaleString()}</p>
-            <p className="text-xs text-slate-500 mt-2">↑ 12% from last month</p>
+            <p className="text-xs mt-2" style={{color: '#ffffff'}}>↑ 12% from last month</p>
           </CardContent>
         </Card>
       </div>
