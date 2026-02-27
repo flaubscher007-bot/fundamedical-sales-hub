@@ -38,9 +38,12 @@ const dashboardItems = [
   { name: "Finance Reporting", icon: BarChart2, page: "FinanceReporting" },
 ];
 
-const mainNavItems = [
-  { name: "Clients", icon: Users, page: "Clients" },
+const clientItems = [
+  { name: "Law Firms", icon: Users, page: "Clients" },
   { name: "Firm Contacts", icon: Users, page: "ClientContacts" },
+];
+
+const mainNavItems = [
   { name: "Experts", icon: Stethoscope, page: "Experts" },
   { name: "Appointment Tools", icon: Wrench, page: "AppointmentTools" },
   { name: "Contract Tools", icon: FileBadge, page: "Contracts" },
