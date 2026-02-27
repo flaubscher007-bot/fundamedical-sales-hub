@@ -805,8 +805,8 @@ export default function BULManagement() {
             <div>
               <Label>Business Unit Leader *</Label>
               <Select value={targetForm.bul_name || ""} onValueChange={(value) => {
-                const bul = teamAssignments.find(t => t.role === "Business Unit Leader" && t.person_name === value);
-                setTargetForm({ ...targetForm, bul_name: value, bul_email: bul?.person_email || "" });
+                const member = teamAssignments.find(t => ["Business Unit Leader", "Key Accounts Consultant"].includes(t.role) && t.person_name === value);
+                setTargetForm({ ...targetForm, bul_name: value, bul_email: member?.person_email || "" });
               }}>
                 <SelectTrigger><SelectValue placeholder="Select BUL" /></SelectTrigger>
                 <SelectContent>
@@ -860,8 +860,8 @@ export default function BULManagement() {
             <div>
               <Label>Business Unit Leader *</Label>
               <Select value={leaveForm.bul_name || ""} onValueChange={(value) => {
-                const bul = teamAssignments.find(t => t.role === "Business Unit Leader" && t.person_name === value);
-                setLeaveForm({ ...leaveForm, bul_name: value, bul_email: bul?.person_email || "" });
+                const member = teamAssignments.find(t => ["Business Unit Leader", "Key Accounts Consultant"].includes(t.role) && t.person_name === value);
+                setLeaveForm({ ...leaveForm, bul_name: value, bul_email: member?.person_email || "" });
               }}>
                 <SelectTrigger><SelectValue placeholder="Select BUL" /></SelectTrigger>
                 <SelectContent>
