@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { AlertCircle, Upload, CheckCircle2, AlertTriangle, Loader2, Info, X } from "lucide-react";
+import ImportReportDialog from "@/components/importTools/ImportReportDialog";
+import { generateImportReportCSV, downloadCSV } from "@/components/importUtils";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -21,6 +23,8 @@ export default function ExpertImportManager() {
   const [results, setResults] = useState(null);
   const [error, setError] = useState(null);
   const [validationErrors, setValidationErrors] = useState([]);
+  const [columnMap, setColumnMap] = useState(null);
+  const [showReportDialog, setShowReportDialog] = useState(false);
 
   const handleFileSelect = async (e) => {
     const selectedFile = e.target.files?.[0];
@@ -121,7 +125,7 @@ export default function ExpertImportManager() {
         }
       });
 
-      setPreview({ toCreate, toUpdate, total: records.length });
+      setPreview({ toCreate, toUpdate, total: records.length, records });
       setValidationErrors([]);
       setLoading(false);
     } catch (err) {
@@ -135,50 +139,19 @@ export default function ExpertImportManager() {
 
     try {
       setLoading(true);
-      const created = [];
-      const updated = [];
-      const failedCreations = [];
-      const failedUpdates = [];
-
-      // Create new experts
-      for (const record of preview.toCreate) {
-        try {
-          const result = await base44.entities.Expert.create(record);
-          created.push(result);
-        } catch (err) {
-          failedCreations.push({ 
-            ...record, 
-            error: err.message,
-            type: "creation"
-          });
-        }
-      }
-
-      // Update existing experts
-      for (const record of preview.toUpdate) {
-        try {
-          const { id, ...data } = record;
-          await base44.entities.Expert.update(id, data);
-          updated.push(record);
-        } catch (err) {
-          failedUpdates.push({ 
-            ...record, 
-            error: err.message,
-            type: "update"
-          });
-        }
-      }
-
-      setResults({ 
-        created: created.length, 
-        updated: updated.length, 
-        failedCreations,
-        failedUpdates,
-        totalFailed: failedCreations.length + failedUpdates.length
+      const importResponse = await base44.functions.invoke('importExpertData', {
+        expertData: preview.records,
+        columnMap
       });
-      setPreview(null);
-      setFile(null);
-      setValidationErrors([]);
+
+      if (importResponse.data.status === 'success') {
+        setResults(importResponse.data.results);
+        setPreview(null);
+        setFile(null);
+        setValidationErrors([]);
+      } else {
+        setError(importResponse.data.message);
+      }
       setLoading(false);
     } catch (err) {
       setError(err.message || "Error during import");
@@ -287,71 +260,12 @@ export default function ExpertImportManager() {
             </div>
           )}
 
-          {results && (
-            <Dialog open={!!results} onOpenChange={() => results && handleReset()}>
-              <DialogContent style={{ backgroundColor: "#081F3F", borderColor: "#34CCD0" }} className="max-w-xl max-h-[90vh]">
-                <DialogHeader>
-                  <DialogTitle style={{ color: "#92F21D" }}>Import Summary</DialogTitle>
-                </DialogHeader>
-                <ScrollArea className="h-auto max-h-[60vh]">
-                  <div className="space-y-4 pr-4">
-                    {/* Success Stats */}
-                    <div className="flex items-center gap-3 p-3 rounded-lg" style={{ backgroundColor: "rgba(16, 185, 129, 0.1)" }}>
-                      <CheckCircle2 className="w-5 h-5 flex-shrink-0" style={{ color: "#10b981" }} />
-                      <div>
-                        <p style={{ color: "#ffffff" }}><span style={{ color: "#10b981", fontWeight: "600" }}>{results.created}</span> new experts created</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-3 p-3 rounded-lg" style={{ backgroundColor: "rgba(59, 130, 246, 0.1)" }}>
-                      <AlertTriangle className="w-5 h-5 flex-shrink-0" style={{ color: "#3b82f6" }} />
-                      <div>
-                        <p style={{ color: "#ffffff" }}><span style={{ color: "#3b82f6", fontWeight: "600" }}>{results.updated}</span> experts updated</p>
-                      </div>
-                    </div>
-
-                    {/* Failed Creations */}
-                    {results.failedCreations.length > 0 && (
-                      <div style={{ backgroundColor: "rgba(239, 68, 68, 0.1)", borderColor: "#ef4444", borderWidth: "1px" }} className="rounded-lg p-3">
-                        <p style={{ color: "#ef4444", fontWeight: "600" }} className="text-sm mb-2 flex items-center gap-2">
-                          <AlertCircle className="w-4 h-4" /> Failed Creations ({results.failedCreations.length})
-                        </p>
-                        <div className="space-y-2">
-                          {results.failedCreations.map((record, idx) => (
-                            <div key={idx} className="text-xs p-2 rounded bg-red-500/10 border border-red-500/20">
-                              <p style={{ color: "#ffffff" }} className="font-semibold">{record.name}</p>
-                              <p style={{ color: "#ef4444" }}>{record.error}</p>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Failed Updates */}
-                    {results.failedUpdates.length > 0 && (
-                      <div style={{ backgroundColor: "rgba(239, 68, 68, 0.1)", borderColor: "#ef4444", borderWidth: "1px" }} className="rounded-lg p-3">
-                        <p style={{ color: "#ef4444", fontWeight: "600" }} className="text-sm mb-2 flex items-center gap-2">
-                          <AlertCircle className="w-4 h-4" /> Failed Updates ({results.failedUpdates.length})
-                        </p>
-                        <div className="space-y-2">
-                          {results.failedUpdates.map((record, idx) => (
-                            <div key={idx} className="text-xs p-2 rounded bg-red-500/10 border border-red-500/20">
-                              <p style={{ color: "#ffffff" }} className="font-semibold">{record.name}</p>
-                              <p style={{ color: "#ef4444" }}>{record.error}</p>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </ScrollArea>
-
-                <Button onClick={handleReset} className="w-full mt-4" style={{ backgroundColor: "#92F21D", color: "#081F3F" }}>
-                  Done
-                </Button>
-              </DialogContent>
-            </Dialog>
-          )}
+          <ImportReportDialog 
+            results={results}
+            importType="expert"
+            open={!!results}
+            onOpenChange={() => !results || handleReset()}
+          />
         </CardContent>
       </Card>
     </div>
