@@ -149,4 +149,22 @@
   .funda-gradient {
     background-color: var(--funda-primary);
   }
+
+  /* Alternating card colors */
+  div[class*="space-y"] > div:nth-child(odd) {
+    --card-bg: #92F21D;
+  }
+
+  div[class*="space-y"] > div:nth-child(even) {
+    --card-bg: #34CCD0;
+  }
+
+  /* Grid layouts */
+  div[class*="grid"] > div:nth-child(odd) {
+    --card-bg: #92F21D;
+  }
+
+  div[class*="grid"] > div:nth-child(even) {
+    --card-bg: #34CCD0;
+  }
 }
