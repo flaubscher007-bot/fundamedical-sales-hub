@@ -44,6 +44,11 @@ const clientItems = [
   { name: "Firm Contacts", icon: Users, page: "ClientContacts" },
 ];
 
+const expertItems = [
+  { name: "All Experts", icon: Stethoscope, page: "Experts" },
+  { name: "Import Experts", icon: Upload, page: "ExpertImportManager" },
+];
+
 const mainNavItems = [
   { name: "Experts", icon: Stethoscope, page: "Experts" },
   { name: "Import Experts", icon: Upload, page: "ExpertImportManager" },
