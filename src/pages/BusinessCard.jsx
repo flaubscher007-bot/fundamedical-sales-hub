@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Plus, Mail, Phone, MessageCircle, MapPin, Share2, Upload, Pencil, QrCode } from "lucide-react";
+import { Plus, Mail, Phone, MessageCircle, MapPin, Share2, Upload, Pencil, Globe } from "lucide-react";
 
 const empty = { full_name: "", title: "Business Unit Leader", email: "", phone: "", whatsapp: "", region: "", profile_photo_url: "", business_card_front_url: "", business_card_back_url: "", assigned_bul: "" };
 
@@ -20,17 +20,13 @@ export default function BusinessCard() {
 
   useEffect(() => { base44.auth.me().then(setUser).catch(() => {}); }, []);
 
-  const { data: cards = [] } = useQuery({
-    queryKey: ["businesscards"],
-    queryFn: () => base44.entities.BusinessCard.list("-created_date", 50),
-  });
-
   const { data: users = [] } = useQuery({
     queryKey: ["users"],
     queryFn: () => base44.entities.User.list(),
   });
 
-  const myCard = cards.find(c => c.owner_email === user?.email);
+  // Filter to only BULs and KACs
+  const bulKacUsers = users.filter(u => ["bul_manager", "kac", "business_unit_leader", "key_accounts_consultant"].includes(u.role));
 
   const saveMutation = useMutation({
     mutationFn: (data) => {
