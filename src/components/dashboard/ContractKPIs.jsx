@@ -74,11 +74,11 @@ export default function ContractKPIs({ contracts, proposals }) {
           <Card key={k.label} className="border-0 shadow-sm">
             <CardContent className="p-4">
               <div className="flex items-center gap-3 mb-2">
-                <div className={`p-2 rounded-lg ${k.bg}`}>
-                  <k.icon className={`w-4 h-4 ${k.color}`} />
-                </div>
-                <span className="text-xs text-slate-500">{k.label}</span>
-              </div>
+                 <div className={`p-2 rounded-lg ${k.bg}`}>
+                   <k.icon className={`w-4 h-4 ${k.color}`} />
+                 </div>
+                 <span className="text-xs" style={{color: '#ffffff'}}>{k.label}</span>
+               </div>
               <p className={`text-2xl font-bold ${k.color}`}>{k.value}</p>
               {k.sub && <p className="text-xs text-slate-400 mt-0.5">{k.sub}</p>}
             </CardContent>
