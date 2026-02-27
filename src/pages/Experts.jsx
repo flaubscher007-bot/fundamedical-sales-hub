@@ -177,11 +177,7 @@ export default function Experts() {
                         Status: {activeFilter === "YES" ? "Active" : activeFilter === "SEMI-ACTIVE" ? "Semi-Active" : "Inactive"}
                       </Badge>
                     )}
-                    {selectedBul !== "all" && (
-                      <Badge style={{ backgroundColor: "rgba(146, 242, 29, 0.2)", color: "#92F21D", borderColor: "#92F21D", borderWidth: "1px" }}>
-                        BUL: {selectedBul}
-                      </Badge>
-                    )}
+
                   </div>
                 )}
               </div>
