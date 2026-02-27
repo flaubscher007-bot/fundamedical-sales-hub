@@ -184,10 +184,12 @@ export default function Layout({ children, currentPageName }) {
 
   const isDashboardsActive = dashboardItems.some(i => i.page === currentPageName);
   const isClientsActive = clientItems.some(i => i.page === currentPageName);
+  const isExpertsActive = expertItems.some(i => i.page === currentPageName);
   const isMarketingActive = marketingItems.some(i => i.page === currentPageName);
   const userRole = user?.role || "team_member";
   const hasDashboardAccess = dashboardItems.some(i => canAccessPage(userRole, i.page));
   const hasClientAccess = clientItems.some(i => canAccessPage(userRole, i.page));
+  const hasExpertAccess = expertItems.some(i => canAccessPage(userRole, i.page));
 
   return (
     <div className="min-h-screen bg-slate-50 flex pb-safe">
