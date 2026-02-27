@@ -36,7 +36,7 @@ export default function Finance() {
     const matchesKAC = filterKAC === "all" || stmt.kac === filterKAC;
     const matchesStatus = filterStatus === "all" || stmt.account_status === filterStatus;
     return matchesSearch && matchesKAC && matchesStatus;
-  });
+  }).sort((a, b) => (a.law_firm || "").localeCompare(b.law_firm || ""));
 
   const handleManualRefresh = async () => {
     setIsRefreshing(true);
