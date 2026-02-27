@@ -75,7 +75,7 @@ export default function AdminDashboard({ user }) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-slate-600">Review alerts immediately in the Alerts section.</p>
+            <p className="text-sm" style={{color: '#ffffff'}}>Review alerts immediately in the Alerts section.</p>
           </CardContent>
         </Card>
       )}
