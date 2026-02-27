@@ -469,9 +469,6 @@ export default function ExpertDetails() {
             </div>
           </TabsContent>
 
-
-
-
           {/* Contracts Tab */}
           <TabsContent value="contracts" className="p-6">
             <h3 style={{ color: "#92F21D" }} className="text-lg font-semibold mb-4">Associated Contracts</h3>
