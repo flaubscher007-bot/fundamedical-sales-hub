@@ -9,8 +9,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Search, Plus, Stethoscope, Calendar, CheckCircle2, Pencil } from "lucide-react";
+import { Search, Plus, Stethoscope, Calendar, CheckCircle2, Pencil, Eye } from "lucide-react";
 import ExpertSchedulePanel from "@/components/experts/ExpertSchedulePanel";
+import { createPageUrl } from "@/utils";
+import { Link } from "react-router-dom";
 
 // BUL rotation per cohort per month (based on the uploaded schedule)
 const ROTATION = {
