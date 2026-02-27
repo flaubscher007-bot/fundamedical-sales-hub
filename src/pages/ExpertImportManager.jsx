@@ -60,6 +60,13 @@ export default function ExpertImportManager() {
 
       const records = Array.isArray(extractResponse.output) ? extractResponse.output : [extractResponse.output];
       
+      // Ensure cohort is set (default to 1 if missing)
+      records.forEach(record => {
+        if (!record.cohort) {
+          record.cohort = 1;
+        }
+      });
+
       // Validate emails
       const errors = [];
       records.forEach((record, index) => {
