@@ -75,6 +75,9 @@ export default function Layout({ children, currentPageName }) {
   const [dashboardsOpen, setDashboardsOpen] = useState(
     dashboardItems.some(i => i.page === currentPageName)
   );
+  const [clientsOpen, setClientsOpen] = useState(
+    clientItems.some(i => i.page === currentPageName)
+  );
   const [marketingOpen, setMarketingOpen] = useState(
     marketingItems.some(i => i.page === currentPageName)
   );
