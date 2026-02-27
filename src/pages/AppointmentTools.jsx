@@ -26,6 +26,8 @@ import SummaryDialog from "../components/appointmentTools/SummaryDialog";
 import MeetingMinutesTab from "../components/appointmentTools/MeetingMinutesTab.jsx";
 import FollowUpsTab from "../components/appointmentTools/FollowUpsTab.jsx";
 import ExpertScheduleSection from "../components/appointmentTools/ExpertScheduleSection";
+import ScheduleCalendarView from "../components/appointmentTools/ScheduleCalendarView";
+import UpcomingAppointmentsList from "../components/appointmentTools/UpcomingAppointmentsList";
 
 const emptyApt = {
   title: "", client_id: "", client_name: "", date: "", time: "", end_time: "",
@@ -120,7 +122,7 @@ export default function AppointmentTools() {
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="flex w-full flex-wrap gap-1 h-auto">
-          <TabsTrigger value="appointments">Appointments</TabsTrigger>
+          <TabsTrigger value="appointments">Law Firm Schedule</TabsTrigger>
           <TabsTrigger value="expert-schedule">Expert Schedule</TabsTrigger>
           <TabsTrigger value="meeting-minutes">Meeting Minutes</TabsTrigger>
           <TabsTrigger value="follow-ups">Follow-Ups</TabsTrigger>
@@ -133,49 +135,12 @@ export default function AppointmentTools() {
         </TabsContent>
 
         <TabsContent value="appointments" className="mt-4 space-y-4">
-          {/* Search & Filters */}
-          <div className="flex flex-wrap gap-3 items-end">
-            <div className="relative flex-1 min-w-[200px]">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <Input placeholder="Search appointments..." value={search} onChange={e => setSearch(e.target.value)} className="pl-10" />
+          {/* Calendar and upcoming appointments - same layout as Expert Schedule */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div className="lg:col-span-2">
+              <ScheduleCalendarView appointments={appointments} month="February" year={2026} />
             </div>
-            <Select value={filterStatus} onValueChange={setFilterStatus}>
-              <SelectTrigger className="w-36"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                {["Scheduled", "Completed", "Cancelled", "Rescheduled"].map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-              </SelectContent>
-            </Select>
-            <Input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} className="w-36" placeholder="From" />
-            <Input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} className="w-36" placeholder="To" />
-            {(dateFrom || dateTo || filterStatus !== "all") && (
-              <Button variant="ghost" size="sm" className="text-slate-500" onClick={() => { setDateFrom(""); setDateTo(""); setFilterStatus("all"); }}>
-                Clear
-              </Button>
-            )}
-          </div>
-
-          {/* Appointment List */}
-          <div className="space-y-2">
-            {filtered.length === 0 ? (
-              <div className="text-center py-16">
-                <Calendar className="w-12 h-12 text-slate-300 mx-auto" />
-                <p className="mt-3" style={{color: '#ffffff'}}>No appointments found</p>
-                <Button onClick={openNew} variant="outline" className="mt-4">Schedule an Appointment</Button>
-              </div>
-            ) : (
-              filtered.map(apt => (
-                <AppointmentCard
-                  key={apt.id}
-                  apt={apt}
-                  onEdit={openEdit}
-                  onSendRequest={setSendReqApt}
-                  onConfirm={setConfirmApt}
-                  onMinutes={setMinutesApt}
-                  onFeedback={setFeedbackApt}
-                />
-              ))
-            )}
+            <UpcomingAppointmentsList appointments={appointments} limit={15} />
           </div>
         </TabsContent>
 
