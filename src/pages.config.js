@@ -87,6 +87,7 @@ import TeamCalendar from './pages/TeamCalendar';
 import UserManagement from './pages/UserManagement';
 import UserProfile from './pages/UserProfile';
 import UserRoleManagement from './pages/UserRoleManagement';
+import MessageCentre from './pages/MessageCentre';
 import __Layout from './Layout.jsx';
 
 
@@ -131,6 +132,7 @@ export const PAGES = {
     "UserManagement": UserManagement,
     "UserProfile": UserProfile,
     "UserRoleManagement": UserRoleManagement,
+    "MessageCentre": MessageCentre,
 }
 
 export const pagesConfig = {
