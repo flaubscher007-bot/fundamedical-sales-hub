@@ -524,62 +524,81 @@ export default function BULManagement() {
           )}
 
           <h4 className="text-base font-semibold text-slate-700 mt-6">Business Unit Targets</h4>
-          <div className="grid gap-4">
-            {targets.length === 0 ? (
-              <Card>
-                <CardContent className="py-12 text-center">
-                  <TargetIcon className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                  <p className="text-slate-500">No targets created yet</p>
-                </CardContent>
-              </Card>
-            ) : (
-              targets.map((target) => (
-                <Card key={target.id} className="hover:shadow-md transition-all">
-                  <CardHeader className="flex flex-row items-start justify-between pb-3">
-                    <div className="flex-1">
-                      <CardTitle className="text-base">{target.bul_name}</CardTitle>
-                      <p className="text-sm text-slate-500 mt-1">{new Date(target.month).toLocaleDateString('en-ZA', { year: 'numeric', month: 'long' })}</p>
-                    </div>
-                    <div className="flex gap-2">
-                       {canPerformAction(user?.role, 'Target', 'edit', { isOwner: target.bul_email === user?.email }) && (
-                         <Button variant="ghost" size="icon" onClick={() => openEditTarget(target)}>
-                           <Pencil className="w-4 h-4 text-slate-600" />
-                         </Button>
-                       )}
-                       {canPerformAction(user?.role, 'Target', 'delete') && (
-                         <Button variant="ghost" size="icon" onClick={() => deleteTargetMutation.mutate(target.id)}>
-                           <Trash2 className="w-4 h-4 text-red-500" />
-                         </Button>
-                       )}
-                     </div>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <div className="grid grid-cols-3 gap-4">
-                       <div className="bg-green-50 p-4 rounded-lg">
-                         <div className="flex items-center gap-2 text-sm text-slate-600 mb-1">
-                           <Package className="w-4 h-4" /> Bookings
-                         </div>
-                         <p className="font-bold text-slate-800">{target.bookings_target || 0}</p>
-                       </div>
-                       <div className="bg-blue-50 p-4 rounded-lg">
-                         <div className="flex items-center gap-2 text-sm text-slate-600 mb-1">
-                           <FileText className="w-4 h-4" /> Reports
-                         </div>
-                         <p className="font-bold text-slate-800">{target.reports_target || 0}</p>
-                       </div>
-                       <div className="bg-purple-50 p-4 rounded-lg">
-                         <div className="flex items-center gap-2 text-sm text-slate-600 mb-1">
-                           <TargetIcon className="w-4 h-4" /> Collections
-                         </div>
-                         <p className="font-bold text-slate-800">{formatCurrency(target.collections_target)}</p>
-                       </div>
-                     </div>
-                    {target.notes && <p className="text-sm text-slate-600 bg-slate-50 p-3 rounded">{target.notes}</p>}
-                  </CardContent>
-                </Card>
-              ))
-            )}
-          </div>
+          {targets.length === 0 ? (
+            <Card>
+              <CardContent className="py-12 text-center">
+                <TargetIcon className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+                <p className="text-slate-500">No targets created yet</p>
+              </CardContent>
+            </Card>
+          ) : (
+            (() => {
+              // Group targets by person
+              const byPerson = targets.reduce((acc, t) => {
+                if (!acc[t.bul_name]) acc[t.bul_name] = [];
+                acc[t.bul_name].push(t);
+                return acc;
+              }, {});
+
+              return (
+                <div className="grid gap-6">
+                  {Object.entries(byPerson).map(([name, personTargets]) => {
+                    const sorted = [...personTargets].sort((a, b) => new Date(a.month) - new Date(b.month));
+                    return (
+                      <Card key={name} className="overflow-hidden">
+                        <CardHeader className="bg-gradient-to-r from-[#0a1628] to-[#0f2240] text-white py-3 px-4">
+                          <CardTitle className="text-base">{name}</CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-0">
+                          <div className="overflow-x-auto">
+                            <table className="w-full text-sm">
+                              <thead className="bg-slate-50 border-b border-slate-200">
+                                <tr>
+                                  <th className="px-4 py-2 text-left text-xs font-semibold text-slate-600">Month</th>
+                                  <th className="px-4 py-2 text-right text-xs font-semibold text-green-700">Bookings</th>
+                                  <th className="px-4 py-2 text-right text-xs font-semibold text-blue-700">Reports</th>
+                                  <th className="px-4 py-2 text-right text-xs font-semibold text-purple-700">Collections</th>
+                                  <th className="px-4 py-2 text-left text-xs font-semibold text-slate-500">Notes</th>
+                                  <th className="px-4 py-2"></th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-slate-100">
+                                {sorted.map((target) => (
+                                  <tr key={target.id} className="hover:bg-slate-50 transition-colors">
+                                    <td className="px-4 py-3 font-medium text-slate-700">
+                                      {new Date(target.month).toLocaleDateString('en-ZA', { year: 'numeric', month: 'long' })}
+                                    </td>
+                                    <td className="px-4 py-3 text-right font-semibold text-green-700">{target.bookings_target || 0}</td>
+                                    <td className="px-4 py-3 text-right font-semibold text-blue-700">{target.reports_target || 0}</td>
+                                    <td className="px-4 py-3 text-right font-semibold text-purple-700">{formatCurrency(target.collections_target)}</td>
+                                    <td className="px-4 py-3 text-slate-500 max-w-[160px] truncate">{target.notes || '-'}</td>
+                                    <td className="px-4 py-3">
+                                      <div className="flex gap-1 justify-end">
+                                        {canPerformAction(user?.role, 'Target', 'edit', { isOwner: target.bul_email === user?.email }) && (
+                                          <Button variant="ghost" size="icon" onClick={() => openEditTarget(target)}>
+                                            <Pencil className="w-4 h-4 text-slate-500" />
+                                          </Button>
+                                        )}
+                                        {canPerformAction(user?.role, 'Target', 'delete') && (
+                                          <Button variant="ghost" size="icon" onClick={() => deleteTargetMutation.mutate(target.id)}>
+                                            <Trash2 className="w-4 h-4 text-red-400" />
+                                          </Button>
+                                        )}
+                                      </div>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              );
+            })()
+          )}
         </TabsContent>
 
         {/* DAILY ACTUALS TAB */}
