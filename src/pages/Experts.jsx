@@ -56,7 +56,7 @@ export default function Experts() {
 
   const qc = useQueryClient();
 
-  const { data: experts = [] } = useQuery({
+  const { data: experts = [], refetch } = useQuery({
     queryKey: ["experts"],
     queryFn: () => base44.entities.Expert.list(),
   });
