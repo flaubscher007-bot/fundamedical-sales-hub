@@ -811,7 +811,10 @@ export default function BULManagement() {
                 <SelectTrigger><SelectValue placeholder="Select BUL" /></SelectTrigger>
                 <SelectContent>
                   {teamAssignments.filter(t => t.role === "Business Unit Leader").map(bul => (
-                    <SelectItem key={bul.id} value={bul.person_name}>{bul.person_name}</SelectItem>
+                    <SelectItem key={bul.id} value={bul.person_name}>{bul.person_name} (BUL)</SelectItem>
+                  ))}
+                  {teamAssignments.filter(t => t.role === "Key Accounts Consultant").map(kac => (
+                    <SelectItem key={kac.id} value={kac.person_name}>{kac.person_name} (KAC)</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -863,7 +866,10 @@ export default function BULManagement() {
                 <SelectTrigger><SelectValue placeholder="Select BUL" /></SelectTrigger>
                 <SelectContent>
                   {teamAssignments.filter(t => t.role === "Business Unit Leader").map(bul => (
-                    <SelectItem key={bul.id} value={bul.person_name}>{bul.person_name}</SelectItem>
+                    <SelectItem key={bul.id} value={bul.person_name}>{bul.person_name} (BUL)</SelectItem>
+                  ))}
+                  {teamAssignments.filter(t => t.role === "Key Accounts Consultant").map(kac => (
+                    <SelectItem key={kac.id} value={kac.person_name}>{kac.person_name} (KAC)</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
