@@ -104,6 +104,9 @@ export default function Layout({ children, currentPageName }) {
     if (dashboardItems.some(i => i.page === currentPageName)) {
       setDashboardsOpen(true);
     }
+    if (clientItems.some(i => i.page === currentPageName)) {
+      setClientsOpen(true);
+    }
     if (marketingItems.some(i => i.page === currentPageName)) {
       setMarketingOpen(true);
     }
