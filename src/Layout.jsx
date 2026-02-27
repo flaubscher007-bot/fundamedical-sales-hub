@@ -23,7 +23,8 @@ import {
   ChevronRight,
   BarChart2,
   DollarSign,
-  AlertCircle
+  AlertCircle,
+  MessageSquare
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import PWAInstallBanner from "@/components/PWAInstallBanner";
