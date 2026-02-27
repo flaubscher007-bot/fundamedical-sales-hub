@@ -221,13 +221,13 @@
 
   /* Global text color overrides for dark theme */
   h1, h2, h3, h4, h5, h6 {
-    color: #92F21D;
+    color: #92F21D !important;
     text-shadow: 0 0 8px rgba(146, 242, 29, 0.2);
   }
 
   /* Default text should be white on dark backgrounds */
-  p, span, div {
-    color: #ffffff;
+  p, span, div, li {
+    color: #ffffff !important;
   }
 
   /* Table styling */
@@ -236,15 +236,19 @@
   }
 
   table thead th {
-    @apply text-[#92F21D];
-    background-color: #0a2d52;
+    @apply text-[#92F21D] !important;
+    background-color: #0a2d52 !important;
+  }
+
+  table tbody tr {
+    background-color: #0a1e3a;
   }
 
   table tbody td {
-    @apply text-white;
+    @apply text-white !important;
   }
 
-  /* Override slate colors for visibility */
+  /* Override ALL grey/muted text to lime green */
   .text-slate-50,
   .text-slate-100,
   .text-slate-200,
@@ -254,86 +258,131 @@
   .text-slate-600,
   .text-slate-700,
   .text-slate-800,
-  .text-slate-900 {
-    color: inherit;
-  }
-
-  /* Lime green text backgrounds */
-  .text-\[\#92F21D\] {
-    background-color: #008AC1 !important;
-  }
-
-  .bg-white .text-\[\#92F21D\] {
-    background-color: #008AC1 !important;
-  }
-
-  /* Card content text */
-  [class*="card"] p,
-  [class*="card"] span,
-  [class*="card"] div {
-    color: #ffffff;
-  }
-
-  /* Card grey text to lime green */
-  .text-slate-400,
-  .text-slate-500,
-  .text-slate-600,
-  .text-muted-foreground {
+  .text-slate-900,
+  .text-muted-foreground,
+  .text-gray-400,
+  .text-gray-500,
+  .text-gray-600 {
     color: #92F21D !important;
   }
 
-  /* Card black text to cyan */
-  .text-slate-900,
-  .text-black,
-  [class*="card"] .text-slate-700 {
+  /* Card content text - white on dark */
+  [class*="card"] p,
+  [class*="card"] span,
+  [class*="card"] div,
+  [class*="Card"] p,
+  [class*="Card"] span,
+  [class*="Card"] div {
+    color: #ffffff !important;
+  }
+
+  /* Card headings to lime green */
+  [class*="card"] h1,
+  [class*="card"] h2,
+  [class*="card"] h3,
+  [class*="card"] h4,
+  [class*="Card"] h1,
+  [class*="Card"] h2,
+  [class*="Card"] h3,
+  [class*="Card"] h4 {
+    color: #92F21D !important;
+  }
+
+  /* Card numbers/values to cyan */
+  .text-2xl,
+  .text-3xl,
+  .text-4xl,
+  .text-5xl {
     color: #34CCD0 !important;
   }
 
   /* Labels and form text */
   label {
-    @apply text-white;
+    @apply text-white !important;
   }
 
-  /* List items */
-  li {
-    @apply text-white;
-  }
-
-  /* Make grey text visible - convert to white */
-  .text-slate-400,
-  .text-slate-500,
-  .text-slate-600 {
-    @apply text-white;
+  /* Make sure placeholder text is visible */
+  ::placeholder {
+    color: #92F21D !important;
+    opacity: 0.7;
   }
 
   /* Dialogs and modals */
-  [role="dialog"] {
+  [role="dialog"],
+  .modal,
+  .dialog {
     background-color: #081F3F;
   }
 
   [role="dialog"] p,
   [role="dialog"] span,
-  [role="dialog"] div {
-    color: #ffffff;
+  [role="dialog"] div,
+  .modal p,
+  .modal span,
+  .modal div,
+  .dialog p,
+  .dialog span,
+  .dialog div {
+    color: #ffffff !important;
   }
 
-  [role="dialog"] h2 {
-    color: #92F21D;
-  }
-
-  /* Stats and metrics - make numbers white/cyan */
-  .text-2xl,
-  .text-3xl,
-  .text-4xl {
-    color: #ffffff;
+  [role="dialog"] h1,
+  [role="dialog"] h2,
+  [role="dialog"] h3,
+  .modal h1,
+  .modal h2,
+  .modal h3,
+  .dialog h1,
+  .dialog h2,
+  .dialog h3 {
+    color: #92F21D !important;
   }
 
   /* Links */
   a {
-    color: #34CCD0;
+    color: #34CCD0 !important;
   }
 
   a:hover {
-    color: #92F21D;
+    color: #92F21D !important;
+  }
+
+  /* Buttons with text */
+  button, [role="button"] {
+    color: inherit !important;
+  }
+
+  /* Badge and pill text */
+  .badge, .pill, [class*="badge"], [class*="pill"] {
+    color: #ffffff !important;
+  }
+
+  /* Ensure inputs have visible text */
+  input, textarea, select {
+    color: #ffffff !important;
+    background-color: rgba(10, 45, 82, 0.5) !important;
+    border-color: #34CCD0 !important;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: #92F21D !important;
+    opacity: 0.8;
+  }
+
+  /* Ensure all text on dark backgrounds is visible */
+  .bg-slate-900,
+  .bg-slate-800,
+  [style*="background-color: #081F3F"],
+  [style*="background-color: #0a1e3a"],
+  [style*="background-color: #0a2d52"] {
+    color: #ffffff !important;
+  }
+
+  /* Fix any dark text on dark backgrounds */
+  .text-black,
+  [style="color: #000"],
+  [style*="color: black"] {
+    color: #34CCD0 !important;
   }
 }
