@@ -335,52 +335,7 @@ export default function Experts() {
             </div>
           </div>
         </DialogContent>
-      </Dialog>
-    </div>
-  );
-}
-
-// Sub-component to create appointments for a given expert
-function CreateAppointmentsButton({ expert, rotation, months }) {
-  const qc = useQueryClient();
-  const [creating, setCreating] = useState(false);
-  const [done, setDone] = useState(false);
-
-  const MONTH_NUMS = { Mar: 3, Apr: 4, May: 5, Jun: 6, Jul: 7, Aug: 8, Sep: 9, Oct: 10, Nov: 11, Dec: 12 };
-
-  const handleCreate = async () => {
-    setCreating(true);
-    const promises = months.map(month => {
-      const bul = rotation[month]?.[expert.cohort];
-      if (!bul) return null;
-      const monthNum = MONTH_NUMS[month];
-      const date = `2026-${String(monthNum).padStart(2, "0")}-15`;
-      return base44.entities.Appointment.create({
-        title: `Visit: ${expert.name}`,
-        client_name: expert.name,
-        date,
-        type: "In-Person",
-        status: "Scheduled",
-        assigned_bul: bul,
-        notes: `Expert visit – ${expert.discipline} · Cohort ${expert.cohort}`,
-        location: expert.address || "",
-      });
-    }).filter(Boolean);
-    await Promise.all(promises);
-    qc.invalidateQueries(["appointments"]);
-    setCreating(false);
-    setDone(true);
-  };
-
-  return (
-    <Button
-      onClick={handleCreate}
-      disabled={creating || done}
-      className="w-full bg-[#00bcd4] hover:bg-[#0097a7]"
-    >
-      {done ? <><CheckCircle2 className="w-4 h-4 mr-2" /> Appointments Created!</> :
-       creating ? "Creating appointments..." :
-       <><Calendar className="w-4 h-4 mr-2" /> Create Appointments for All BULs</>}
-    </Button>
-  );
-}
+        </Dialog>
+        </div>
+        );
+        }
