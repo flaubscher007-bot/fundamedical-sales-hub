@@ -131,6 +131,9 @@ export default function BULPerformancePage() {
         </Button>
       </div>
 
+      {/* AI Coaching */}
+      <AICoachingPanel targets={targets} actuals={dailyActuals} bulNames={bulNames} />
+
       {/* Interactive Charts */}
       <div>
         <h2 className="text-lg font-semibold text-slate-900 mb-4">Performance Analytics</h2>
