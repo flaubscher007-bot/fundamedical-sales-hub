@@ -194,11 +194,11 @@ export default function Layout({ children, currentPageName }) {
         <div className="p-4 sm:p-6 border-b border-white/10 sticky top-0 bg-[var(--funda-primary)]">
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0">
-              <h1 className="text-lg sm:text-xl font-bold tracking-wide truncate">
-                <span style={{color: 'var(--funda-highlight)'}}>FUNDA</span>
-                <span style={{color: 'var(--funda-accent)'}}>MEDICAL</span>
+              <h1 className="text-lg sm:text-xl font-black tracking-widest truncate" style={{letterSpacing: '0.05em'}}>
+                <span style={{color: '#92F21D', textShadow: '0 0 10px rgba(146, 242, 29, 0.3)'}}>FUNDA</span>
+                <span style={{color: '#34CCD0', textShadow: '0 0 10px rgba(52, 204, 208, 0.3)'}}>MEDICAL</span>
               </h1>
-              <p className="text-xs text-slate-400 mt-0.5 truncate">Sales Hub</p>
+              <p className="text-xs font-medium mt-0.5 truncate" style={{color: '#34CCD0', letterSpacing: '0.02em'}}>Sales Hub</p>
             </div>
             <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-slate-400 hover:text-white flex-shrink-0">
               <X className="w-5 h-5" />
