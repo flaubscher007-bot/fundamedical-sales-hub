@@ -258,6 +258,15 @@
     color: inherit;
   }
 
+  /* Lime green text backgrounds */
+  .text-\[\#92F21D\] {
+    background-color: #008AC1 !important;
+  }
+
+  .bg-white .text-\[\#92F21D\] {
+    background-color: #008AC1 !important;
+  }
+
   /* Card content text */
   [class*="card"] p,
   [class*="card"] span,
