@@ -85,7 +85,7 @@ export default function BULManagement() {
 
   const saveTargetMutation = useMutation({
     mutationFn: (data) => {
-      const payload = { ...data, revenue_target: parseFloat(data.revenue_target) || 0, bookings_target: parseInt(data.bookings_target) || 0, collections_target: parseFloat(data.collections_target) || 0 };
+      const payload = { ...data, bookings_target: parseInt(data.bookings_target) || 0, reports_target: parseInt(data.reports_target) || 0, collections_target: parseFloat(data.collections_target) || 0 };
       return editingTarget ? base44.entities.Target.update(editingTarget.id, payload) : base44.entities.Target.create(payload);
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["targets"] }); setTargetDialogOpen(false); },
