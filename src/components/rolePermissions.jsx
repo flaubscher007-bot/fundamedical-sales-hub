@@ -168,6 +168,7 @@ export const ROLE_PERMISSIONS = {
       "FollowUps",
       "MeetingMinutes",
       "PricingProposals",
+      "MessageCentre",
       "Help",
     ],
     canEdit: ["own_records"],
