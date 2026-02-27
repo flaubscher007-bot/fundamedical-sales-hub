@@ -98,7 +98,7 @@ export default function BULDashboard({ user }) {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
+              <CardTitle className="text-lg flex items-center gap-2" style={{color: '#34CCD0'}}>
                 <Target className="w-5 h-5 text-blue-500" />
                 Bookings Progress
               </CardTitle>
@@ -106,8 +106,8 @@ export default function BULDashboard({ user }) {
             <CardContent className="space-y-4">
               <div>
                 <div className="flex justify-between mb-2">
-                  <span className="text-sm text-slate-600">Bookings vs Target</span>
-                  <span className="font-bold">{bookingsProgress.toFixed(0)}%</span>
+                  <span className="text-sm" style={{color: '#ffffff'}}>Bookings vs Target</span>
+                  <span className="font-bold" style={{color: '#92F21D'}}>{bookingsProgress.toFixed(0)}%</span>
                 </div>
                 <div className="w-full bg-slate-200 h-3 rounded-full overflow-hidden">
                   <div 
