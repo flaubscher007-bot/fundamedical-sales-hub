@@ -67,7 +67,7 @@ export default function ContractKPIs({ contracts, proposals }) {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-base font-semibold text-slate-700">Contract & Sales KPIs</h2>
+      <h2 className="text-base font-semibold" style={{color: '#92F21D'}}>Contract & Sales KPIs</h2>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {kpis.map((k) => (
