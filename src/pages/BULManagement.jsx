@@ -582,6 +582,11 @@ export default function BULManagement() {
           </div>
         </TabsContent>
 
+        {/* DAILY ACTUALS TAB */}
+        <TabsContent value="actuals" className="space-y-4">
+          <DailyActualsTab teamAssignments={teamAssignments} />
+        </TabsContent>
+
         {/* GOALS TAB */}
         <TabsContent value="goals" className="space-y-4">
           <GoalsTab />
