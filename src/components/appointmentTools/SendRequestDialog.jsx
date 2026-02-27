@@ -34,19 +34,20 @@ export default function SendRequestDialog({ open, onClose, appointment }) {
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle>Send Meeting Request</DialogTitle>
-        </DialogHeader>
-        <div className="space-y-4 py-2">
-          <p className="text-sm text-slate-600">Appointment: <strong>{appointment?.title}</strong></p>
-          <div>
-            <Label>Recipient Name</Label>
-            <Input className="mt-1" value={name} onChange={e => setName(e.target.value)} placeholder="Client contact name" />
-          </div>
-          <div>
-            <Label>Recipient Email (for email channel)</Label>
-            <Input className="mt-1" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="contact@lawfirm.co.za" />
-          </div>
+         <DialogHeader>
+           <DialogTitle>Send Meeting Request</DialogTitle>
+         </DialogHeader>
+         <div className="space-y-4 py-2">
+           <p className="text-sm text-slate-600">Appointment: <strong>{appointment?.title}</strong></p>
+           <p className="text-sm text-slate-500">Send via email or WhatsApp</p>
+           <div>
+             <Label>Recipient Name</Label>
+             <Input className="mt-1" value={name} onChange={e => setName(e.target.value)} placeholder="Client contact name" />
+           </div>
+           <div>
+             <Label>Recipient Email (required for email, optional for WhatsApp)</Label>
+             <Input className="mt-1" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="contact@lawfirm.co.za" />
+           </div>
           <div className="flex gap-3 pt-2">
             <Button
               className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
