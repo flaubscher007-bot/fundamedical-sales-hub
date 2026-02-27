@@ -69,6 +69,16 @@ export default function ExpertDetails() {
      enabled: !!expert,
    });
 
+   const { data: reviews = [] } = useQuery({
+     queryKey: ["reviewsForExpert", expertId],
+     queryFn: async () => {
+       if (!expert) return [];
+       const allReviews = await base44.entities.ExpertReview.list();
+       return allReviews.filter(r => r.expert_id === expertId).sort((a, b) => new Date(b.review_date) - new Date(a.review_date));
+     },
+     enabled: !!expert,
+   });
+
    const handleEditBasic = () => {
      setEditedExpert({ ...expert });
      setIsEditingBasic(true);
