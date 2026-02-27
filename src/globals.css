@@ -113,32 +113,35 @@
     width: 100%;
     height: 100%;
     background-image: 
-      url("data:image/svg+xml,%3Csvg width='80' height='92' viewBox='0 0 80 92' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolygon points='40,2 78,23 78,69 40,90 2,69 2,23' fill='none' stroke='%2334CCD0' stroke-width='2' opacity='0.15'/%3E%3C/svg%3E"),
-      url("data:image/svg+xml,%3Csvg width='120' height='140' viewBox='0 0 120 140' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolygon points='60,5 115,35 115,105 60,135 5,105 5,35' fill='none' stroke='%2392F21D' stroke-width='2' opacity='0.08'/%3E%3C/svg%3E"),
-      url("data:image/svg+xml,%3Csvg width='50' height='58' viewBox='0 0 50 58' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolygon points='25,2 48,14.5 48,43.5 25,56 2,43.5 2,14.5' fill='%2392F21D' opacity='0.08'/%3E%3C/svg%3E"),
-      url("data:image/svg+xml,%3Csvg width='95' height='110' viewBox='0 0 95 110' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolygon points='47.5,5 90,30 90,80 47.5,105 5,80 5,30' fill='none' stroke='%2334CCD0' stroke-width='1.5' opacity='0.1'/%3E%3C/svg%3E");
-    background-size: 400px 460px, 600px 700px, 250px 290px, 475px 550px;
-    background-position: 0 0, 150px 200px, 50px 100px, 300px 400px;
+      url("data:image/svg+xml,%3Csvg width='80' height='92' viewBox='0 0 80 92' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolygon points='40,2 78,23 78,69 40,90 2,69 2,23' fill='none' stroke='%2334CCD0' stroke-width='2' opacity='0.3'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg width='120' height='140' viewBox='0 0 120 140' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolygon points='60,5 115,35 115,105 60,135 5,105 5,35' fill='none' stroke='%2392F21D' stroke-width='2.5' opacity='0.25'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg width='60' height='70' viewBox='0 0 60 70' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolygon points='30,3 55,17 55,51 30,65 5,51 5,17' fill='none' stroke='%2300BFFF' stroke-width='2' opacity='0.2'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg width='150' height='175' viewBox='0 0 150 175' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolygon points='75,8 145,42 145,130 75,165 5,130 5,42' fill='none' stroke='%2334CCD0' stroke-width='1.5' opacity='0.15'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg width='100' height='115' viewBox='0 0 100 115' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolygon points='50,5 95,32 95,85 50,112 5,85 5,32' fill='none' stroke='%2392F21D' stroke-width='2' opacity='0.2'/%3E%3C/svg%3E");
+    background-size: 400px 460px, 600px 700px, 350px 410px, 750px 875px, 500px 575px;
+    background-position: 0 0, 150px 200px, 80px 120px, 200px 300px, 100px 250px;
     background-repeat: repeat;
     pointer-events: none;
     z-index: 0;
     animation: hexFloat 20s ease-in-out infinite;
+    filter: drop-shadow(0 0 30px rgba(146, 242, 29, 0.1)) drop-shadow(0 0 20px rgba(52, 204, 208, 0.1));
   }
 
   @keyframes hexFloat {
-    0%, 100% { background-position: 0 0, 150px 200px, 50px 100px, 300px 400px; }
-    50% { background-position: 20px -30px, 170px 180px, 30px 120px, 280px 420px; }
+    0%, 100% { background-position: 0 0, 150px 200px, 80px 120px, 200px 300px, 100px 250px; }
+    50% { background-position: 20px -30px, 170px 180px, 60px 140px, 220px 280px, 120px 230px; }
   }
 
   @media (max-width: 768px) {
     body::before {
-      background-size: 250px 290px, 400px 460px, 180px 210px, 300px 350px;
+      background-size: 250px 290px, 400px 460px, 180px 210px, 500px 575px, 300px 350px;
       animation: hexFloatMobile 15s ease-in-out infinite;
+      filter: drop-shadow(0 0 20px rgba(146, 242, 29, 0.08)) drop-shadow(0 0 15px rgba(52, 204, 208, 0.08));
     }
 
     @keyframes hexFloatMobile {
-      0%, 100% { background-position: 0 0, 80px 100px, 30px 50px, 150px 200px; }
-      50% { background-position: 10px -15px, 100px 90px, 15px 60px, 140px 210px; }
+      0%, 100% { background-position: 0 0, 80px 100px, 30px 50px, 100px 150px, 150px 200px; }
+      50% { background-position: 10px -15px, 100px 90px, 15px 60px, 120px 140px, 140px 210px; }
     }
   }
 
