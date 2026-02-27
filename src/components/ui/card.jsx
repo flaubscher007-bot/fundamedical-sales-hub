@@ -12,7 +12,7 @@ const Card = React.forwardRef(({ className, ...props }, ref) => {
       ref={ref}
       className={cn("rounded-xl border bg-card text-card-foreground shadow", className)}
       style={{
-        backgroundColor: `rgba(${rgb}, 0.3)`,
+        backgroundColor: `rgba(${rgb}, 0.6)`,
         borderColor: 'rgba(52, 204, 208, 0.3)',
         color: '#000000',
         borderWidth: '2px'
