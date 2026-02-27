@@ -36,25 +36,58 @@ const activeColors = {
 };
 
 export default function ExpertDetails() {
-  const navigate = useNavigate();
-  const urlParams = new URLSearchParams(window.location.search);
-  const expertId = urlParams.get("id");
+   const navigate = useNavigate();
+   const urlParams = new URLSearchParams(window.location.search);
+   const expertId = urlParams.get("id");
+   const [isEditingBasic, setIsEditingBasic] = useState(false);
+   const [editedExpert, setEditedExpert] = useState(null);
+   const [isSaving, setIsSaving] = useState(false);
 
-  const { data: expert, isLoading } = useQuery({
-    queryKey: ["expert", expertId],
-    queryFn: () => expertId ? base44.entities.Expert.list().then(experts => experts.find(e => e.id === expertId)) : null,
-    enabled: !!expertId,
-  });
+   const { data: expert, isLoading, refetch } = useQuery({
+     queryKey: ["expert", expertId],
+     queryFn: () => expertId ? base44.entities.Expert.list().then(experts => experts.find(e => e.id === expertId)) : null,
+     enabled: !!expertId,
+   });
 
-  const { data: appointments = [] } = useQuery({
-    queryKey: ["appointmentsForExpert", expertId],
-    queryFn: async () => {
-      if (!expert) return [];
-      const allAppointments = await base44.entities.Appointment.list();
-      return allAppointments.filter(a => a.client_name === expert.name).sort((a, b) => new Date(a.date) - new Date(b.date));
-    },
-    enabled: !!expert,
-  });
+   const { data: appointments = [] } = useQuery({
+     queryKey: ["appointmentsForExpert", expertId],
+     queryFn: async () => {
+       if (!expert) return [];
+       const allAppointments = await base44.entities.Appointment.list();
+       return allAppointments.filter(a => a.client_name === expert.name).sort((a, b) => new Date(a.date) - new Date(b.date));
+     },
+     enabled: !!expert,
+   });
+
+   const { data: contracts = [] } = useQuery({
+     queryKey: ["contractsForExpert", expertId],
+     queryFn: async () => {
+       if (!expert) return [];
+       const allContracts = await base44.entities.Contract.list();
+       return allContracts.filter(c => c.client_name?.toLowerCase() === expert.name?.toLowerCase());
+     },
+     enabled: !!expert,
+   });
+
+   const handleEditBasic = () => {
+     setEditedExpert({ ...expert });
+     setIsEditingBasic(true);
+   };
+
+   const handleSaveBasic = async () => {
+     if (!editedExpert) return;
+     try {
+       setIsSaving(true);
+       await base44.entities.Expert.update(editedExpert.id, editedExpert);
+       await refetch();
+       setIsEditingBasic(false);
+       setEditedExpert(null);
+     } catch (err) {
+       console.error("Error updating expert:", err);
+     } finally {
+       setIsSaving(false);
+     }
+   };
 
   if (isLoading) {
     return <div style={{ color: "#ffffff" }}>Loading...</div>;
