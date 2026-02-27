@@ -114,6 +114,7 @@ export default function BULPerformancePage() {
   const monthRecords = records.filter((r) => r.month?.startsWith(selectedMonth.slice(0, 7)));
   const filtered = selectedBUL === "all" ? monthRecords : monthRecords.filter(r => r.bul_name === selectedBUL);
 
+
   // Totals per BUL for the selected month
   const bulTotals = {};
   filtered.forEach(r => {
