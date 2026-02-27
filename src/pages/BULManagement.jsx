@@ -451,25 +451,25 @@ export default function BULManagement() {
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <div className="grid grid-cols-3 gap-4">
-                      <div className="bg-blue-50 p-4 rounded-lg">
-                        <div className="flex items-center gap-2 text-sm text-slate-600 mb-1">
-                          <DollarSign className="w-4 h-4" /> Revenue
-                        </div>
-                        <p className="font-bold text-slate-800">{formatCurrency(target.revenue_target)}</p>
-                      </div>
-                      <div className="bg-green-50 p-4 rounded-lg">
-                        <div className="flex items-center gap-2 text-sm text-slate-600 mb-1">
-                          <Package className="w-4 h-4" /> Bookings
-                        </div>
-                        <p className="font-bold text-slate-800">{target.bookings_target || 0}</p>
-                      </div>
-                      <div className="bg-purple-50 p-4 rounded-lg">
-                        <div className="flex items-center gap-2 text-sm text-slate-600 mb-1">
-                          <TargetIcon className="w-4 h-4" /> Collections
-                        </div>
-                        <p className="font-bold text-slate-800">{formatCurrency(target.collections_target)}</p>
-                      </div>
-                    </div>
+                       <div className="bg-green-50 p-4 rounded-lg">
+                         <div className="flex items-center gap-2 text-sm text-slate-600 mb-1">
+                           <Package className="w-4 h-4" /> Bookings
+                         </div>
+                         <p className="font-bold text-slate-800">{target.bookings_target || 0}</p>
+                       </div>
+                       <div className="bg-blue-50 p-4 rounded-lg">
+                         <div className="flex items-center gap-2 text-sm text-slate-600 mb-1">
+                           <FileText className="w-4 h-4" /> Reports
+                         </div>
+                         <p className="font-bold text-slate-800">{target.reports_target || 0}</p>
+                       </div>
+                       <div className="bg-purple-50 p-4 rounded-lg">
+                         <div className="flex items-center gap-2 text-sm text-slate-600 mb-1">
+                           <TargetIcon className="w-4 h-4" /> Collections
+                         </div>
+                         <p className="font-bold text-slate-800">{formatCurrency(target.collections_target)}</p>
+                       </div>
+                     </div>
                     {target.notes && <p className="text-sm text-slate-600 bg-slate-50 p-3 rounded">{target.notes}</p>}
                   </CardContent>
                 </Card>
