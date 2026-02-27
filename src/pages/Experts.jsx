@@ -10,28 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Search, Plus, Stethoscope, Calendar, CheckCircle2, Pencil, Eye } from "lucide-react";
-import ExpertSchedulePanel from "@/components/experts/ExpertSchedulePanel";
 import { createPageUrl } from "@/utils";
 import { Link } from "react-router-dom";
-
-// BUL rotation per cohort per month (based on the uploaded schedule)
-const ROTATION = {
-  Jan: { 1: "Nthabi", 2: "Kyle", 3: "Dylan", 4: "Duran" },
-  Feb: { 1: "Kyle", 2: "Dylan", 3: "Duran", 4: "Nthabi" },
-  Mar: { 1: "Dylan", 2: "Duran", 3: "Nthabi", 4: "Kyle" },
-  Apr: { 1: "Duran", 2: "Nthabi", 3: "Kyle", 4: "Dylan" },
-  May: { 1: "Nthabi", 2: "Kyle", 3: "Dylan", 4: "Duran" },
-  Jun: { 1: "Kyle", 2: "Dylan", 3: "Duran", 4: "Nthabi" },
-  Jul: { 1: "Dylan", 2: "Duran", 3: "Nthabi", 4: "Kyle" },
-  Aug: { 1: "Duran", 2: "Nthabi", 3: "Kyle", 4: "Dylan" },
-  Sep: { 1: "Nthabi", 2: "Kyle", 3: "Dylan", 4: "Duran" },
-  Oct: { 1: "Kyle", 2: "Dylan", 3: "Duran", 4: "Nthabi" },
-  Nov: { 1: "Dylan", 2: "Duran", 3: "Nthabi", 4: "Kyle" },
-  Dec: { 1: "Duran", 2: "Nthabi", 3: "Kyle", 4: "Dylan" },
-};
-
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const BULS = ["Nthabi", "Kyle", "Dylan", "Duran"];
 
 const activeColors = {
   YES: "bg-green-100 text-green-700 border-green-200",
