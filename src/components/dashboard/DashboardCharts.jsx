@@ -148,24 +148,24 @@ export default function DashboardCharts({ clients, statements, contracts, propos
       {/* Contract Performance */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Contract Pipeline</CardTitle>
+          <CardTitle className="text-lg" style={{color: '#34CCD0'}}>Contract Pipeline</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="bg-blue-50 rounded-lg p-4">
-              <p className="text-xs text-slate-600 mb-1">Draft</p>
+              <p className="text-xs mb-1" style={{color: '#ffffff'}}>Draft</p>
               <p className="text-2xl font-bold text-blue-600">{contractStatus.draft}</p>
             </div>
             <div className="bg-yellow-50 rounded-lg p-4">
-              <p className="text-xs text-slate-600 mb-1">Sent</p>
+              <p className="text-xs mb-1" style={{color: '#ffffff'}}>Sent</p>
               <p className="text-2xl font-bold text-yellow-600">{contractStatus.sent}</p>
             </div>
             <div className="bg-purple-50 rounded-lg p-4">
-              <p className="text-xs text-slate-600 mb-1">Signed</p>
+              <p className="text-xs mb-1" style={{color: '#ffffff'}}>Signed</p>
               <p className="text-2xl font-bold text-purple-600">{contractStatus.signed}</p>
             </div>
             <div className="bg-green-50 rounded-lg p-4">
-              <p className="text-xs text-slate-600 mb-1">Completed</p>
+              <p className="text-xs mb-1" style={{color: '#ffffff'}}>Completed</p>
               <p className="text-2xl font-bold text-green-600">{contractStatus.completed}</p>
             </div>
           </div>
