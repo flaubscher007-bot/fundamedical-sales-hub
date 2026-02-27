@@ -103,9 +103,15 @@ export default function BULPerformancePage() {
     saveMutation.mutate(payload);
   };
 
+  // All BUL names from both records and targets
+  const bulNames = [...new Set([
+    ...records.map(r => r.bul_name),
+    ...targets.map(t => t.bul_name),
+    ...dailyActuals.map(a => a.bul_name),
+  ].filter(Boolean))];
+
   // Filter
   const monthRecords = records.filter((r) => r.month?.startsWith(selectedMonth.slice(0, 7)));
-  const bulNames = [...new Set(records.map(r => r.bul_name).filter(Boolean))];
   const filtered = selectedBUL === "all" ? monthRecords : monthRecords.filter(r => r.bul_name === selectedBUL);
 
   // Totals per BUL for the selected month
