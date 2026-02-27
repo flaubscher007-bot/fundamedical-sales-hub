@@ -29,7 +29,7 @@ CardHeader.displayName = "CardHeader"
 const CardTitle = React.forwardRef(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("font-semibold leading-none tracking-tight text-black", className)}
+    className={cn("font-semibold leading-none tracking-tight text-[#92F21D]", className)}
     {...props} />
 ))
 CardTitle.displayName = "CardTitle"
@@ -37,7 +37,7 @@ CardTitle.displayName = "CardTitle"
 const CardDescription = React.forwardRef(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("text-sm text-black", className)}
+    className={cn("text-sm text-[#34CCD0]", className)}
     {...props} />
 ))
 CardDescription.displayName = "CardDescription"
