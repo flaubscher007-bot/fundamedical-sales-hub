@@ -60,10 +60,7 @@ export default function Experts() {
     const matchSearch = !q || e.name?.toLowerCase().includes(q) || e.discipline?.toLowerCase().includes(q);
     const matchDisc = disciplineFilter === "all" || e.discipline === disciplineFilter;
     const matchActive = activeFilter === "all" || e.active === activeFilter;
-    const matchBul = selectedBul === "all" || Object.entries(ROTATION).some(([, cohorts]) =>
-      cohorts[e.cohort] === selectedBul
-    );
-    return matchSearch && matchDisc && matchActive && matchBul;
+    return matchSearch && matchDisc && matchActive;
   }).sort((a, b) => (a.name || "").localeCompare(b.name || ""));
 
   return (
