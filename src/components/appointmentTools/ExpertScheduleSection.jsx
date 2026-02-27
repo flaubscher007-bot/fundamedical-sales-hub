@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,8 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Upload, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
 import SyncStatusPanel from "./SyncStatusPanel";
+import ScheduleCalendarView from "./ScheduleCalendarView";
+import UpcomingAppointmentsList from "./UpcomingAppointmentsList";
 
 export default function ExpertScheduleSection() {
   const [file, setFile] = useState(null);
@@ -15,6 +17,8 @@ export default function ExpertScheduleSection() {
   const [results, setResults] = useState(null);
   const [selectedMonth, setSelectedMonth] = useState("March");
   const [syncBatchId, setSyncBatchId] = useState(null);
+  const [appointments, setAppointments] = useState([]);
+  const [bulMappings, setBulMappings] = useState({});
 
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
@@ -82,8 +86,13 @@ export default function ExpertScheduleSection() {
           scheduleData,
           month: selectedMonth,
           year: 2026,
-          syncBatchId: batchId
+          syncBatchId: batchId,
+          bulMappings
         });
+
+        // Reload appointments
+        const apts = await base44.entities.Appointment.list();
+        setAppointments(apts || []);
       } else {
         setError(importResponse.data.message);
       }
@@ -181,6 +190,14 @@ export default function ExpertScheduleSection() {
                 )}
 
                 {syncBatchId && <SyncStatusPanel syncBatchId={syncBatchId} />}
+
+        {/* Calendar and upcoming appointments */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="lg:col-span-2">
+            <ScheduleCalendarView appointments={appointments} month={selectedMonth} year={2026} />
+          </div>
+          <UpcomingAppointmentsList appointments={appointments} limit={15} />
+        </div>
 
                 <Button
             onClick={handleImportSchedule}
