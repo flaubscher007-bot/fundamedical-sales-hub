@@ -194,9 +194,9 @@ export default function Experts() {
                       <th className="text-left px-4 py-3 font-semibold" style={{color: '#92F21D'}}>Expert Name</th>
                       <th className="text-left px-4 py-3 font-semibold" style={{color: '#92F21D'}}>Discipline</th>
                       <th className="text-left px-4 py-3 font-semibold" style={{color: '#92F21D'}}>Status</th>
-                      <th className="text-left px-4 py-3 font-semibold" style={{color: '#92F21D'}}>Cohort</th>
-                      <th className="text-left px-4 py-3 font-semibold" style={{color: '#92F21D'}}>Mar 2026 BUL</th>
-                      <th className="text-left px-4 py-3 font-semibold" style={{color: '#92F21D'}}>Contact</th>
+                      <th className="text-left px-4 py-3 font-semibold" style={{color: '#92F21D'}}>Email</th>
+                      <th className="text-left px-4 py-3 font-semibold" style={{color: '#92F21D'}}>Phone</th>
+                      <th className="text-left px-4 py-3 font-semibold" style={{color: '#92F21D'}}>Address</th>
                       <th className="px-4 py-3"></th>
                     </tr>
                   </thead>
