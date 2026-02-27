@@ -103,94 +103,93 @@ END:VCARD`;
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-lg">
-          <DialogHeader><DialogTitle>{editing ? "Edit Business Card" : "Create Business Card"}</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>Edit {form.full_name}'s Business Card</DialogTitle></DialogHeader>
           <div className="space-y-4 py-4">
-            <div className="text-center">
-              <label className="cursor-pointer inline-block">
-                {form.profile_photo_url ? (
-                  <img src={form.profile_photo_url} alt="Photo" className="w-20 h-20 rounded-full object-cover mx-auto border-2 border-[#00bcd4]" />
-                ) : (
-                  <div className="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center mx-auto border-2 border-dashed border-slate-300 hover:border-[#00bcd4] transition-colors">
-                    <Upload className="w-6 h-6 text-slate-400" />
-                  </div>
-                )}
-                <p className="text-xs text-slate-500 mt-2">Click to upload photo</p>
-                <input type="file" className="hidden" accept="image/*" onChange={handlePhoto} />
-              </label>
-            </div>
-            <div><Label>Full Name *</Label><Input value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} /></div>
+            <div><Label>Phone</Label><Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} /></div>
             <div><Label>Title</Label><Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} /></div>
-            <div><Label>Email *</Label><Input value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
-            <div className="grid grid-cols-2 gap-4">
-              <div><Label>Phone</Label><Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} /></div>
-              <div><Label>WhatsApp</Label><Input value={form.whatsapp} onChange={(e) => setForm({ ...form, whatsapp: e.target.value })} /></div>
-            </div>
-            <div>
-              <Label>Region</Label>
-              <Select value={form.region || ""} onValueChange={(v) => setForm({ ...form, region: v })}>
-                <SelectTrigger><SelectValue placeholder="Select region" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Western Cape">Western Cape</SelectItem>
-                  <SelectItem value="KwaZulu-Natal">KwaZulu-Natal</SelectItem>
-                  <SelectItem value="Gauteng">Gauteng</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Business Card Images */}
-            <div className="border-t pt-4">
-              <Label className="font-semibold mb-3 block">Business Card Images</Label>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="cursor-pointer block">
-                    <p className="text-xs font-medium text-slate-700 mb-2">Front Image</p>
-                    {form.business_card_front_url ? (
-                      <img src={form.business_card_front_url} alt="Front" className="w-full h-32 object-cover rounded-lg border-2 border-[#00bcd4]" />
-                    ) : (
-                      <div className="w-full h-32 bg-slate-100 flex items-center justify-center rounded-lg border-2 border-dashed border-slate-300 hover:border-[#00bcd4] transition-colors">
-                        <Upload className="w-5 h-5 text-slate-400" />
-                      </div>
-                    )}
-                    <input type="file" className="hidden" accept="image/*" onChange={(e) => handleCardImage(e, "business_card_front_url")} />
-                  </label>
-                </div>
-                <div>
-                  <label className="cursor-pointer block">
-                    <p className="text-xs font-medium text-slate-700 mb-2">Back Image</p>
-                    {form.business_card_back_url ? (
-                      <img src={form.business_card_back_url} alt="Back" className="w-full h-32 object-cover rounded-lg border-2 border-[#00bcd4]" />
-                    ) : (
-                      <div className="w-full h-32 bg-slate-100 flex items-center justify-center rounded-lg border-2 border-dashed border-slate-300 hover:border-[#00bcd4] transition-colors">
-                        <Upload className="w-5 h-5 text-slate-400" />
-                      </div>
-                    )}
-                    <input type="file" className="hidden" accept="image/*" onChange={(e) => handleCardImage(e, "business_card_back_url")} />
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            {/* Business Unit Leader Selection */}
-            <div>
-              <Label>Business Unit Leader</Label>
-              <Select value={form.assigned_bul || ""} onValueChange={(v) => setForm({ ...form, assigned_bul: v })}>
-                <SelectTrigger><SelectValue placeholder="Select BUL" /></SelectTrigger>
-                <SelectContent>
-                  {users.map(user => (
-                    <SelectItem key={user.id} value={user.full_name || user.email}>{user.full_name || user.email}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
-            <Button onClick={() => saveMutation.mutate(form)} className="bg-[#00bcd4] hover:bg-[#0097a7]" disabled={!form.full_name || !form.email}>
-              {editing ? "Update" : "Create"}
+            <Button onClick={() => saveMutation.mutate(form)} className="bg-[#34CCD0] hover:bg-[#00bcd4]">
+              Update
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+    </div>
+  );
+}
+
+function BusinessCardDisplay({ user, onEdit }) {
+  const getQRCodeURL = (u) => {
+    const vcard = `BEGIN:VCARD
+VERSION:3.0
+FN:${u.full_name}
+TITLE:${u.role}
+TEL:${u.phone || ""}
+EMAIL:${u.email}
+URL:www.fundamedical.co.za
+ORG:FundaMedical
+NOTE:Medical & Legal Administration Services
+END:VCARD`;
+    return `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(vcard)}`;
+  };
+
+  return (
+    <div className="relative rounded-2xl overflow-hidden shadow-2xl" style={{ backgroundColor: "#081F3F", backgroundImage: "linear-gradient(135deg, #081F3F 0%, #0a2d52 100%)", minHeight: "350px", position: "relative" }}>
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-0 left-0 w-40 h-40 bg-[#34CCD0] rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 right-0 w-40 h-40 bg-[#92F21D] rounded-full blur-3xl"></div>
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10 p-8 h-full flex flex-col">
+        {/* Edit Button */}
+        <div className="flex justify-end mb-4">
+          <Button size="icon" variant="ghost" onClick={onEdit} style={{ color: "#92F21D" }} className="hover:bg-white/10">
+            <Pencil className="w-4 h-4" />
+          </Button>
+        </div>
+
+        {/* Top Section - Name and Title */}
+        <div className="flex-1">
+          <h2 className="text-4xl font-black" style={{ color: "#92F21D", letterSpacing: "-0.5px" }}>{user.full_name}</h2>
+          <p className="text-xl mt-2" style={{ color: "#ffffff" }}>{user.role.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase())}</p>
+        </div>
+
+        {/* Contact Info */}
+        <div className="space-y-3 mb-6">
+          {user.phone && (
+            <div className="flex items-center gap-3">
+              <Phone className="w-5 h-5" style={{ color: "#92F21D" }} />
+              <a href={`tel:${user.phone}`} style={{ color: "#ffffff" }} className="hover:text-[#34CCD0]">{user.phone}</a>
+            </div>
+          )}
+          <div className="flex items-center gap-3">
+            <Mail className="w-5 h-5" style={{ color: "#92F21D" }} />
+            <a href={`mailto:${user.email}`} style={{ color: "#ffffff" }} className="hover:text-[#34CCD0]">{user.email}</a>
+          </div>
+          <div className="flex items-center gap-3">
+            <Globe className="w-5 h-5" style={{ color: "#92F21D" }} />
+            <a href="https://www.fundamedical.co.za" target="_blank" rel="noopener noreferrer" style={{ color: "#ffffff" }} className="hover:text-[#34CCD0]">www.fundamedical.co.za</a>
+          </div>
+        </div>
+
+        {/* Footer with QR and Branding */}
+        <div className="flex items-end justify-between border-t pt-4" style={{ borderColor: "#34CCD0" }}>
+          <div className="flex-1">
+            <p className="text-sm font-bold" style={{ color: "#92F21D" }}>
+              <span>FUNDA</span>
+              <span style={{ color: "#34CCD0" }}>MEDICAL</span>
+            </p>
+            <p className="text-xs mt-1" style={{ color: "#ffffff" }}>Medical & Legal Administration Services</p>
+          </div>
+          <div className="bg-white p-1 rounded">
+            <img src={getQRCodeURL(user)} alt="QR Code" className="w-20 h-20" />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
