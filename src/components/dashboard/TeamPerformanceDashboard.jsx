@@ -103,8 +103,8 @@ export default function TeamPerformanceDashboard() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-bold text-slate-800">Team Performance vs Targets</h2>
-          <p className="text-sm text-slate-500 mt-0.5">Actuals vs monthly targets per person</p>
+          <h2 className="text-xl font-bold text-white">Team Performance vs Targets</h2>
+          <p className="text-sm text-slate-400 mt-0.5">Actuals vs monthly targets per person</p>
         </div>
         <Select value={selectedMonth} onValueChange={setSelectedMonth}>
           <SelectTrigger className="w-44 bg-white">
