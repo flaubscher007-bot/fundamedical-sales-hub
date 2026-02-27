@@ -205,9 +205,34 @@ export default function ExpertImportManager() {
           )}
 
           {error && (
-            <div className="p-3 rounded-lg flex items-start gap-3" style={{ backgroundColor: "rgba(239, 68, 68, 0.1)", borderColor: "#ef4444", borderWidth: "1px" }}>
-              <AlertCircle className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: "#ef4444" }} />
-              <p style={{ color: "#ffffff" }}>{error}</p>
+            <div className="space-y-2">
+              <div className="p-3 rounded-lg flex items-start gap-3" style={{ backgroundColor: "rgba(239, 68, 68, 0.1)", borderColor: "#ef4444", borderWidth: "1px" }}>
+                <AlertCircle className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: "#ef4444" }} />
+                <p style={{ color: "#ffffff" }}>{error}</p>
+              </div>
+
+              {validationErrors.length > 0 && (
+                <Card style={{ borderColor: "#ef4444", backgroundColor: "#081F3F" }}>
+                  <CardHeader className="pb-3">
+                    <CardTitle style={{ color: "#ef4444", fontSize: "0.95rem" }} className="flex items-center gap-2">
+                      <AlertCircle className="w-4 h-4" />
+                      Email Validation Errors ({validationErrors.length})
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ScrollArea className="h-48">
+                      <div className="space-y-2 pr-4">
+                        {validationErrors.map((err, idx) => (
+                          <div key={idx} className="p-2 rounded bg-red-500/10 border border-red-500/20">
+                            <p style={{ color: "#ffffff" }} className="text-sm font-semibold">Row {err.row}: {err.name}</p>
+                            <p style={{ color: "#ef4444" }} className="text-xs">Invalid email: {err.email}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </ScrollArea>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           )}
 
