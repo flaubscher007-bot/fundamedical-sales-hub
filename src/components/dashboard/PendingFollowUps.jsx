@@ -39,7 +39,7 @@ export default function PendingFollowUps({ followUps }) {
       </CardHeader>
       <CardContent className="space-y-3">
         {pending.length === 0 ? (
-          <p className="text-sm text-slate-400 text-center py-4">No pending follow-ups</p>
+          <p className="text-sm text-center py-4" style={{color: '#ffffff'}}>No pending follow-ups</p>
         ) : (
           pending.map((fu) => {
             const Icon = typeIcons[fu.type] || Phone;
