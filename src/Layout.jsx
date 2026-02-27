@@ -23,17 +23,22 @@ import {
   ChevronRight,
   BarChart2,
   DollarSign,
-  AlertCircle,
   MessageSquare
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import PWAInstallBanner from "@/components/PWAInstallBanner";
 import NotificationBell from "@/components/NotificationBell";
 import { hasPermission } from "@/lib/PageNotFound";
 
-const mainNavItems = [
+const dashboardItems = [
   { name: "Dashboard", icon: LayoutDashboard, page: "Dashboard" },
   { name: "Analytics", icon: BarChart2, page: "Analytics" },
+  { name: "BUL Performance", icon: TrendingUp, page: "BULPerformance" },
+  { name: "BUL Dashboard", icon: BarChart2, page: "BULDashboard" },
+  { name: "Finance Dashboard", icon: BarChart2, page: "FinanceDashboard" },
+  { name: "Finance Reporting", icon: BarChart2, page: "FinanceReporting" },
+];
+
+const mainNavItems = [
   { name: "Clients", icon: Users, page: "Clients" },
   { name: "Firm Contacts", icon: Users, page: "ClientContacts" },
   { name: "Experts", icon: Stethoscope, page: "Experts" },
@@ -47,19 +52,11 @@ const mainNavItems = [
   { name: "Goals", icon: TrendingUp, page: "Goals" },
   { name: "Team Calendar", icon: LayoutDashboard, page: "TeamCalendar" },
   { name: "BUL Management", icon: TrendingUp, page: "BULManagement" },
-  { name: "BUL Performance", icon: TrendingUp, page: "BULPerformance" },
-  { name: "Company Targets", icon: TrendingUp, page: "CompanyTargets" },
   { name: "User Management", icon: Users, page: "UserManagement" },
   { name: "Role Management", icon: Users, page: "RoleManagement" },
   { name: "User Roles", icon: Users, page: "UserRoleManagement" },
   { name: "Settings", icon: Wrench, page: "UserProfile" },
   { name: "Help", icon: FileText, page: "Help" },
-];
-
-const powerBIItems = [
-  { name: "BUL Dashboard", icon: BarChart2, page: "BULDashboard" },
-  { name: "Finance Dashboard", icon: BarChart2, page: "FinanceDashboard" },
-  { name: "Finance Reporting", icon: BarChart2, page: "FinanceReporting" },
 ];
 
 const marketingItems = [
@@ -68,16 +65,15 @@ const marketingItems = [
   { name: "Social Media Posts", icon: Share2, page: "SocialMedia" },
 ];
 
-// All pages for header title lookup
-const allNavItems = [...mainNavItems, ...powerBIItems, ...marketingItems];
+const allNavItems = [...dashboardItems, ...mainNavItems, ...marketingItems];
 
 export default function Layout({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [dashboardsOpen, setDashboardsOpen] = useState(
+    dashboardItems.some(i => i.page === currentPageName)
+  );
   const [marketingOpen, setMarketingOpen] = useState(
     marketingItems.some(i => i.page === currentPageName)
-  );
-  const [powerBIOpen, setPowerBIOpen] = useState(
-    powerBIItems.some(i => i.page === currentPageName)
   );
   const [user, setUser] = useState(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -85,14 +81,12 @@ export default function Layout({ children, currentPageName }) {
   useEffect(() => {
     base44.auth.me().then(async (u) => {
       setUser(u);
-      // Check if user has seen onboarding
       try {
         const prefs = await base44.entities.UserPreference.filter({ user_email: u.email });
         if (!prefs || prefs.length === 0 || !prefs[0].has_seen_onboarding) {
           setShowOnboarding(true);
         }
       } catch (error) {
-        // On first load, show onboarding
         setShowOnboarding(true);
       }
     }).catch(() => {
@@ -100,25 +94,41 @@ export default function Layout({ children, currentPageName }) {
     });
   }, []);
 
-  // Auto-expand if current page is under marketing or powerBI
   useEffect(() => {
+    if (dashboardItems.some(i => i.page === currentPageName)) {
+      setDashboardsOpen(true);
+    }
     if (marketingItems.some(i => i.page === currentPageName)) {
       setMarketingOpen(true);
     }
-    if (powerBIItems.some(i => i.page === currentPageName)) {
-      setPowerBIOpen(true);
-    }
   }, [currentPageName]);
+
+  const renderSubNavItem = (item) => {
+    const isActive = currentPageName === item.page;
+    let hasAccess = user && canAccessPage(user.role || "team_member", item.page);
+    if (!hasAccess) return null;
+    return (
+      <Link
+        key={item.page}
+        to={createPageUrl(item.page)}
+        onClick={() => setSidebarOpen(false)}
+        className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 group ${
+          isActive
+            ? "bg-[var(--funda-accent)]/20 text-[var(--funda-accent)]"
+            : "text-slate-400 hover:bg-white/5 hover:text-white"
+        }`}
+      >
+        <item.icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? "text-[var(--funda-accent)]" : "text-slate-500 group-hover:text-slate-300"}`} />
+        <span>{item.name}</span>
+      </Link>
+    );
+  };
 
   const renderNavItem = (item) => {
     const isActive = currentPageName === item.page;
-    
-    // Check traditional permissions first, then new permission system
     let hasAccess = false;
     if (user) {
       hasAccess = canAccessPage(user.role || "team_member", item.page);
-      
-      // If traditional check fails, try new permission system
       if (!hasAccess && user.role_permissions) {
         const moduleMap = {
           'RoleManagement': 'users',
@@ -131,9 +141,7 @@ export default function Layout({ children, currentPageName }) {
         }
       }
     }
-
     if (!hasAccess) return null;
-
     return (
       <Link
         key={item.page}
@@ -152,9 +160,10 @@ export default function Layout({ children, currentPageName }) {
     );
   };
 
+  const isDashboardsActive = dashboardItems.some(i => i.page === currentPageName);
   const isMarketingActive = marketingItems.some(i => i.page === currentPageName);
-  const isPowerBIActive = powerBIItems.some(i => i.page === currentPageName);
   const userRole = user?.role || "team_member";
+  const hasDashboardAccess = dashboardItems.some(i => canAccessPage(userRole, i.page));
 
   return (
     <div className="min-h-screen bg-slate-50 flex pb-safe">
@@ -185,48 +194,32 @@ export default function Layout({ children, currentPageName }) {
 
         {/* Nav */}
         <nav className="flex-1 overflow-y-auto py-3 px-2 sm:py-4 sm:px-3">
-          {mainNavItems.map(renderNavItem)}
 
-          {/* Power BI Section */}
-          {(canAccessPage(userRole, "BULDashboard") || canAccessPage(userRole, "FinanceDashboard")) && (
-            <div className="mt-2 mb-1">
+          {/* Dashboards Section */}
+          {hasDashboardAccess && (
+            <div className="mb-1">
               <button
-                onClick={() => setPowerBIOpen(o => !o)}
+                onClick={() => setDashboardsOpen(o => !o)}
                 className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 group ${
-                  isPowerBIActive
+                  isDashboardsActive
                     ? "text-[var(--funda-accent)] bg-[var(--funda-accent)]/10"
                     : "text-slate-300 hover:bg-white/5 hover:text-white"
                 }`}
               >
-                <BarChart2 className={`w-4 h-4 shrink-0 ${isPowerBIActive ? "text-[var(--funda-accent)]" : "text-slate-500 group-hover:text-slate-300"}`} />
-                <span>Power BI</span>
-                <ChevronDown className={`w-4 h-4 ml-auto transition-transform duration-200 ${powerBIOpen ? "rotate-180" : ""} ${isPowerBIActive ? "text-[var(--funda-accent)]" : "text-slate-500"}`} />
+                <LayoutDashboard className={`w-4 h-4 shrink-0 ${isDashboardsActive ? "text-[var(--funda-accent)]" : "text-slate-500 group-hover:text-slate-300"}`} />
+                <span>Dashboards</span>
+                <ChevronDown className={`w-4 h-4 ml-auto transition-transform duration-200 ${dashboardsOpen ? "rotate-180" : ""} ${isDashboardsActive ? "text-[var(--funda-accent)]" : "text-slate-500"}`} />
               </button>
 
-              {powerBIOpen && (
+              {dashboardsOpen && (
                 <div className="ml-3 mt-1 pl-3 border-l border-white/10 space-y-0.5">
-                  {powerBIItems.filter(item => canAccessPage(userRole, item.page)).map(item => {
-                    const isActive = currentPageName === item.page;
-                    return (
-                      <Link
-                        key={item.page}
-                        to={createPageUrl(item.page)}
-                        onClick={() => setSidebarOpen(false)}
-                        className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 group ${
-                          isActive
-                            ? "bg-[#00bcd4]/20 text-[#00bcd4]"
-                            : "text-slate-400 hover:bg-white/5 hover:text-white"
-                        }`}
-                      >
-                        <item.icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? "text-[#00bcd4]" : "text-slate-500 group-hover:text-slate-300"}`} />
-                        <span>{item.name}</span>
-                      </Link>
-                    );
-                  })}
+                  {dashboardItems.map(renderSubNavItem)}
                 </div>
               )}
             </div>
           )}
+
+          {mainNavItems.map(renderNavItem)}
 
           {/* Marketing Tools Section */}
           {marketingItems.some(i => canAccessPage(userRole, i.page)) && (
