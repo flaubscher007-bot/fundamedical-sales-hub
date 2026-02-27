@@ -170,14 +170,19 @@ export default function ExpertScheduleSection() {
                     </div>
                   )}
                 </div>
-                <Button onClick={() => setResults(null)} className="w-full mt-4" style={{ backgroundColor: "#92F21D", color: "#081F3F" }}>
-                  Done
-                </Button>
-              </DialogContent>
-            </Dialog>
-          )}
+                <Button onClick={() => {
+                  setResults(null);
+                  setSyncBatchId(null);
+                }} className="w-full mt-4" style={{ backgroundColor: "#92F21D", color: "#081F3F" }}>
+                   Done
+                 </Button>
+                </DialogContent>
+                </Dialog>
+                )}
 
-          <Button
+                {syncBatchId && <SyncStatusPanel syncBatchId={syncBatchId} />}
+
+                <Button
             onClick={handleImportSchedule}
             disabled={!file || loading}
             className="w-full"
