@@ -33,7 +33,7 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { scheduleData, month, year, columnMap } = await req.json();
+    const { scheduleData, month, year, columnMap, bulMappings } = await req.json();
 
     if (!scheduleData || !Array.isArray(scheduleData)) {
       return Response.json({ error: 'Invalid schedule data' }, { status: 400 });
@@ -66,7 +66,7 @@ Deno.serve(async (req) => {
         const expertName = nameCol ? (row[nameCol] || '').trim() : '';
         
         const bulCol = columnMap?.['Months']?.find(m => fuzzyMatch(m, month) > 0.7);
-        const assignedBUL = bulCol ? (row[bulCol] || '').trim() : '';
+        let assignedBUL = bulCol ? (row[bulCol] || '').trim() : '';
         
         if (!expertName || !assignedBUL) {
           results.failed++;
@@ -74,6 +74,11 @@ Deno.serve(async (req) => {
           recordLog.error = !expertName ? 'Missing expert name' : 'Missing BUL assignment';
           results.records.push(recordLog);
           continue;
+        }
+
+        // Resolve BUL first name to full name if mapping exists
+        if (bulMappings && bulMappings[assignedBUL]) {
+          assignedBUL = bulMappings[assignedBUL];
         }
 
         recordLog.expert_name = expertName;
