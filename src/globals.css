@@ -14,8 +14,7 @@
     --funda-text-secondary: #f0f4f8;
     --funda-text-muted: #cbd5e1;
 
-    /* Ensure page background uses the dark color */
-    background-color: #081F3F;
+
 
     /* #081F3F = hsl(214, 76%, 14%) */
     --background: 214 76% 8%;
