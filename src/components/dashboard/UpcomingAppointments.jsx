@@ -16,7 +16,7 @@ export default function UpcomingAppointments({ appointments }) {
     <Card className="border-0 shadow-sm">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-base font-semibold">Upcoming Appointments</CardTitle>
+          <CardTitle className="text-base font-semibold" style={{color: '#34CCD0'}}>Upcoming Appointments</CardTitle>
           <Link to={createPageUrl("Appointments")} className="text-xs text-[#00bcd4] hover:underline font-medium">
             View All
           </Link>
