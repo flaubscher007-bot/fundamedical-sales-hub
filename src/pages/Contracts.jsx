@@ -13,12 +13,12 @@ export default function Contracts() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <div className="p-2 rounded-xl bg-[#00bcd4]/10">
-          <FileBadge className="w-6 h-6 text-[#00bcd4]" />
+        <div className="p-2 rounded-xl" style={{backgroundColor: '#34CCD0', backgroundOpacity: 0.1}}>
+          <FileBadge className="w-6 h-6 text-[#34CCD0]" />
         </div>
         <div>
-          <h1 className="text-xl font-bold text-slate-800">Contract Tools</h1>
-          <p className="text-sm text-slate-500">Manage intake forms, pricing proposals, contract templates and completed contracts</p>
+          <h1 className="text-xl font-bold" style={{color: '#92F21D'}}>Contract Tools</h1>
+          <p className="text-sm" style={{color: '#ffffff'}}>Manage intake forms, pricing proposals, contract templates and completed contracts</p>
         </div>
       </div>
 

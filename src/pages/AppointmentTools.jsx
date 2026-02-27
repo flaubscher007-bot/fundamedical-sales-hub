@@ -104,8 +104,8 @@ export default function AppointmentTools() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Appointment Tools</h1>
-          <p className="text-slate-500 text-sm mt-0.5">Schedule, communicate, track and review all appointments</p>
+          <h1 className="text-2xl font-bold" style={{color: '#92F21D', textShadow: '0 0 8px rgba(146, 242, 29, 0.2)'}}>Appointment Tools</h1>
+          <p className="text-sm mt-0.5" style={{color: '#ffffff'}}>Schedule, communicate, track and review all appointments</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={() => setSummaryOpen(true)}>
@@ -154,10 +154,10 @@ export default function AppointmentTools() {
             {filtered.length === 0 ? (
               <div className="text-center py-16">
                 <Calendar className="w-12 h-12 text-slate-300 mx-auto" />
-                <p className="text-slate-500 mt-3">No appointments found</p>
+                <p className="mt-3" style={{color: '#ffffff'}}>No appointments found</p>
                 <Button onClick={openNew} variant="outline" className="mt-4">Schedule an Appointment</Button>
               </div>
-            ) : filtered.map(apt => (
+            ) : filtered.length > 0 && filtered.map(apt => (
               <AppointmentCard
                 key={apt.id}
                 apt={apt}
@@ -167,7 +167,7 @@ export default function AppointmentTools() {
                 onMinutes={setMinutesApt}
                 onFeedback={setFeedbackApt}
               />
-            ))}
+            ))
           </div>
         </TabsContent>
 

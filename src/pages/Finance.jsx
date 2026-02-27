@@ -55,8 +55,8 @@ export default function Finance() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Finance Overview</h1>
-          <p className="text-sm text-slate-600 mt-1">Outstanding accounts by law firm</p>
+          <h1 className="text-2xl font-bold" style={{color: '#92F21D', textShadow: '0 0 8px rgba(146, 242, 29, 0.2)'}}>Finance Overview</h1>
+          <p className="text-sm mt-1" style={{color: '#ffffff'}}>Outstanding accounts by law firm</p>
         </div>
         <Button
           onClick={handleManualRefresh}
@@ -73,11 +73,11 @@ export default function Finance() {
       <SharePointSyncPanel onSyncTrigger={handleManualRefresh} />
 
       {/* Info Banner */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3">
-        <BarChart3 className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+      <div className="rounded-lg p-4 flex items-start gap-3 border" style={{backgroundColor: '#0a1e3a', borderColor: '#34CCD0', borderWidth: '2px'}}>
+        <BarChart3 className="w-5 h-5 text-[#34CCD0] mt-0.5 flex-shrink-0" />
         <div>
-          <p className="text-sm font-medium text-blue-900">Data syncs daily at midnight</p>
-          <p className="text-xs text-blue-700 mt-1">
+          <p className="text-sm font-medium" style={{color: '#92F21D'}}>Data syncs daily at midnight</p>
+          <p className="text-xs mt-1" style={{color: '#ffffff'}}>
             Last synced: {statements[0]?.sync_date || "Not yet synced"}
           </p>
         </div>
@@ -94,15 +94,15 @@ export default function Finance() {
 
       {/* Interactive Charts */}
       <div>
-        <h2 className="text-lg font-semibold text-slate-900 mb-4">Financial Analytics</h2>
+        <h2 className="text-lg font-semibold mb-4" style={{color: '#34CCD0'}}>Financial Analytics</h2>
         <FinancialDashboardCharts />
       </div>
 
       {/* Filters & Controls */}
-      <div className="bg-white rounded-lg border border-slate-200 p-4">
+      <div className="rounded-lg border p-4" style={{backgroundColor: '#0a1e3a', borderColor: '#34CCD0', borderWidth: '2px'}}>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
-            <label className="text-xs font-medium text-slate-700 block mb-2">Search Law Firm</label>
+            <label className="text-xs font-medium block mb-2" style={{color: '#92F21D'}}>Search Law Firm</label>
             <Input
               placeholder="Search by firm name..."
               value={searchTerm}
@@ -112,7 +112,7 @@ export default function Finance() {
           </div>
 
           <div>
-            <label className="text-xs font-medium text-slate-700 block mb-2">BUL / KAC</label>
+            <label className="text-xs font-medium block mb-2" style={{color: '#92F21D'}}>BUL / KAC</label>
             <Select value={filterKAC} onValueChange={setFilterKAC}>
               <SelectTrigger className="h-9">
                 <SelectValue />
@@ -127,7 +127,7 @@ export default function Finance() {
           </div>
 
           <div>
-            <label className="text-xs font-medium text-slate-700 block mb-2">Account Status</label>
+            <label className="text-xs font-medium block mb-2" style={{color: '#92F21D'}}>Account Status</label>
             <Select value={filterStatus} onValueChange={setFilterStatus}>
               <SelectTrigger className="h-9">
                 <SelectValue />
@@ -142,7 +142,7 @@ export default function Finance() {
           </div>
 
           <div>
-            <label className="text-xs font-medium text-slate-700 block mb-2">View</label>
+            <label className="text-xs font-medium block mb-2" style={{color: '#92F21D'}}>View</label>
             <div className="flex gap-2">
               <Button
                 size="sm"
@@ -163,7 +163,7 @@ export default function Finance() {
             </div>
           </div>
         </div>
-        <div className="mt-3 text-xs text-slate-600">
+        <div className="mt-3 text-xs" style={{color: '#ffffff'}}>
           Showing {filteredStatements.length} of {statements.length} firms
         </div>
       </div>
@@ -171,11 +171,11 @@ export default function Finance() {
       {/* Content */}
       {isLoading ? (
         <div className="flex items-center justify-center py-12">
-          <p className="text-slate-600">Loading statements...</p>
+          <p style={{color: '#ffffff'}}>Loading statements...</p>
         </div>
       ) : filteredStatements.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-slate-600">No statements found. Try adjusting your filters.</p>
+          <p style={{color: '#ffffff'}}>No statements found. Try adjusting your filters.</p>
         </div>
       ) : viewMode === "cards" ? (
         <StatementCardView statements={filteredStatements} />

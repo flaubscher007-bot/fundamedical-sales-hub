@@ -142,20 +142,20 @@ export default function Clients() {
       {/* Stats bar */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <Card className="border-0 shadow-sm p-3">
-          <p className="text-xs text-slate-500">Total Firms</p>
-          <p className="text-2xl font-bold text-slate-900">{clients.length}</p>
+          <p className="text-xs" style={{color: '#ffffff'}}>Total Firms</p>
+          <p className="text-2xl font-bold" style={{color: '#34CCD0'}}>{clients.length}</p>
         </Card>
         <Card className="border-0 shadow-sm p-3">
-          <p className="text-xs text-slate-500">Active</p>
-          <p className="text-2xl font-bold text-emerald-600">{clients.filter(c => c.activity_status === "ACTIVE").length}</p>
+          <p className="text-xs" style={{color: '#ffffff'}}>Active</p>
+          <p className="text-2xl font-bold" style={{color: '#92F21D'}}>{clients.filter(c => c.activity_status === "ACTIVE").length}</p>
         </Card>
         <Card className="border-0 shadow-sm p-3">
-          <p className="text-xs text-slate-500">Inactive</p>
-          <p className="text-2xl font-bold text-slate-500">{clients.filter(c => c.activity_status === "INACTIVE").length}</p>
+          <p className="text-xs" style={{color: '#ffffff'}}>Inactive</p>
+          <p className="text-2xl font-bold" style={{color: '#ffffff'}}>{clients.filter(c => c.activity_status === "INACTIVE").length}</p>
         </Card>
         <Card className="border-0 shadow-sm p-3">
-          <p className="text-xs text-slate-500">BULs</p>
-          <p className="text-2xl font-bold text-[#00bcd4]">{buls.length}</p>
+          <p className="text-xs" style={{color: '#ffffff'}}>BULs</p>
+          <p className="text-2xl font-bold" style={{color: '#34CCD0'}}>{buls.length}</p>
         </Card>
       </div>
 
@@ -218,7 +218,7 @@ export default function Clients() {
         </div>
       </div>
 
-      <p className="text-xs text-slate-400">Showing {filtered.length} of {clients.length} firms</p>
+      <p className="text-xs" style={{color: '#ffffff'}}>Showing {filtered.length} of {clients.length} firms</p>
 
       {/* List */}
       <div className="space-y-2">
@@ -231,7 +231,7 @@ export default function Clients() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <Link to={createPageUrl("ClientContacts") + "?firm=" + encodeURIComponent(c.firm_name)} className="font-semibold text-slate-800 hover:text-[#00bcd4] transition-colors" onClick={(e) => e.stopPropagation()}>{c.firm_name}</Link>
+                    <Link to={createPageUrl("ClientContacts") + "?firm=" + encodeURIComponent(c.firm_name)} className="font-semibold hover:text-[#00bcd4] transition-colors" style={{color: '#92F21D'}} onClick={(e) => e.stopPropagation()}>{c.firm_name}</Link>
                     <Badge className={`text-[10px] ${activityColors[c.activity_status] || activityColors.ACTIVE}`}>
                       {c.activity_status}
                     </Badge>
@@ -243,22 +243,22 @@ export default function Clients() {
                   </div>
                   <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2">
                     {(c.assigned_bul || c.business_unit_leader) && (
-                        <span className="text-xs text-slate-500 flex items-center gap-1">
-                          <Briefcase className="w-3 h-3 text-[#00bcd4]" /> BUL: <span className="text-[#00bcd4] font-semibold">{c.assigned_bul || c.business_unit_leader}</span>
+                        <span className="text-xs flex items-center gap-1" style={{color: '#ffffff'}}>
+                          <Briefcase className="w-3 h-3 text-[#34CCD0]" /> BUL: <span className="text-[#34CCD0] font-semibold">{c.assigned_bul || c.business_unit_leader}</span>
                         </span>
                       )}
                       {c.case_administrator && (
-                        <span className="text-xs text-slate-500 flex items-center gap-1">
+                        <span className="text-xs flex items-center gap-1" style={{color: '#ffffff'}}>
                           <UserCog className="w-3 h-3" /> KAC: <span className="font-semibold">{c.case_administrator}</span>
                         </span>
                       )}
                     {c.category && (
-                      <span className="text-xs text-slate-500 flex items-center gap-1">
+                      <span className="text-xs flex items-center gap-1" style={{color: '#ffffff'}}>
                         📋 {c.category}
                       </span>
                     )}
                     {c.province && (
-                      <span className="text-xs text-slate-400 flex items-center gap-1">
+                      <span className="text-xs flex items-center gap-1" style={{color: '#ffffff'}}>
                         <MapPin className="w-3 h-3" /> {c.province}
                       </span>
                     )}
@@ -279,7 +279,7 @@ export default function Clients() {
       {filtered.length === 0 && !isLoading && (
         <div className="text-center py-16">
           <Building2 className="w-12 h-12 text-slate-300 mx-auto" />
-          <p className="text-slate-500 mt-3">No clients found</p>
+          <p className="mt-3" style={{color: '#ffffff'}}>No clients found</p>
         </div>
       )}
 

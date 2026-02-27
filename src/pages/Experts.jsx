@@ -90,8 +90,8 @@ export default function Experts() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Experts</h1>
-          <p className="text-sm text-slate-500 mt-0.5">{experts.length} medico-legal experts · 2026 visit schedule</p>
+          <h1 className="text-2xl font-bold" style={{color: '#92F21D', textShadow: '0 0 8px rgba(146, 242, 29, 0.2)'}}>Experts</h1>
+          <p className="text-sm mt-0.5" style={{color: '#ffffff'}}>{experts.length} medico-legal experts · 2026 visit schedule</p>
         </div>
         <div className="flex gap-2">
           <Button
@@ -151,34 +151,34 @@ export default function Experts() {
             <CardContent className="p-0">
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
-                  <thead className="bg-slate-50 border-b border-slate-100">
+                  <thead style={{backgroundColor: '#0a1e3a', borderColor: '#34CCD0', borderBottomWidth: '2px'}}>
                     <tr>
-                      <th className="text-left px-4 py-3 font-semibold text-slate-600">Expert Name</th>
-                      <th className="text-left px-4 py-3 font-semibold text-slate-600">Discipline</th>
-                      <th className="text-left px-4 py-3 font-semibold text-slate-600">Status</th>
-                      <th className="text-left px-4 py-3 font-semibold text-slate-600">Cohort</th>
-                      <th className="text-left px-4 py-3 font-semibold text-slate-600">Mar 2026 BUL</th>
-                      <th className="text-left px-4 py-3 font-semibold text-slate-600">Contact</th>
+                      <th className="text-left px-4 py-3 font-semibold" style={{color: '#92F21D'}}>Expert Name</th>
+                      <th className="text-left px-4 py-3 font-semibold" style={{color: '#92F21D'}}>Discipline</th>
+                      <th className="text-left px-4 py-3 font-semibold" style={{color: '#92F21D'}}>Status</th>
+                      <th className="text-left px-4 py-3 font-semibold" style={{color: '#92F21D'}}>Cohort</th>
+                      <th className="text-left px-4 py-3 font-semibold" style={{color: '#92F21D'}}>Mar 2026 BUL</th>
+                      <th className="text-left px-4 py-3 font-semibold" style={{color: '#92F21D'}}>Contact</th>
                       <th className="px-4 py-3"></th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-50">
+                  <tbody style={{borderColor: '#34CCD0', borderTopWidth: '1px'}}>
                     {filtered.map(expert => {
                       const marBul = ROTATION["Mar"]?.[expert.cohort] || "—";
                       return (
-                        <tr key={expert.id} className="hover:bg-slate-50 transition-colors">
-                          <td className="px-4 py-3 font-medium text-slate-900">{expert.name}</td>
-                          <td className="px-4 py-3 text-slate-600">{expert.discipline}</td>
+                        <tr key={expert.id} style={{borderColor: '#34CCD0', borderBottomWidth: '1px'}}>
+                          <td className="px-4 py-3 font-medium" style={{color: '#92F21D'}}>{expert.name}</td>
+                          <td className="px-4 py-3" style={{color: '#ffffff'}}>{expert.discipline}</td>
                           <td className="px-4 py-3">
                             <Badge className={`border text-xs ${activeColors[expert.active] || activeColors.YES}`}>
                               {expert.active || "YES"}
                             </Badge>
                           </td>
-                          <td className="px-4 py-3 text-slate-500">{expert.cohort}</td>
+                          <td className="px-4 py-3" style={{color: '#ffffff'}}>{expert.cohort}</td>
                           <td className="px-4 py-3">
-                            <span className="font-medium text-[#00bcd4]">{marBul}</span>
+                            <span className="font-medium text-[#34CCD0]">{marBul}</span>
                           </td>
-                          <td className="px-4 py-3 text-slate-400 text-xs">
+                          <td className="px-4 py-3 text-xs" style={{color: '#ffffff'}}>
                             {expert.email || expert.phone || <span className="italic">No contact yet</span>}
                           </td>
                           <td className="px-4 py-3">
@@ -197,8 +197,8 @@ export default function Experts() {
                   </tbody>
                 </table>
                 {filtered.length === 0 && (
-                  <div className="text-center py-12 text-slate-400">No experts found</div>
-                )}
+                   <div className="text-center py-12" style={{color: '#ffffff'}}>No experts found</div>
+                 )}
               </div>
             </CardContent>
           </Card>
@@ -210,18 +210,18 @@ export default function Experts() {
         <Dialog open={!!scheduleExpert} onOpenChange={() => setScheduleExpert(null)}>
           <DialogContent className="max-w-lg">
             <DialogHeader>
-              <DialogTitle>{scheduleExpert.name}</DialogTitle>
-              <p className="text-sm text-slate-500">{scheduleExpert.discipline} · Cohort {scheduleExpert.cohort}</p>
+            <DialogTitle style={{color: '#92F21D'}}>{scheduleExpert.name}</DialogTitle>
+            <p className="text-sm" style={{color: '#ffffff'}}>{scheduleExpert.discipline} · Cohort {scheduleExpert.cohort}</p>
             </DialogHeader>
             <div className="space-y-4">
-              <p className="text-sm font-semibold text-slate-700">2026 Visit Schedule</p>
+            <p className="text-sm font-semibold" style={{color: '#92F21D'}}>2026 Visit Schedule</p>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {MONTHS.map(month => {
                   const bul = ROTATION[month]?.[scheduleExpert.cohort] || "—";
                   return (
-                    <div key={month} className="bg-slate-50 rounded-lg p-3 text-center border border-slate-100">
-                      <p className="text-xs text-slate-400 font-medium">{month}</p>
-                      <p className="text-sm font-bold text-[#00bcd4] mt-1">{bul}</p>
+                    <div key={month} className="rounded-lg p-3 text-center border" style={{backgroundColor: '#0a1e3a', borderColor: '#34CCD0', borderWidth: '1px'}}>
+                      <p className="text-xs font-medium" style={{color: '#92F21D'}}>{month}</p>
+                      <p className="text-sm font-bold text-[#34CCD0] mt-1">{bul}</p>
                     </div>
                   );
                 })}
