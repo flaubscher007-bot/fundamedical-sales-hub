@@ -37,15 +37,15 @@ export default function UpcomingAppointments({ appointments }) {
                 </span>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-slate-800 truncate">{apt.title}</p>
+                <p className="text-sm font-medium truncate" style={{color: '#92F21D'}}>{apt.title}</p>
                 <div className="flex items-center gap-3 mt-1">
                   {apt.time && (
-                    <span className="text-xs text-slate-500 flex items-center gap-1">
+                    <span className="text-xs flex items-center gap-1" style={{color: '#ffffff'}}>
                       <Clock className="w-3 h-3" /> {apt.time}
                     </span>
                   )}
                   {apt.client_name && (
-                    <span className="text-xs text-slate-500 truncate">{apt.client_name}</span>
+                    <span className="text-xs truncate" style={{color: '#ffffff'}}>{apt.client_name}</span>
                   )}
                 </div>
               </div>
