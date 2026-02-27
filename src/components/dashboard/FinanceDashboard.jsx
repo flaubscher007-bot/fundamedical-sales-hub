@@ -63,19 +63,19 @@ export default function FinanceDashboard({ user }) {
       {/* High Balance Firms */}
       <Card>
         <CardHeader>
-          <CardTitle>Firms with High Balances</CardTitle>
+          <CardTitle style={{color: '#34CCD0'}}>Firms with High Balances</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
             {topFirms.map((firm, idx) => (
               <div key={idx} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
                 <div className="flex-1">
-                  <p className="font-semibold text-slate-800">{firm.law_firm}</p>
-                  <p className="text-xs text-slate-500">{firm.business_unit}</p>
+                  <p className="font-semibold" style={{color: '#92F21D'}}>{firm.law_firm}</p>
+                  <p className="text-xs" style={{color: '#ffffff'}}>{firm.business_unit}</p>
                 </div>
                 <div className="text-right">
-                  <p className="font-bold text-slate-900">R{(firm.total_balance || 0).toLocaleString()}</p>
-                  <p className="text-xs text-slate-500">Balance</p>
+                  <p className="font-bold" style={{color: '#ffffff'}}>R{(firm.total_balance || 0).toLocaleString()}</p>
+                  <p className="text-xs" style={{color: '#ffffff'}}>Balance</p>
                 </div>
               </div>
             ))}
