@@ -98,7 +98,8 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    background-color: #081F3F;
     position: relative;
     overflow-x: hidden;
   }
