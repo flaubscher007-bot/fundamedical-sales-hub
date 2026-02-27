@@ -49,6 +49,7 @@ const mainNavItems = [
   { name: "Contract Tools", icon: FileBadge, page: "Contracts" },
   { name: "Expense Tools", icon: Receipt, page: "ExpensesHub" },
   { name: "Finance Tools", icon: DollarSign, page: "Finance" },
+  { name: "Collections Report", icon: BarChart2, page: "CollectionsReport" },
   { name: "Custom Reports", icon: BarChart2, page: "CustomReports" },
   { name: "Message Centre", icon: MessageSquare, page: "MessageCentre" },
   { name: "Follow-Up Rules", icon: FileText, page: "FollowUpRules" },
