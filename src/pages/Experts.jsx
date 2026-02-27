@@ -157,20 +157,7 @@ export default function Experts() {
                     </Select>
                   </div>
 
-                  {/* BUL Filter */}
-                  <div>
-                    <Label style={{ color: "#92F21D", fontSize: "0.85rem", marginBottom: "0.25rem", display: "block" }}>BUL</Label>
-                    <Select value={selectedBul} onValueChange={setSelectedBul}>
-                      <SelectTrigger style={{ backgroundColor: "rgba(10, 45, 82, 0.8)", color: "#ffffff", borderColor: "#34CCD0" }}>
-                        <SelectValue placeholder="All BULs" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All BULs</SelectItem>
-                        {BULS.map(bul => <SelectItem key={bul} value={bul}>{bul}</SelectItem>)}
-                      </SelectContent>
-                    </Select>
                   </div>
-                </div>
 
                 {/* Active Filter Pills */}
                 {hasActiveFilters && (
