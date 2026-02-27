@@ -125,28 +125,116 @@ export default function Experts() {
       {view === "experts" && (
         <>
           {/* Filters */}
-          <div className="flex flex-wrap gap-3">
-            <div className="relative flex-1 min-w-[180px]">
-              <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
-              <Input className="pl-9" placeholder="Search experts..." value={search} onChange={e => setSearch(e.target.value)} />
-            </div>
-            <Select value={disciplineFilter} onValueChange={setDisciplineFilter}>
-              <SelectTrigger className="w-48"><SelectValue placeholder="All Disciplines" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Disciplines</SelectItem>
-                {disciplines.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
-              </SelectContent>
-            </Select>
-            <Select value={activeFilter} onValueChange={setActiveFilter}>
-              <SelectTrigger className="w-36"><SelectValue placeholder="All Status" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="YES">Active</SelectItem>
-                <SelectItem value="SEMI-ACTIVE">Semi-Active</SelectItem>
-                <SelectItem value="NO">Inactive</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          <Card style={{ borderColor: "#34CCD0", backgroundColor: "rgba(8, 31, 63, 0.5)" }}>
+            <CardContent className="p-4">
+              <div className="space-y-3">
+                {/* Filter Title */}
+                <div className="flex items-center justify-between">
+                  <p style={{ color: "#92F21D", fontWeight: "600" }}>Filters</p>
+                  {hasActiveFilters && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        setSearch("");
+                        setDisciplineFilter("all");
+                        setActiveFilter("all");
+                        setSelectedBul("all");
+                      }}
+                      style={{ color: "#34CCD0", borderColor: "#34CCD0" }}
+                    >
+                      Clear Filters
+                    </Button>
+                  )}
+                </div>
+
+                {/* Filter Controls */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                  {/* Search */}
+                  <div className="relative">
+                    <Search className="absolute left-3 top-2.5 w-4 h-4" style={{ color: "#92F21D" }} />
+                    <Input
+                      className="pl-9"
+                      placeholder="Search experts..."
+                      value={search}
+                      onChange={e => setSearch(e.target.value)}
+                      style={{ backgroundColor: "rgba(10, 45, 82, 0.8)", color: "#ffffff", borderColor: "#34CCD0" }}
+                    />
+                  </div>
+
+                  {/* Discipline Filter */}
+                  <div>
+                    <Label style={{ color: "#92F21D", fontSize: "0.85rem", marginBottom: "0.25rem", display: "block" }}>Discipline</Label>
+                    <Select value={disciplineFilter} onValueChange={setDisciplineFilter}>
+                      <SelectTrigger style={{ backgroundColor: "rgba(10, 45, 82, 0.8)", color: "#ffffff", borderColor: "#34CCD0" }}>
+                        <SelectValue placeholder="All Disciplines" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Disciplines</SelectItem>
+                        {disciplines.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Active Status Filter */}
+                  <div>
+                    <Label style={{ color: "#92F21D", fontSize: "0.85rem", marginBottom: "0.25rem", display: "block" }}>Status</Label>
+                    <Select value={activeFilter} onValueChange={setActiveFilter}>
+                      <SelectTrigger style={{ backgroundColor: "rgba(10, 45, 82, 0.8)", color: "#ffffff", borderColor: "#34CCD0" }}>
+                        <SelectValue placeholder="All Status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Status</SelectItem>
+                        <SelectItem value="YES">Active</SelectItem>
+                        <SelectItem value="SEMI-ACTIVE">Semi-Active</SelectItem>
+                        <SelectItem value="NO">Inactive</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* BUL Filter */}
+                  <div>
+                    <Label style={{ color: "#92F21D", fontSize: "0.85rem", marginBottom: "0.25rem", display: "block" }}>BUL</Label>
+                    <Select value={selectedBul} onValueChange={setSelectedBul}>
+                      <SelectTrigger style={{ backgroundColor: "rgba(10, 45, 82, 0.8)", color: "#ffffff", borderColor: "#34CCD0" }}>
+                        <SelectValue placeholder="All BULs" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All BULs</SelectItem>
+                        {BULS.map(bul => <SelectItem key={bul} value={bul}>{bul}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                {/* Active Filter Pills */}
+                {hasActiveFilters && (
+                  <div className="flex flex-wrap gap-2 pt-2">
+                    {search && (
+                      <Badge style={{ backgroundColor: "rgba(146, 242, 29, 0.2)", color: "#92F21D", borderColor: "#92F21D", borderWidth: "1px" }}>
+                        Search: {search}
+                      </Badge>
+                    )}
+                    {disciplineFilter !== "all" && (
+                      <Badge style={{ backgroundColor: "rgba(52, 204, 208, 0.2)", color: "#34CCD0", borderColor: "#34CCD0", borderWidth: "1px" }}>
+                        Discipline: {disciplineFilter}
+                      </Badge>
+                    )}
+                    {activeFilter !== "all" && (
+                      <Badge style={{ backgroundColor: "rgba(52, 204, 208, 0.2)", color: "#34CCD0", borderColor: "#34CCD0", borderWidth: "1px" }}>
+                        Status: {activeFilter === "YES" ? "Active" : activeFilter === "SEMI-ACTIVE" ? "Semi-Active" : "Inactive"}
+                      </Badge>
+                    )}
+                    {selectedBul !== "all" && (
+                      <Badge style={{ backgroundColor: "rgba(146, 242, 29, 0.2)", color: "#92F21D", borderColor: "#92F21D", borderWidth: "1px" }}>
+                        BUL: {selectedBul}
+                      </Badge>
+                    )}
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Table */}
           <Card>
