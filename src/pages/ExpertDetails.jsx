@@ -208,6 +208,27 @@ export default function ExpertDetails() {
                 />
               </div>
 
+              <div>
+                <label style={{ color: "#92F21D" }} className="text-sm font-semibold">Professional Photo URL</label>
+                <Input 
+                  value={editedExpert.photo_url || ""} 
+                  onChange={(e) => setEditedExpert({...editedExpert, photo_url: e.target.value})}
+                  style={{ borderColor: "#34CCD0", backgroundColor: "rgba(52, 204, 208, 0.05)", color: "#ffffff" }}
+                  placeholder="https://example.com/photo.jpg"
+                />
+              </div>
+
+              <div>
+                <label style={{ color: "#92F21D" }} className="text-sm font-semibold">Biography</label>
+                <Textarea 
+                  value={editedExpert.biography || ""} 
+                  onChange={(e) => setEditedExpert({...editedExpert, biography: e.target.value})}
+                  style={{ borderColor: "#34CCD0", backgroundColor: "rgba(52, 204, 208, 0.05)", color: "#ffffff" }}
+                  placeholder="Detailed professional biography..."
+                  rows={3}
+                />
+              </div>
+
               <div className="flex gap-2 pt-4">
                 <Button 
                   onClick={handleSaveBasic} 
