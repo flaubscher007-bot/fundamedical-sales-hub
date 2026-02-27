@@ -412,9 +412,12 @@ export default function BULManagement() {
 
       <Tabs defaultValue="targets" className="w-full">
          <div className="overflow-x-auto pb-1">
-           <TabsList className="flex w-max min-w-full md:grid md:w-full md:grid-cols-7">
+           <TabsList className="flex w-max min-w-full md:grid md:w-full md:grid-cols-8">
              <TabsTrigger value="targets" className="flex items-center gap-1.5 whitespace-nowrap">
                <TargetIcon className="w-4 h-4" /> Targets
+             </TabsTrigger>
+             <TabsTrigger value="actuals" className="flex items-center gap-1.5 whitespace-nowrap">
+               <Activity className="w-4 h-4" /> Daily Actuals
              </TabsTrigger>
              <TabsTrigger value="goals" className="flex items-center gap-1.5 whitespace-nowrap">
                <TargetIcon className="w-4 h-4" /> Goals
