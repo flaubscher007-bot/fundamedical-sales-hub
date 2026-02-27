@@ -90,8 +90,8 @@ export default function BULDashboard({ user }) {
                 </div>
               </div>
               <div className="flex justify-between text-sm">
-                <span>R{(currentPerformance?.deposits_collected || 0).toLocaleString()}</span>
-                <span className="text-slate-500">of R{currentTarget.revenue_target.toLocaleString()}</span>
+                <span style={{color: '#ffffff'}}>R{(currentPerformance?.deposits_collected || 0).toLocaleString()}</span>
+                <span style={{color: '#ffffff'}}>of R{currentTarget.revenue_target.toLocaleString()}</span>
               </div>
             </CardContent>
           </Card>
