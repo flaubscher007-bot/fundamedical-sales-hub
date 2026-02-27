@@ -137,8 +137,8 @@ export default function TeamPerformanceDashboard() {
                     <p className="text-2xl font-bold text-slate-800 mt-1">{fmt(actual)}</p>
                     <p className="text-xs text-slate-400 mt-0.5">Target: {fmt(target)}</p>
                   </div>
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${pct >= 100 ? "bg-green-100" : "bg-slate-100"}`}>
-                    <Icon className={`w-5 h-5 ${pct >= 100 ? "text-green-600" : "text-slate-500"}`} />
+                  <div className="w-10 h-10 flex items-center justify-center" style={{backgroundColor: '#081F3F', clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)'}}>
+                    <Icon className="w-5 h-5 text-[#34CCD0]" />
                   </div>
                 </div>
                 <ProgressBar actual={actual} target={target} />
