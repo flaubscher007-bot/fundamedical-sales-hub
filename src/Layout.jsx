@@ -46,7 +46,6 @@ const mainNavItems = [
   { name: "Follow-Up Rules", icon: FileText, page: "FollowUpRules" },
   { name: "Goals", icon: TrendingUp, page: "Goals" },
   { name: "Team Calendar", icon: LayoutDashboard, page: "TeamCalendar" },
-
   { name: "BUL Management", icon: TrendingUp, page: "BULManagement" },
   { name: "BUL Performance", icon: TrendingUp, page: "BULPerformance" },
   { name: "Company Targets", icon: TrendingUp, page: "CompanyTargets" },
