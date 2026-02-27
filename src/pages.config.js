@@ -89,6 +89,7 @@ import UserProfile from './pages/UserProfile';
 import UserRoleManagement from './pages/UserRoleManagement';
 import MessageCentre from './pages/MessageCentre';
 import CollectionsReport from './pages/CollectionsReport';
+import CBRImportManager from './pages/CBRImportManager';
 import __Layout from './Layout.jsx';
 
 
@@ -135,6 +136,7 @@ export const PAGES = {
     "UserRoleManagement": UserRoleManagement,
     "MessageCentre": MessageCentre,
     "CollectionsReport": CollectionsReport,
+    "CBRImportManager": CBRImportManager,
 }
 
 export const pagesConfig = {
