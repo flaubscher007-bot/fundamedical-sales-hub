@@ -117,6 +117,9 @@ export default function Layout({ children, currentPageName }) {
     if (clientItems.some(i => i.page === currentPageName)) {
       setClientsOpen(true);
     }
+    if (expertItems.some(i => i.page === currentPageName)) {
+      setExpertsOpen(true);
+    }
     if (marketingItems.some(i => i.page === currentPageName)) {
       setMarketingOpen(true);
     }
