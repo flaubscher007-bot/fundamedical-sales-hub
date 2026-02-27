@@ -33,8 +33,8 @@ export default function ExpertSchedulePanel({ experts, rotation, months, buls })
     setCreating(true);
     const monthNum = MONTH_NUMS[selectedMonth];
     const date = `2026-${String(monthNum).padStart(2, "0")}-15`;
-    const promises = myExperts.map(expert =>
-      base44.entities.Appointment.create({
+    for (const expert of myExperts) {
+      await base44.entities.Appointment.create({
         title: `Visit: ${expert.name}`,
         client_name: expert.name,
         date,
@@ -43,9 +43,9 @@ export default function ExpertSchedulePanel({ experts, rotation, months, buls })
         assigned_bul: selectedBul,
         notes: `Expert visit – ${expert.discipline} · Cohort ${expert.cohort}`,
         location: expert.address || "",
-      })
-    );
-    await Promise.all(promises);
+      });
+      await new Promise(r => setTimeout(r, 150));
+    }
     qc.invalidateQueries(["appointments"]);
     setCreating(false);
     setDone(true);
