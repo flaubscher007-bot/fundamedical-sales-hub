@@ -469,8 +469,7 @@ export default function ExpertDetails() {
             </div>
           </TabsContent>
 
-          {/* Notes & Specs Tab */}
-          <TabsContent value="notes" className="p-6">
+
             <div className="space-y-4">
               <div>
                 <h3 style={{ color: "#92F21D" }} className="text-lg font-semibold mb-2">Specifications & Notes</h3>
