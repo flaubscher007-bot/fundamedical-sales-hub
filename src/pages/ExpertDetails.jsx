@@ -117,21 +117,37 @@ export default function ExpertDetails() {
   const upcomingAppointments = appointments.filter(a => new Date(a.date) >= new Date());
   const pastAppointments = appointments.filter(a => new Date(a.date) < new Date());
 
+  const avgRating = reviews.length > 0 ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1) : null;
+
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <Button variant="ghost" onClick={() => navigate(-1)} style={{ color: "#34CCD0" }} className="mb-4">
-            <ArrowLeft className="w-4 h-4 mr-2" /> Back to Experts
-          </Button>
-          <h1 style={{ color: "#92F21D", textShadow: "0 0 8px rgba(146, 242, 29, 0.2)" }} className="text-3xl font-bold">
-            {expert.name}
-          </h1>
-          <p style={{ color: "#34CCD0" }} className="text-sm mt-2">{expert.discipline} · Cohort {expert.cohort}</p>
-          <Badge className={`mt-2 ${activeColors[expert.active || "YES"]?.badge}`}>
-            {expert.active || "YES"}
-          </Badge>
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex-1 flex gap-6">
+          {expert.photo_url && (
+            <img src={expert.photo_url} alt={expert.name} className="w-32 h-32 rounded-lg object-cover border-2" style={{ borderColor: "#34CCD0" }} />
+          )}
+          <div>
+            <Button variant="ghost" onClick={() => navigate(-1)} style={{ color: "#34CCD0" }} className="mb-4">
+              <ArrowLeft className="w-4 h-4 mr-2" /> Back to Experts
+            </Button>
+            <h1 style={{ color: "#92F21D", textShadow: "0 0 8px rgba(146, 242, 29, 0.2)" }} className="text-3xl font-bold">
+              {expert.name}
+            </h1>
+            <p style={{ color: "#34CCD0" }} className="text-sm mt-2">{expert.discipline} · Cohort {expert.cohort}</p>
+            <div className="flex gap-3 mt-3">
+              <Badge className={`${activeColors[expert.active || "YES"]?.badge}`}>
+                {expert.active || "YES"}
+              </Badge>
+              {avgRating && (
+                <div className="flex items-center gap-1" style={{ color: "#92F21D" }}>
+                  <Star className="w-4 h-4 fill-current" />
+                  <span className="text-sm font-semibold">{avgRating}</span>
+                  <span className="text-xs">({reviews.length})</span>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
         <Button 
           onClick={handleEditBasic} 
