@@ -32,8 +32,8 @@ export default function FinanceDashboard({ user }) {
       {/* Welcome */}
       <div className="relative rounded-2xl p-6 lg:p-8 text-white overflow-hidden" style={{ background: "linear-gradient(135deg, #059669 0%, #047857 100%)" }}>
         <div className="relative z-10">
-          <h1 className="text-3xl font-bold mb-2">Finance Dashboard 💰</h1>
-          <p className="text-emerald-100">Track deposits, collections, and aging reports</p>
+          <h1 className="text-3xl font-bold mb-2" style={{color: '#92F21D'}}>Finance Dashboard 💰</h1>
+          <p style={{color: '#ffffff'}}>Track deposits, collections, and aging reports</p>
         </div>
       </div>
 
