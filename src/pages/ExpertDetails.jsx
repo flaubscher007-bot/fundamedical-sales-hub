@@ -470,65 +470,7 @@ export default function ExpertDetails() {
           </TabsContent>
 
 
-            <div className="space-y-4">
-              <div>
-                <h3 style={{ color: "#92F21D" }} className="text-lg font-semibold mb-2">Specifications & Notes</h3>
-                {expert.notes ? (
-                  <div style={{ backgroundColor: "rgba(52, 204, 208, 0.05)", borderColor: "#34CCD0", borderWidth: "1px" }} className="rounded-lg p-4">
-                    <p style={{ color: "#ffffff" }} className="whitespace-pre-wrap">{expert.notes}</p>
-                  </div>
-                ) : (
-                  <p style={{ color: "#ffffff" }}>No specifications or notes available</p>
-                )}
-              </div>
 
-              {/* Assessment Tracking */}
-              <div className="border-t pt-4" style={{ borderColor: "#34CCD0" }}>
-                <h3 style={{ color: "#92F21D" }} className="text-lg font-semibold mb-3">Assessment History</h3>
-                {appointments.length > 0 ? (
-                  <div className="space-y-2">
-                    <p style={{ color: "#ffffff" }} className="text-sm mb-3">
-                      Total Appointments: <span style={{ color: "#34CCD0" }} className="font-semibold">{appointments.length}</span>
-                    </p>
-                    <div className="space-y-2">
-                      {appointments.slice(-5).reverse().map(apt => (
-                        <div key={apt.id} className="p-3 rounded-lg border" style={{ borderColor: "#34CCD0", backgroundColor: "rgba(52, 204, 208, 0.05)" }}>
-                          <p style={{ color: "#92F21D" }} className="font-semibold text-sm">{apt.title}</p>
-                          <p style={{ color: "#ffffff" }} className="text-xs mt-1">{new Date(apt.date).toLocaleDateString()} {apt.time && `at ${apt.time}`}</p>
-                          <p style={{ color: "#34CCD0" }} className="text-xs">{apt.type} · {apt.status}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ) : (
-                  <p style={{ color: "#ffffff" }}>No assessment history available</p>
-                )}
-              </div>
-
-              {/* Activity Timeline */}
-              <div className="border-t pt-4" style={{ borderColor: "#34CCD0" }}>
-                <h3 style={{ color: "#92F21D" }} className="text-lg font-semibold mb-3">Activity Timeline</h3>
-                <div className="space-y-2">
-                  <div className="flex gap-3">
-                    <div className="w-2 h-2 rounded-full mt-2" style={{ backgroundColor: "#92F21D" }} />
-                    <div>
-                      <p style={{ color: "#92F21D" }} className="font-semibold">Record Created</p>
-                      <p style={{ color: "#ffffff" }} className="text-sm">{new Date(expert.created_date).toLocaleDateString()}</p>
-                    </div>
-                  </div>
-                  {expert.updated_date && expert.updated_date !== expert.created_date && (
-                    <div className="flex gap-3">
-                      <div className="w-2 h-2 rounded-full mt-2" style={{ backgroundColor: "#34CCD0" }} />
-                      <div>
-                        <p style={{ color: "#34CCD0" }} className="font-semibold">Last Updated</p>
-                        <p style={{ color: "#ffffff" }} className="text-sm">{new Date(expert.updated_date).toLocaleDateString()}</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </TabsContent>
 
           {/* Contracts Tab */}
           <TabsContent value="contracts" className="p-6">
