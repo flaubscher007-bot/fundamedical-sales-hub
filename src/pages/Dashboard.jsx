@@ -98,10 +98,10 @@ export default function Dashboard() {
         return <BULDashboard user={user} />;
       default:
         return (
-          <div className="space-y-8">
-            {/* Default Team Member Dashboard */}
-            <div className="relative rounded-2xl p-6 lg:p-8 text-white overflow-hidden" style={{ background: "#081F3F" }}>
-              <svg className="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+          <div className="space-y-4 sm:space-y-6 lg:space-y-8">
+             {/* Default Team Member Dashboard */}
+             <div className="relative rounded-2xl p-4 sm:p-6 lg:p-8 text-white overflow-hidden" style={{ background: "#081F3F" }}>
+               <svg className="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
                 <polygon points="340,10 380,32 380,76 340,98 300,76 300,32" fill="none" stroke="#92F21D" strokeWidth="2" opacity="0.5"/>
                 <polygon points="360,20 388,36 388,68 360,84 332,68 332,36" fill="none" stroke="#92F21D" strokeWidth="1" opacity="0.25"/>
                 <polygon points="420,60 450,77 450,111 420,128 390,111 390,77" fill="#34CCD0" opacity="0.08"/>
@@ -113,16 +113,16 @@ export default function Dashboard() {
                 <polygon points="260,50 278,60 278,80 260,90 242,80 242,60" fill="none" stroke="#48B600" strokeWidth="1" opacity="0.2"/>
               </svg>
               <div className="relative z-10">
-                <h1 className="text-2xl lg:text-3xl font-bold">
-                  Welcome back, <span className="text-[#92F21D]">{user?.full_name?.split(" ")[0] || "Team"}</span>
-                </h1>
-                <p className="text-slate-300 mt-2 text-sm">
-                  Here's your activity overview for {format(new Date(), "MMMM yyyy")}
-                </p>
-              </div>
+                 <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">
+                   Welcome back, <span className="text-[#92F21D]">{user?.full_name?.split(" ")[0] || "Team"}</span>
+                 </h1>
+                 <p className="text-slate-300 mt-1 sm:mt-2 text-xs sm:text-sm">
+                   Here's your activity overview for {format(new Date(), "MMMM yyyy")}
+                 </p>
+               </div>
             </div>
 
-            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2 sm:gap-3 lg:gap-4">
               <StatsCard title="Active Clients" value={activeClients} icon={Users} color="teal" />
               <StatsCard title="Today's Meetings" value={todayAppointments} icon={Calendar} color="green" />
               <StatsCard title="Follow-Ups" value={pendingFollowUps} icon={Phone} color="orange" />
@@ -135,7 +135,7 @@ export default function Dashboard() {
 
             <DashboardCharts clients={clients} statements={statements} contracts={contracts} proposals={proposals} />
 
-            <div className="grid lg:grid-cols-2 gap-6">
+            <div className="grid lg:grid-cols-2 gap-4 sm:gap-6">
               <UpcomingAppointments appointments={appointments} />
               <PendingFollowUps followUps={followUps} />
             </div>

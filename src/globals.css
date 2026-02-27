@@ -102,6 +102,7 @@
     background-color: #081F3F;
     position: relative;
     overflow-x: hidden;
+    font-size: clamp(14px, 2vw, 16px);
   }
 
   body::before {
@@ -166,5 +167,47 @@
 
   div[class*="grid"] > div:nth-child(even) {
     --card-bg: #34CCD0;
+  }
+
+  /* Responsive improvements */
+  @media (max-width: 640px) {
+    /* Reduce padding on mobile */
+    main {
+      @apply p-3;
+    }
+
+    /* Improve readability on small screens */
+    h1 {
+      @apply text-xl;
+    }
+
+    h2 {
+      @apply text-lg;
+    }
+
+    h3 {
+      @apply text-base;
+    }
+
+    /* Card spacing for mobile */
+    [class*="grid"] {
+      @apply gap-3;
+    }
+
+    [class*="space-y"] {
+      @apply space-y-4;
+    }
+  }
+
+  @media (min-width: 641px) and (max-width: 1024px) {
+    main {
+      @apply p-6;
+    }
+  }
+
+  @media (min-width: 1025px) {
+    main {
+      @apply p-8;
+    }
   }
 }
