@@ -83,7 +83,7 @@ export default function Experts() {
       cohorts[e.cohort] === selectedBul
     );
     return matchSearch && matchDisc && matchActive && matchBul;
-  });
+  }).sort((a, b) => (a.name || "").localeCompare(b.name || ""));
 
   return (
     <div className="space-y-6">
