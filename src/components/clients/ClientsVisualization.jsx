@@ -94,10 +94,10 @@ export default function ClientsVisualization({ clients, statements }) {
               <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
                   <Pie data={accountStatusData} cx="50%" cy="50%" labelLine={false} label={({ name, value }) => `${name}: ${value}`} outerRadius={80} fill="#8884d8" dataKey="value">
-                    <Cell fill="#48B600" />
-                    <Cell fill="#FFB84D" />
-                    <Cell fill="#FF6B6B" />
-                    <Cell fill="#34CCD0" />
+                    {accountStatusData.map((entry) => {
+                      const colorMap = { Green: '#48B600', Orange: '#FFB84D', Red: '#FF6B6B', Blue: '#34CCD0' };
+                      return <Cell key={entry.name} fill={colorMap[entry.name] || '#94a3b8'} />;
+                    })}
                   </Pie>
                   <Tooltip />
                 </PieChart>
