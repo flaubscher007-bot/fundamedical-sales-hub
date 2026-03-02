@@ -374,8 +374,8 @@
   .bg-slate-900,
   .bg-slate-800,
   [style*="background-color: #081F3F"],
-  [style*="background-color: #0a1e3a"],
-  [style*="background-color: #0a2d52"] {
+  [style*="background-color: #081F3F"],
+  [style*="background-color: #081F3F"] {
     color: #ffffff !important;
   }
 
