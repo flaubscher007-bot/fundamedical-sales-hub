@@ -117,7 +117,7 @@ Format your response with clear sections using markdown headers. Be direct, prac
           <CardTitle className="text-base font-semibold text-slate-800 flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-[#00bcd4]" />
             AI Performance Coach
-            <Badge className="bg-[#00bcd4]/10 text-[#00bcd4] text-xs font-normal">Powered by AI</Badge>
+            <Badge className="bg-[#00bcd4]/10 text-[#92F21D] text-xs font-normal">Powered by AI</Badge>
           </CardTitle>
           {expanded ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
         </div>
