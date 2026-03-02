@@ -214,7 +214,7 @@ export default function TeamPerformanceDashboard() {
                   {/* Totals Row */}
                   <tr className="bg-slate-100 border-t-2 border-slate-200 font-semibold">
                     <td className="px-4 py-3 text-slate-700">Team Total</td>
-                    <td className={`px-3 py-3 text-center ${totals.bookings_actual >= totals.bookings_target ? "text-green-600" : "text-slate-700"}`}>
+                    <td className={`px-3 py-3 text-center ${totals.bookings_actual >= totals.bookings_target ? "text-green-600" : "text-green-400"}`}>
                       {formatNum(totals.bookings_actual)}
                     </td>
                     <td className="px-3 py-3 text-center text-slate-500">{formatNum(totals.bookings_target)}</td>
@@ -222,7 +222,7 @@ export default function TeamPerformanceDashboard() {
                       {formatNum(totals.reports_actual)}
                     </td>
                     <td className="px-3 py-3 text-center text-slate-500">{formatNum(totals.reports_target)}</td>
-                    <td className={`px-3 py-3 text-center ${totals.collections_actual >= totals.collections_target ? "text-green-600" : "text-slate-700"}`}>
+                    <td className={`px-3 py-3 text-center ${totals.collections_actual >= totals.collections_target ? "text-green-600" : "text-green-400"}`}>
                       {formatCurrency(totals.collections_actual)}
                     </td>
                     <td className="px-3 py-3 text-center text-slate-500">{formatCurrency(totals.collections_target)}</td>
