@@ -23,13 +23,13 @@
     --card: 214 70% 13%;
     --card-foreground: 0 0% 100%;
     --popover: 214 70% 13%;
-    --popover-foreground: 0 0% 100%;
+    --popover-foreground: ;
     /* #92F21D = hsl(87, 89%, 53%) */
-    --primary: 87 89% 53%;
-    --primary-foreground: 214 76% 8%;
+    --primary: 214 76% 8%;
+    --primary-foreground: 0 0% 100%;
     /* #34CCD0 = hsl(182, 61%, 51%) */
-    --secondary: 182 61% 51%;
-    --secondary-foreground: 214 76% 8%;
+    --secondary: 214 76% 8%;
+    --secondary-foreground: 0 0% 100%;
     --muted: 214 50% 20%;
     /* #cbd5e1 */
     --muted-foreground: 215 20% 79%;
@@ -360,7 +360,7 @@
   /* Ensure inputs have visible text */
   input, textarea, select {
     color: #ffffff !important;
-    background-color: rgba(77, 233, 111, 0.5) !important;
+    background-color: rgba(111, 77, 233, 0.5) !important;
     border-color: #34CCD0 !important;
   }
 
