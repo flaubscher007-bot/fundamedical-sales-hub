@@ -50,7 +50,7 @@ export default function AdminDashboard({ user }) {
   return (
     <div className="space-y-8">
       {/* Welcome */}
-      <div className="relative rounded-2xl p-6 lg:p-8 text-black overflow-hidden" style={{ background: "linear-gradient(135deg, #1e3a8a 0%, #0c4a6e 100%)" }}>
+      <div className="relative rounded-2xl p-6 lg:p-8 text-black overflow-hidden" style={{ background: "linear-gradient(135deg, #6183dfd0 0%, #69bdeeff 100%)" }}>
         <div className="relative z-10">
           <h1 className="text-3xl font-bold mb-2">System Overview 📊</h1>
           <p style={{color: '#92F21D'}}>{format(new Date(), "MMMM yyyy")} - All metrics and alerts</p>
