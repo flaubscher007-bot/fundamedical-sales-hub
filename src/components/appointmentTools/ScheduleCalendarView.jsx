@@ -90,7 +90,7 @@ export default function ScheduleCalendarView({ appointments, month = "March", ye
                       <div
                         key={aidx}
                         className="text-s p-1 rounded truncate"
-                        style={{ backgroundColor: "rgba(25, 27, 104, 0.88)", color: "#34CCD0" }}
+                        style={{ backgroundColor: "rgba(25, 27, 104, 0.88)", color: "#fafcfcff" }}
                         title={apt.expert_name}
                       >
                         {apt.expert_name?.split('(')[0]?.trim()}
