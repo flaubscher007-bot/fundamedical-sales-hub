@@ -14,7 +14,7 @@ export default function BULDashboard() {
         </TabsTrigger>
       </TabsList>
 
-      <TabsContent value="powerbi" className="fixed inset-0 top-30 flex flex-col m-0">
+      <TabsContent value="powerbi" className="fixed inset-0 top-40 flex flex-col m-0">
         <iframe
           title="KAC Tracker"
           width="100%"
