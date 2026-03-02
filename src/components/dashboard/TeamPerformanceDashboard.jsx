@@ -213,7 +213,7 @@ export default function TeamPerformanceDashboard() {
                   ))}
                   {/* Totals Row */}
                   <tr className="bg-#081F3F border-t-2 border-slate-200 font-semibold">
-                    <td className="px-4 py-3 text-slate-700">Team Total</td>
+                    <td className="px-4 py-3 text-green-400">Team Total</td>
                     <td className={`px-3 py-3 text-center ${totals.bookings_actual >= totals.bookings_target ? "text-green-600" : "text-green-400"}`}>
                       {formatNum(totals.bookings_actual)}
                     </td>
