@@ -217,15 +217,15 @@ export default function TeamPerformanceDashboard() {
                     <td className={`px-3 py-3 text-center ${totals.bookings_actual >= totals.bookings_target ? "text-green-600" : "text-green-400"}`}>
                       {formatNum(totals.bookings_actual)}
                     </td>
-                    <td className="px-3 py-3 text-center text-green-400">{formatNum(totals.bookings_target)}</td>
+                    <td className="px-3 py-3 text-center text-[#34CCD0]">{formatNum(totals.bookings_target)}</td>
                     <td className={`px-3 py-3 text-center ${totals.reports_actual >= totals.reports_target ? "text-green-600" : "text-green-400"}`}>
                       {formatNum(totals.reports_actual)}
                     </td>
-                    <td className="px-3 py-3 text-center text-green-400">{formatNum(totals.reports_target)}</td>
+                    <td className="px-3 py-3 text-center text-[#34CCD0]">{formatNum(totals.reports_target)}</td>
                     <td className={`px-3 py-3 text-center ${totals.collections_actual >= totals.collections_target ? "text-green-600" : "text-green-400"}`}>
                       {formatCurrency(totals.collections_actual)}
                     </td>
-                    <td className="px-3 py-3 text-center text-green-400">{formatCurrency(totals.collections_target)}</td>
+                    <td className="px-3 py-3 text-center text-[#34CCD0]">{formatCurrency(totals.collections_target)}</td>
                   </tr>
                 </tbody>
               </table>
