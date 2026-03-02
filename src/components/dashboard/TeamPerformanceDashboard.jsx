@@ -164,12 +164,12 @@ export default function TeamPerformanceDashboard() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="bg-slate-50 border-b border-slate-100">
-                    <th className="text-left px-4 py-3 font-semibold text-slate-600 min-w-[160px]">Person</th>
-                    <th className="text-center px-3 py-3 font-semibold text-slate-600" colSpan={2}>Bookings</th>
-                    <th className="text-center px-3 py-3 font-semibold text-slate-600" colSpan={2}>Reports</th>
-                    <th className="text-center px-3 py-3 font-semibold text-slate-600" colSpan={2}>Collections</th>
+                    <th className="text-left px-4 py-3 font-semibold text-[#34CCD0] min-w-[160px]">Person</th>
+                    <th className="text-center px-3 py-3 font-semibold text-[#34CCD0]" colSpan={2}>Bookings</th>
+                    <th className="text-center px-3 py-3 font-semibold text-[#34CCD0]" colSpan={2}>Reports</th>
+                    <th className="text-center px-3 py-3 font-semibold text-[#34CCD0]" colSpan={2}>Collections</th>
                   </tr>
-                  <tr className="border-b border-slate-100 bg-slate-50/50 text-xs text-slate-400">
+                  <tr className="border-b border-slate-100 bg-slate-50/50 text-xs text-[#34CCD0]">
                     <th className="px-4 py-1.5" />
                     <th className="px-3 py-1.5 font-normal">Actual</th>
                     <th className="px-3 py-1.5 font-normal">Target</th>
@@ -182,7 +182,7 @@ export default function TeamPerformanceDashboard() {
                 <tbody>
                   {rows.map((r, i) => (
                     <tr key={r.name} className={`border-b border-slate-50 ${i % 2 === 0 ? "" : "bg-slate-50/40"}`}>
-                      <td className="px-4 py-3 font-semibold text-green-600">
+                      <td className="px-4 py-3 font-semibold text-green-400">
                         <div className="flex items-center gap-2">
                           <StatusIcon actual={r.bookings_actual + r.reports_actual} target={r.bookings_target + r.reports_target} />
                           {r.name}
