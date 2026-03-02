@@ -218,7 +218,7 @@ export default function TeamPerformanceDashboard() {
                       {formatNum(totals.bookings_actual)}
                     </td>
                     <td className="px-3 py-3 text-center text-slate-500">{formatNum(totals.bookings_target)}</td>
-                    <td className={`px-3 py-3 text-center ${totals.reports_actual >= totals.reports_target ? "text-green-600" : "text-slate-700"}`}>
+                    <td className={`px-3 py-3 text-center ${totals.reports_actual >= totals.reports_target ? "text-green-600" : "text-green-400"}`}>
                       {formatNum(totals.reports_actual)}
                     </td>
                     <td className="px-3 py-3 text-center text-slate-500">{formatNum(totals.reports_target)}</td>
