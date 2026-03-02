@@ -107,7 +107,7 @@ export default function TeamPerformanceDashboard() {
           <p className="text-sm text-white mt-0.5">Actuals vs monthly targets per person</p>
         </div>
         <Select value={selectedMonth} onValueChange={setSelectedMonth}>
-          <SelectTrigger className="w-44 bg-white">
+          <SelectTrigger className="w-44 bg-[#05122D]">
             <SelectValue placeholder="Select Month" />
           </SelectTrigger>
           <SelectContent>
