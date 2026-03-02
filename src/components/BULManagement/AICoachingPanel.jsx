@@ -114,7 +114,7 @@ Format your response with clear sections using markdown headers. Be direct, prac
     <Card className="border-0 shadow-sm border-l-4 border-l-[#00bcd4]">
       <CardHeader className="pb-3 cursor-pointer" onClick={() => setExpanded(e => !e)}>
         <div className="flex items-center justify-between">
-          <CardTitle className="text-base font-semibold text-slate-800 flex items-center gap-2">
+          <CardTitle className="text-base font-semibold text-green-400 flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-[#00bcd4]" />
             AI Performance Coach
             <Badge className="bg-[#00bcd4]/10 text-[#92F21D] text-xs font-normal">Powered by AI</Badge>
