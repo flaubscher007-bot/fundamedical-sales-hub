@@ -298,7 +298,7 @@
 
   /* Labels and form text */
   label {
-    @apply text-black !important;
+    @apply text-white !important;
   }
 
   /* Make sure placeholder text is visible */
