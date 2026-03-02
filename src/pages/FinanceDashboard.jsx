@@ -14,11 +14,11 @@ export default function FinanceDashboard() {
         </TabsTrigger>
       </TabsList>
 
-      <TabsContent value="powerbi" className="fixed inset-0 top-24 flex flex-col m-0">
+      <TabsContent value="powerbi" className="fixed inset-0 top-40 flex flex-col m-0">
         <iframe
           title="TEAM FINANCE STATS"
           width="100%"
-          height="100%"
+          height="80%"
           src="https://app.powerbi.com/view?r=eyJrIjoiZTljNDEyMTItNzQ4Ny00MTZmLTk0MmUtNDEyYjUwM2YxN2UxIiwidCI6ImViNzdjYzEwLTc5NDAtNDhjMy1hMDMzLWJkZjU3ODIzNDk0YiJ9&pageName=ReportSection9d871590762418041a6e"
           frameBorder="0"
           allowFullScreen={true}
