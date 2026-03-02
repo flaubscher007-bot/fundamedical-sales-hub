@@ -106,7 +106,7 @@ export default function BULPerformanceCharts() {
   return (
     <div className="space-y-6">
       {/* Filters */}
-      <div className="bg-white rounded-lg border border-slate-200 p-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="bg-[#0A1E3A] rounded-lg border border-slate-200 p-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="text-sm font-medium text-slate-700 block mb-2">Filter by BUL</label>
           <Select value={selectedBUL} onValueChange={setSelectedBUL}>
