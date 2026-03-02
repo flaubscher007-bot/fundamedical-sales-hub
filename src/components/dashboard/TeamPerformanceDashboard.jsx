@@ -169,7 +169,7 @@ export default function TeamPerformanceDashboard() {
                     <th className="text-center px-3 py-3 font-semibold text-[#34CCD0]" colSpan={2}>Reports</th>
                     <th className="text-center px-3 py-3 font-semibold text-[#34CCD0]" colSpan={2}>Collections</th>
                   </tr>
-                  <tr className="border-b border-slate-100 bg-slate-50/50 text-xs text-[#34CCD0]">
+                  <tr className="border-b border-slate-100 bg-#081F3F text-xs text-[#34CCD0]">
                     <th className="px-4 py-1.5" />
                     <th className="px-3 py-1.5 font-normal">Actual</th>
                     <th className="px-3 py-1.5 font-normal">Target</th>
