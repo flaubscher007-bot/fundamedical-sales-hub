@@ -181,7 +181,7 @@ export default function TeamPerformanceDashboard() {
                 </thead>
                 <tbody>
                   {rows.map((r, i) => (
-                    <tr key={r.name} className={`border-b border-slate-50 ${i % 2 === 0 ? "" : "bg-slate-50/40"}`}>
+                    <tr key={r.name} className={`border-b border-slate-50 ${i % 2 === 0 ? "" : "bg-#081F3F"}`}>
                       <td className="px-4 py-3 font-semibold text-green-400">
                         <div className="flex items-center gap-2">
                           <StatusIcon actual={r.bookings_actual + r.reports_actual} target={r.bookings_target + r.reports_target} />
