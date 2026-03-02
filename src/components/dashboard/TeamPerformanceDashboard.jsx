@@ -158,7 +158,7 @@ export default function TeamPerformanceDashboard() {
         </CardHeader>
         <CardContent className="p-0">
           {rows.length === 0 ? (
-            <div className="text-center py-10 text-slate-400 text-sm">No targets set for this month.</div>
+            <div className="text-center py-10 text-[#34CCD0] text-sm">No targets set for this month.</div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
