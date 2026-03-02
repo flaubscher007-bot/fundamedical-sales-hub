@@ -129,7 +129,7 @@ Format your response with clear sections using markdown headers. Be direct, prac
           {/* Controls */}
           <div className="flex flex-wrap gap-3 items-end">
             <div className="flex-1 min-w-40">
-              <label className="text-xs font-medium text-slate-600 mb-1 block">Select BUL</label>
+              <label className="text-xs font-medium text-[#34CCD0] mb-1 block">Select BUL</label>
               <Select value={selectedBUL} onValueChange={setSelectedBUL}>
                 <SelectTrigger>
                   <SelectValue placeholder="Choose a BUL..." />
@@ -140,7 +140,7 @@ Format your response with clear sections using markdown headers. Be direct, prac
               </Select>
             </div>
             <div className="flex-1 min-w-40">
-              <label className="text-xs font-medium text-slate-600 mb-1 block">Month</label>
+              <label className="text-xs font-medium text-[#34CCD0] mb-1 block">Month</label>
               <Select value={selectedMonth} onValueChange={setSelectedMonth}>
                 <SelectTrigger>
                   <SelectValue />
