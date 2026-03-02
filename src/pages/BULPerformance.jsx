@@ -143,7 +143,7 @@ export default function BULPerformancePage() {
 
       {/* Interactive Charts */}
       <div>
-        <h2 className="text-lg font-semibold text-slate-900 mb-4">Performance Analytics</h2>
+        <h2 className="text-lg font-semibold text-green-200 mb-4">Performance Analytics</h2>
         <BULPerformanceCharts />
       </div>
 
