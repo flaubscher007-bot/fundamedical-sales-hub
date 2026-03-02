@@ -163,7 +163,7 @@ export default function TeamPerformanceDashboard() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-slate-50 border-b border-slate-100">
+                  <tr className="bg-#081F3F border-b border-slate-100">
                     <th className="text-left px-4 py-3 font-semibold text-[#34CCD0] min-w-[160px]">Person</th>
                     <th className="text-center px-3 py-3 font-semibold text-[#34CCD0]" colSpan={2}>Bookings</th>
                     <th className="text-center px-3 py-3 font-semibold text-[#34CCD0]" colSpan={2}>Reports</th>
