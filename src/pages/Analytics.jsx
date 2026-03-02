@@ -148,9 +148,9 @@ export default function Analytics() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg border border-slate-200 p-4 flex flex-wrap gap-4 items-end">
+      <div className="bg-#0A1E3A rounded-lg border border-[#34CCD0] p-4 flex flex-wrap gap-4 items-end">
         <div>
-          <label className="text-xs font-medium text-slate-700 block mb-2">Time Range</label>
+          <label className="text-xs font-medium text-green-400 block mb-2">Time Range</label>
           <Select value={timeRange} onValueChange={setTimeRange}>
             <SelectTrigger className="w-32">
               <SelectValue />
