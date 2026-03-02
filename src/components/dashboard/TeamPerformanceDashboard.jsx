@@ -194,21 +194,21 @@ export default function TeamPerformanceDashboard() {
                           {formatNum(r.bookings_actual)}
                         </span>
                       </td>
-                      <td className="px-3 py-3 text-center text-slate-400">{formatNum(r.bookings_target)}</td>
+                      <td className="px-3 py-3 text-center text-[#34CCD0]">{formatNum(r.bookings_target)}</td>
                       {/* Reports */}
                       <td className="px-3 py-3 text-center">
                         <span className={`font-bold ${r.reports_actual >= r.reports_target ? "text-green-600" : "text-green-400"}`}>
                           {formatNum(r.reports_actual)}
                         </span>
                       </td>
-                      <td className="px-3 py-3 text-center text-slate-400">{formatNum(r.reports_target)}</td>
+                      <td className="px-3 py-3 text-center text-[#34CCD0]">{formatNum(r.reports_target)}</td>
                       {/* Collections */}
                       <td className="px-3 py-3 text-center">
                         <span className={`font-bold ${r.collections_actual >= r.collections_target ? "text-green-600" : "text-green-400"}`}>
                           {formatCurrency(r.collections_actual)}
                         </span>
                       </td>
-                      <td className="px-3 py-3 text-center text-slate-400">{formatCurrency(r.collections_target)}</td>
+                      <td className="px-3 py-3 text-center text-[#34CCD0]">{formatCurrency(r.collections_target)}</td>
                     </tr>
                   ))}
                   {/* Totals Row */}
