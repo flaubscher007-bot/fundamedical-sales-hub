@@ -137,10 +137,10 @@ export default function Analytics() {
       {/* Header */}
       <div className="flex justify-between items-start">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 flex items-center gap-2">
+          <h1 className="text-3xl font-bold text-green-400 flex items-center gap-2">
             <Activity className="w-8 h-8 text-[#00bcd4]" /> Analytics Dashboard
           </h1>
-          <p className="text-sm text-slate-600 mt-1">Comprehensive performance metrics and KPIs</p>
+          <p className="text-sm text-green-200 mt-1">Comprehensive performance metrics and KPIs</p>
         </div>
         <Button variant="outline" className="gap-2">
           <Download className="w-4 h-4" /> Export Report
