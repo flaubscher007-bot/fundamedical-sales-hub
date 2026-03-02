@@ -17,8 +17,8 @@ export default function BULDashboard() {
       <TabsContent value="powerbi" className="fixed inset-0 top-24 flex flex-col m-0">
         <iframe
           title="KAC Tracker"
-          width="100%"
-          height="100%"
+          width="80%"
+          height="80%"
           src="https://app.powerbi.com/view?r=eyJrIjoiZDRlYzliNTMtNzc4My00ZmRmLThmYjktYmU2MDg4NGVjMzkzIiwidCI6ImViNzdjYzEwLTc5NDAtNDhjMy1hMDMzLWJkZjU3ODIzNDk0YiJ9&pageName=ebef07879a4406f00591"
           frameBorder="0"
           allowFullScreen={true}
