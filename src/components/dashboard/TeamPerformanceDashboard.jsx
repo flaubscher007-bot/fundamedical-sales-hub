@@ -134,7 +134,7 @@ export default function TeamPerformanceDashboard() {
                 <div className="flex items-start justify-between mb-3">
                   <div>
                     <p className="text-xs text-white uppercase tracking-wide">{label}</p>
-                    <p className="text-2xl font-bold text-slate-800 mt-1">{fmt(actual)}</p>
+                    <p className="text-2xl font-bold text-green-800 mt-1">{fmt(actual)}</p>
                     <p className="text-xs text-white mt-0.5">Target: {fmt(target)}</p>
                   </div>
                   <div className="w-10 h-10 flex items-center justify-center" style={{backgroundColor: '#081F3F', clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)'}}>
