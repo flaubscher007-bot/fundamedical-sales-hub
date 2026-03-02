@@ -14,10 +14,10 @@ export default function BULDashboard() {
         </TabsTrigger>
       </TabsList>
 
-      <TabsContent value="powerbi" className="fixed inset-24 top-24 flex flex-col m-0">
+      <TabsContent value="powerbi" className="fixed inset-0 top-30 flex flex-col m-0">
         <iframe
           title="KAC Tracker"
-          width="80%"
+          width="100%"
           height="80%"
           src="https://app.powerbi.com/view?r=eyJrIjoiZDRlYzliNTMtNzc4My00ZmRmLThmYjktYmU2MDg4NGVjMzkzIiwidCI6ImViNzdjYzEwLTc5NDAtNDhjMy1hMDMzLWJkZjU3ODIzNDk0YiJ9&pageName=ebef07879a4406f00591"
           frameBorder="0"
