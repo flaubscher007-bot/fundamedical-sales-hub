@@ -108,7 +108,7 @@ export default function BULPerformanceCharts() {
       {/* Filters */}
       <div className="bg-[#0A1E3A] rounded-lg border border-slate-200 p-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="text-sm font-medium text-slate-700 block mb-2">Filter by BUL</label>
+          <label className="text-sm font-medium text-[#34CCD0] block mb-2">Filter by BUL</label>
           <Select value={selectedBUL} onValueChange={setSelectedBUL}>
             <SelectTrigger>
               <SelectValue />
@@ -123,7 +123,7 @@ export default function BULPerformanceCharts() {
         </div>
 
         <div>
-          <label className="text-sm font-medium text-slate-700 block mb-2">Filter by Team</label>
+          <label className="text-sm font-medium text-[#34CCD0] block mb-2">Filter by Team</label>
           <Select value={selectedTeam} onValueChange={setSelectedTeam}>
             <SelectTrigger>
               <SelectValue />
