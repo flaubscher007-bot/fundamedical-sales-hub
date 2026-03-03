@@ -66,7 +66,7 @@ export default function RolePermissionMatrix({ permissions = {}, onChange, readO
         <div className="space-y-6">
           {Object.entries(MODULES).map(([moduleKey, module]) => (
             <div key={moduleKey} className="space-y-3">
-              <h3 className="font-semibold text-slate-900">{module.label}</h3>
+              <h3 className="font-semibold text-teal">{module.label}</h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 ml-4">
                 {module.actions.map(action => (
                   <div key={action} className="flex items-center space-x-2">
