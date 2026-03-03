@@ -119,14 +119,14 @@ export default function RoleManagement() {
                         <Badge variant="outline" className="bg-amber-50">System</Badge>
                       )}
                     </div>
-                    <p className="text-sm text-slate-600 mt-1">{role.description}</p>
+                    <p className="text-sm text-white mt-1">{role.description}</p>
                   </div>
                   <div className="flex gap-2">
                     <Button
                       size="icon"
                       variant="ghost"
                       onClick={() => openEdit(role)}
-                      className="text-slate-600 hover:text-slate-900"
+                      className="text-white hover:text-slate-900"
                     >
                       <Pencil className="w-4 h-4" />
                     </Button>
