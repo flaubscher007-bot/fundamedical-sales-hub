@@ -52,7 +52,7 @@ export default function TrendChart({ statements, filteredStatements }) {
               <Line
                 type="monotone"
                 dataKey="totalDue"
-                stroke="#f97316"
+                stroke="#92F21D"
                 strokeWidth={2}
                 name="Total Due"
                 dot={false}
@@ -60,7 +60,7 @@ export default function TrendChart({ statements, filteredStatements }) {
               <Line
                 type="monotone"
                 dataKey="totalBalance"
-                stroke="#dc2626"
+                stroke="#34CCD0"
                 strokeWidth={2}
                 name="Total Balance"
                 dot={false}
