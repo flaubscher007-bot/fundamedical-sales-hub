@@ -31,14 +31,11 @@ export default function BusinessCard() {
     base44.auth.me().then(setUser).catch(() => {});
   }, []);
 
-  const { data: users = [] } = useQuery({
-    queryKey: ["users"],
-    queryFn: () => base44.entities.User.list(),
+  // Query business cards instead of users
+  const { data: businessCards = [] } = useQuery({
+    queryKey: ["businessCards"],
+    queryFn: () => base44.entities.BusinessCard.list(),
   });
-
-  const bulKacUsers = users.filter(u =>
-    ["bul_manager", "kac", "business_unit_leader", "key_accounts_consultant"].includes(u.role)
-  );
 
   const saveMutation = useMutation({
     mutationFn: (data) => {
@@ -47,7 +44,7 @@ export default function BusinessCard() {
         : base44.entities.BusinessCard.create(data);
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["users"] });
+      qc.invalidateQueries({ queryKey: ["businessCards"] });
       setDialogOpen(false);
     },
   });
@@ -80,14 +77,14 @@ export default function BusinessCard() {
         </Button>
       </div>
 
-      {bulKacUsers.length > 0 ? (
+      {businessCards.length > 0 ? (
         <div className="grid grid-cols-1 gap-6">
-          {bulKacUsers.map(u => (
-            <BusinessCardDisplay key={u.id} user={u} onEdit={() => openEdit(u)} />
+          {businessCards.map(card => (
+            <BusinessCardDisplay key={card.id} user={card} onEdit={() => openEdit(card)} />
           ))}
         </div>
       ) : (
-        <p style={{ color: "#ffffff" }}>No BULs or KACs found</p>
+        <p style={{ color: "#ffffff" }}>No business cards found</p>
       )}
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -192,7 +189,7 @@ function BusinessCardDisplay({ user, onEdit }) {
     const vcard = `BEGIN:VCARD
 VERSION:3.0
 FN:${u.full_name}
-TITLE:${u.role}
+TITLE:${u.title}
 TEL:${u.phone || ""}
 EMAIL:${u.email}
 URL:www.fundamedical.co.za
@@ -218,7 +215,7 @@ END:VCARD`;
         <div className="absolute bottom-0 right-0 w-40 h-40 bg-[#92F21D] rounded-full blur-3xl"></div>
       </div>
 
-      {/* Content */}
+     {/* Content */}
       <div className="relative z-10 p-8 h-full flex flex-col">
         {/* Edit Button */}
         <div className="flex justify-end mb-4">
@@ -309,3 +306,4 @@ END:VCARD`;
     </div>
   );
 }
+
