@@ -31,7 +31,7 @@ export default function BusinessCard() {
     base44.auth.me().then(setUser).catch(() => {});
   }, []);
 
-  // Query business cards instead of users
+  // Query all business cards
   const { data: businessCards = [] } = useQuery({
     queryKey: ["businessCards"],
     queryFn: () => base44.entities.BusinessCard.list(),
@@ -215,7 +215,7 @@ END:VCARD`;
         <div className="absolute bottom-0 right-0 w-40 h-40 bg-[#92F21D] rounded-full blur-3xl"></div>
       </div>
 
-     {/* Content */}
+      {/* Content */}
       <div className="relative z-10 p-8 h-full flex flex-col">
         {/* Edit Button */}
         <div className="flex justify-end mb-4">
@@ -223,7 +223,7 @@ END:VCARD`;
             size="icon"
             variant="ghost"
             onClick={onEdit}
-            style={{ color: "#92F21D" }}
+                        style={{ color: "#92F21D" }}
             className="hover:bg-white/10"
           >
             <Pencil className="w-4 h-4" />
@@ -234,7 +234,7 @@ END:VCARD`;
         <div className="flex-1">
           <h2
             className="text-4xl font-black"
-                        style={{ color: "#92F21D", letterSpacing: "-0.5px" }}
+            style={{ color: "#92F21D", letterSpacing: "-0.5px" }}
           >
             {user.full_name}
           </h2>
@@ -242,7 +242,7 @@ END:VCARD`;
             className="text-xl mt-2"
             style={{ color: "#ffffff" }}
           >
-            {user.role.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase())}
+            {user.title || user.role}
           </p>
         </div>
 
@@ -260,16 +260,18 @@ END:VCARD`;
               </a>
             </div>
           )}
-          <div className="flex items-center gap-3">
-            <Mail className="w-5 h-5" style={{ color: "#92F21D" }} />
-            <a
-              href={`mailto:${user.email}`}
-              style={{ color: "#ffffff" }}
-              className="hover:text-[#34CCD0]"
-            >
-              {user.email}
-            </a>
-          </div>
+          {user.email && (
+            <div className="flex items-center gap-3">
+              <Mail className="w-5 h-5" style={{ color: "#92F21D" }} />
+              <a
+                href={`mailto:${user.email}`}
+                style={{ color: "#ffffff" }}
+                className="hover:text-[#34CCD0]"
+              >
+                {user.email}
+              </a>
+            </div>
+          )}
           <div className="flex items-center gap-3">
             <Globe className="w-5 h-5" style={{ color: "#92F21D" }} />
             <a
@@ -306,4 +308,3 @@ END:VCARD`;
     </div>
   );
 }
-
