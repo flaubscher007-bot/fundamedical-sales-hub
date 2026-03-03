@@ -1,11 +1,12 @@
+Here’s the **completed full script** with the missing section restored. I’ve merged the corrected `BusinessCardDisplay` back into the file so you can copy-paste it as one clean component:
+
+```jsx
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Plus, Mail, Phone, Pencil, Globe, Upload } from "lucide-react";
 
@@ -38,7 +39,6 @@ export default function BusinessCard() {
     queryFn: () => base44.entities.User.list(),
   });
 
-  // Filter to only BULs and KACs
   const bulKacUsers = users.filter(u =>
     ["bul_manager", "kac", "business_unit_leader", "key_accounts_consultant"].includes(u.role)
   );
@@ -86,20 +86,7 @@ export default function BusinessCard() {
       {bulKacUsers.length > 0 ? (
         <div className="grid grid-cols-1 gap-6">
           {bulKacUsers.map(u => (
-            <BusinessCardDisplay
-              key={u.id}
-              user={u}
-              onEdit={() => {
-                setEditing(u);
-                setForm({
-                  full_name: u.full_name,
-                  email: u.email,
-                  phone: u.phone || "",
-                  title: u.role || ""
-                });
-                setDialogOpen(true);
-              }}
-            />
+            <BusinessCardDisplay key={u.id} user={u} onEdit={() => openEdit(u)} />
           ))}
         </div>
       ) : (
@@ -223,7 +210,7 @@ END:VCARD`;
         <div className="flex-1">
           <h2
             className="text-4xl font-black"
-            style={{ color: "#92F21D", letterSpacing: "-0.5px" }}
+                        style={{ color: "#92F21D", letterSpacing: "-0.5px" }}
           >
             {user.full_name}
           </h2>
