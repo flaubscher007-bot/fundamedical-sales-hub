@@ -35,7 +35,7 @@ export default function MetricCard({ title, value, icon: Icon, color, isCurrency
         <div className="flex items-start justify-between">
           <div>
             <p className="text-xs font-medium mb-1" style={{color: '#ffffff'}}>{title}</p>
-            <p className="text-2xl font-bold" style={{color: '#34CCD0'}}>{formatValue(value)}</p>
+            <p className="text-l font-bold" style={{color: '#34CCD0'}}>{formatValue(value)}</p>
           </div>
           <div className="p-2 rounded-lg" style={colorStyles[color] || colorStyles.slate}>
             <Icon className="w-5 h-5" />
