@@ -90,8 +90,8 @@ export default function RoleManagement() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Role Management</h1>
-          <p className="text-sm text-slate-600 mt-1">Create and manage user roles with custom permissions</p>
+          <h1 className="text-2xl font-bold text-green-400">Role Management</h1>
+          <p className="text-sm text-white mt-1">Create and manage user roles with custom permissions</p>
         </div>
         <Button onClick={openCreate} className="gap-2">
           <Plus className="w-4 h-4" /> New Role
