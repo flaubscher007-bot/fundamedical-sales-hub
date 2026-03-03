@@ -27,7 +27,7 @@ export default function AgingAnalysisChart({ statements }) {
     },
   ];
 
-  const colors = ["#22c55e", "#eab308", "#f97316", "#ef4444", "#7f1d1d"];
+  const colors = ["#48B600", "#92F21D", "#34CCD0", "#008AC1", "#7f1d1d"];
 
   const formatCurrency = (value) => {
     if (value >= 1000000) return `R${(value / 1000000).toFixed(1)}M`;
