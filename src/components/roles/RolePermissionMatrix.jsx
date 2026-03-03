@@ -92,7 +92,7 @@ export default function RolePermissionMatrix({ permissions = {}, onChange, readO
         </div>
 
         {readOnly && (
-          <div className="mt-6 p-3 bg-slate-50 rounded-lg border border-slate-200">
+          <div className="mt-6 p-3 bg-[#34CCD0] rounded-lg border border-[#34CCD0]">
             <p className="text-xs text-slate-600">
               This is a system role. Permissions cannot be modified. Contact an administrator to create custom roles.
             </p>
