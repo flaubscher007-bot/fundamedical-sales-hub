@@ -21,12 +21,12 @@ export default function PaymentStatusDistribution({ statements }) {
   }, [statements]);
 
   const COLORS = [
-    "#22c55e", // green
-    "#eab308", // yellow
-    "#f97316", // orange
-    "#ef4444", // red
-    "#8b5cf6", // purple
+    "#ed862cff", // orange
+    "#ea0808ff", // redred
+    "#34CCD0", // cyan
+    "#92F21D", // lime
     "#06b6d4", // cyan
+    "#8b5cf6", // purple
   ];
 
   const totalFirms = statusData.reduce((sum, item) => sum + item.count, 0);
