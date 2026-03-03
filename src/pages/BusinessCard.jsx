@@ -13,7 +13,6 @@ const empty = {
   email: "",
   phone: "",
   whatsapp: "",
-  region: "",
   profile_photo_url: "",
   business_card_front_url: "",
   business_card_back_url: "",
@@ -96,32 +95,41 @@ export default function BusinessCard() {
       ) : (
         <p style={{ color: "#ffffff" }}>No business cards found</p>
       )}
-
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>{editing ? `Edit ${form.full_name}'s Business Card` : "Create Business Card"}</DialogTitle>
+            <DialogTitle>
+              {editing ? `Edit ${form.full_name}'s Business Card` : "Create Business Card"}
+            </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div>
               <Label>Full Name</Label>
-              <Input value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} />
+              <Input
+                value={form.full_name}
+                onChange={(e) => setForm({ ...form, full_name: e.target.value })}
+              />
             </div>
             <div>
               <Label>Email</Label>
-              <Input value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+              <Input
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+              />
             </div>
             <div>
               <Label>Phone</Label>
-              <Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+              <Input
+                value={form.phone}
+                onChange={(e) => setForm({ ...form, phone: e.target.value })}
+              />
             </div>
             <div>
               <Label>Title</Label>
-              <Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
-            </div>
-            <div>
-              <Label>Region</Label>
-              <Input value={form.region} onChange={(e) => setForm({ ...form, region: e.target.value })} />
+              <Input
+                value={form.title}
+                onChange={(e) => setForm({ ...form, title: e.target.value })}
+              />
             </div>
 
             {/* Upload Buttons */}
@@ -141,7 +149,13 @@ export default function BusinessCard() {
                 accept="image/*"
                 onChange={(e) => handleFileUpload(e, "profile_photo_url")}
               />
-              {form.profile_photo_url && <img src={form.profile_photo_url} alt="Profile" className="mt-2 w-24 h-24 rounded" />}
+              {form.profile_photo_url && (
+                <img
+                  src={form.profile_photo_url}
+                  alt="Profile"
+                  className="mt-2 w-24 h-24 rounded"
+                />
+              )}
             </div>
 
             <div>
@@ -160,7 +174,13 @@ export default function BusinessCard() {
                 accept="image/*"
                 onChange={(e) => handleFileUpload(e, "business_card_front_url")}
               />
-              {form.business_card_front_url && <img src={form.business_card_front_url} alt="Front Card" className="mt-2 w-24 h-24 rounded" />}
+              {form.business_card_front_url && (
+                <img
+                  src={form.business_card_front_url}
+                  alt="Front Card"
+                  className="mt-2 w-24 h-24 rounded"
+                />
+              )}
             </div>
 
             <div>
@@ -179,12 +199,23 @@ export default function BusinessCard() {
                 accept="image/*"
                 onChange={(e) => handleFileUpload(e, "business_card_back_url")}
               />
-              {form.business_card_back_url && <img src={form.business_card_back_url} alt="Back Card" className="mt-2 w-24 h-24 rounded" />}
+              {form.business_card_back_url && (
+                <img
+                  src={form.business_card_back_url}
+                  alt="Back Card"
+                  className="mt-2 w-24 h-24 rounded"
+                />
+              )}
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
-            <Button onClick={() => saveMutation.mutate(form)} className="bg-[#34CCD0] hover:bg-[#00bcd4]">
+            <Button variant="outline" onClick={() => setDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => saveMutation.mutate(form)}
+              className="bg-[#34CCD0] hover:bg-[#00bcd4]"
+            >
               {editing ? "Update" : "Create"}
             </Button>
           </DialogFooter>
@@ -225,7 +256,7 @@ END:VCARD`;
         <div className="absolute bottom-0 right-0 w-40 h-40 bg-[#92F21D] rounded-full blur-3xl"></div>
       </div>
 
-            {/* Content */}
+      {/* Content */}
       <div className="relative z-10 p-8 h-full flex flex-col">
         {/* Edit Button */}
         <div className="flex justify-end mb-4">
@@ -248,10 +279,7 @@ END:VCARD`;
           >
             {user.full_name}
           </h2>
-          <p
-            className="text-xl mt-2"
-            style={{ color: "#ffffff" }}
-          >
+          <p className="text-xl mt-2" style={{ color: "#ffffff" }}>
             {user.title || user.role}
           </p>
         </div>
