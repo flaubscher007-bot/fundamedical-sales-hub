@@ -17,7 +17,9 @@ const empty = {
   profile_photo_url: "",
   business_card_front_url: "",
   business_card_back_url: "",
-  assigned_bul: ""
+  assigned_bul: "",
+  owner_email: "",
+  created_by: ""
 };
 
 export default function BusinessCard() {
@@ -39,9 +41,11 @@ export default function BusinessCard() {
 
   const saveMutation = useMutation({
     mutationFn: (data) => {
+      // Always include created_by
+      const payload = { ...data, created_by: user?.email || "" };
       return editing
-        ? base44.entities.BusinessCard.update(editing.id, data)
-        : base44.entities.BusinessCard.create(data);
+        ? base44.entities.BusinessCard.update(editing.id, payload)
+        : base44.entities.BusinessCard.create(payload);
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["businessCards"] });
@@ -64,7 +68,13 @@ export default function BusinessCard() {
 
   const openNew = () => {
     setEditing(null);
-    setForm({ ...empty, full_name: user?.full_name || "", email: user?.email || "" });
+    setForm({
+      ...empty,
+      full_name: user?.full_name || "",
+      email: user?.email || "",
+      owner_email: user?.email || "",
+      created_by: user?.email || ""
+    });
     setDialogOpen(true);
   };
 
@@ -215,7 +225,7 @@ END:VCARD`;
         <div className="absolute bottom-0 right-0 w-40 h-40 bg-[#92F21D] rounded-full blur-3xl"></div>
       </div>
 
-      {/* Content */}
+            {/* Content */}
       <div className="relative z-10 p-8 h-full flex flex-col">
         {/* Edit Button */}
         <div className="flex justify-end mb-4">
@@ -223,7 +233,7 @@ END:VCARD`;
             size="icon"
             variant="ghost"
             onClick={onEdit}
-                        style={{ color: "#92F21D" }}
+            style={{ color: "#92F21D" }}
             className="hover:bg-white/10"
           >
             <Pencil className="w-4 h-4" />
