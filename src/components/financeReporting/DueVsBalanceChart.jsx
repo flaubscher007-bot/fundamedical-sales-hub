@@ -35,8 +35,8 @@ export default function DueVsBalanceChart({ statements }) {
               contentStyle={{ background: "#f1f5f9", border: "1px solid #cbd5e1" }}
             />
             <Legend />
-            <Bar dataKey="due" fill="#f97316" radius={[8, 8, 0, 0]} name="Total Due" />
-            <Bar dataKey="balance" fill="#dc2626" radius={[8, 8, 0, 0]} name="Total Balance" />
+            <Bar dataKey="due" fill="#92F21D" radius={[8, 8, 0, 0]} name="Total Due" />
+            <Bar dataKey="balance" fill="#34CCD0" radius={[8, 8, 0, 0]} name="Total Balance" />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>
