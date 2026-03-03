@@ -189,11 +189,109 @@ END:VCARD`;
   };
 
   return (
-    <div className="relative rounded-2xl overflow-hidden shadow-2xl" style={{ backgroundColor: "#081F3F", backgroundImage: "linear-gradient(135deg, #081F3F 0%, #0a2d52 100%)", minHeight: "350px", position: "relative" }}>
+    <div
+      className="relative rounded-2xl overflow-hidden shadow-2xl"
+      style={{
+        backgroundColor: "#081F3F",
+        backgroundImage: "linear-gradient(135deg, #081F3F 0%, #0a2d52 100%)",
+        minHeight: "350px",
+        position: "relative"
+      }}
+    >
+      {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-0 left-0 w-40 h-40 bg-[#34CCD0] rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 right-0 w-40 h-40 bg-[#92F21D] rounded-full blur-3xl"></div>
       </div>
 
+      {/* Content */}
       <div className="relative z-10 p-8 h-full flex flex-col">
-        <div className="flex justify-end mb
+        {/* Edit Button */}
+        <div className="flex justify-end mb-4">
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={onEdit}
+            style={{ color: "#92F21D" }}
+            className="hover:bg-white/10"
+          >
+            <Pencil className="w-4 h-4" />
+          </Button>
+        </div>
+
+        {/* Top Section - Name and Title */}
+        <div className="flex-1">
+          <h2
+            className="text-4xl font-black"
+            style={{ color: "#92F21D", letterSpacing: "-0.5px" }}
+          >
+            {user.full_name}
+          </h2>
+          <p
+            className="text-xl mt-2"
+            style={{ color: "#ffffff" }}
+          >
+            {user.role.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase())}
+          </p>
+        </div>
+
+        {/* Contact Info */}
+        <div className="space-y-3 mb-6">
+          {user.phone && (
+            <div className="flex items-center gap-3">
+              <Phone className="w-5 h-5" style={{ color: "#92F21D" }} />
+              <a
+                href={`tel:${user.phone}`}
+                style={{ color: "#ffffff" }}
+                className="hover:text-[#34CCD0]"
+              >
+                {user.phone}
+              </a>
+            </div>
+          )}
+          <div className="flex items-center gap-3">
+            <Mail className="w-5 h-5" style={{ color: "#92F21D" }} />
+            <a
+              href={`mailto:${user.email}`}
+              style={{ color: "#ffffff" }}
+              className="hover:text-[#34CCD0]"
+            >
+              {user.email}
+            </a>
+          </div>
+          <div className="flex items-center gap-3">
+            <Globe className="w-5 h-5" style={{ color: "#92F21D" }} />
+            <a
+              href="https://www.fundamedical.co.za"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "#ffffff" }}
+              className="hover:text-[#34CCD0]"
+            >
+              www.fundamedical.co.za
+            </a>
+          </div>
+        </div>
+
+        {/* Footer with QR and Branding */}
+        <div
+          className="flex items-end justify-between border-t pt-4"
+          style={{ borderColor: "#34CCD0" }}
+        >
+          <div className="flex-1">
+            <p className="text-sm font-bold" style={{ color: "#92F21D" }}>
+              <span>FUNDA</span>
+              <span style={{ color: "#34CCD0" }}>MEDICAL</span>
+            </p>
+            <p className="text-xs mt-1" style={{ color: "#ffffff" }}>
+              Medical & Legal Administration Services
+            </p>
+          </div>
+          <div className="bg-white p-1 rounded">
+            <img src={getQRCodeURL(user)} alt="QR Code" className="w-20 h-20" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
