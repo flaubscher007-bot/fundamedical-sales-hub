@@ -103,8 +103,8 @@ export default function RoleManagement() {
         {roles.length === 0 ? (
           <Card>
             <CardContent className="py-12 text-center">
-              <AlertCircle className="w-10 h-10 mx-auto text-slate-400 mb-3" />
-              <p className="text-slate-600">No roles found. Create your first role.</p>
+              <AlertCircle className="w-10 h-10 mx-auto text-green-400 mb-3" />
+              <p className="text-white">No roles found. Create your first role.</p>
             </CardContent>
           </Card>
         ) : (
