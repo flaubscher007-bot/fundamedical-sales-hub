@@ -120,28 +120,58 @@ export default function BusinessCard() {
             {/* Upload Buttons */}
             <div>
               <Label>Profile Photo</Label>
-              <Button variant="outline" component="label" className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                className="flex items-center gap-2"
+                onClick={() => document.getElementById("profileUpload").click()}
+              >
                 <Upload className="w-4 h-4" /> Upload Profile Photo
-                <input type="file" hidden accept="image/*" onChange={(e) => handleFileUpload(e, "profile_photo_url")} />
               </Button>
+              <input
+                id="profileUpload"
+                type="file"
+                hidden
+                accept="image/*"
+                onChange={(e) => handleFileUpload(e, "profile_photo_url")}
+              />
               {form.profile_photo_url && <img src={form.profile_photo_url} alt="Profile" className="mt-2 w-24 h-24 rounded" />}
             </div>
 
             <div>
               <Label>Front Card Image</Label>
-              <Button variant="outline" component="label" className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                className="flex items-center gap-2"
+                onClick={() => document.getElementById("frontCardUpload").click()}
+              >
                 <Upload className="w-4 h-4" /> Upload Front Card
-                <input type="file" hidden accept="image/*" onChange={(e) => handleFileUpload(e, "business_card_front_url")} />
               </Button>
+              <input
+                id="frontCardUpload"
+                type="file"
+                hidden
+                accept="image/*"
+                onChange={(e) => handleFileUpload(e, "business_card_front_url")}
+              />
               {form.business_card_front_url && <img src={form.business_card_front_url} alt="Front Card" className="mt-2 w-24 h-24 rounded" />}
             </div>
 
             <div>
               <Label>Back Card Image</Label>
-              <Button variant="outline" component="label" className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                className="flex items-center gap-2"
+                onClick={() => document.getElementById("backCardUpload").click()}
+              >
                 <Upload className="w-4 h-4" /> Upload Back Card
-                <input type="file" hidden accept="image/*" onChange={(e) => handleFileUpload(e, "business_card_back_url")} />
               </Button>
+              <input
+                id="backCardUpload"
+                type="file"
+                hidden
+                accept="image/*"
+                onChange={(e) => handleFileUpload(e, "business_card_back_url")}
+              />
               {form.business_card_back_url && <img src={form.business_card_back_url} alt="Back Card" className="mt-2 w-24 h-24 rounded" />}
             </div>
           </div>
