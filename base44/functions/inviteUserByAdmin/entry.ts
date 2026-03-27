@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.23';
 
 Deno.serve(async (req) => {
   try {
@@ -35,6 +35,14 @@ Deno.serve(async (req) => {
         email,
         role,
         full_name: email.split('@')[0]
+      });
+
+      // Send confirmation to frank
+      await base44.asServiceRole.integrations.Core.SendEmail({
+        to: 'frank@fundamedical.co.za',
+        subject: `[Invite Confirmation] New user invited: ${email}`,
+        body: `This is a confirmation that a new user was created/invited in FundaMedical Sales Hub.\n\nEmail: ${email}\nRole: ${role}\n\nInvited by: ${user.full_name || user.email}\nDate: ${new Date().toLocaleString('en-ZA')}`,
+        from_name: 'FundaMedical Sales Hub'
       });
 
       return Response.json({ 

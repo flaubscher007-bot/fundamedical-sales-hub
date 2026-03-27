@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.23';
 
 Deno.serve(async (req) => {
   try {
@@ -21,10 +21,18 @@ Deno.serve(async (req) => {
           await base44.users.inviteUser(item.email, item.role);
           
           if (method === 'email') {
+            const inviteBody = `Hi ${item.name},\n\nYou've been invited to join FundaMedical Sales Hub with role: ${item.role}.\n\nPlease check your email for the invitation link and accept to get started.\n\nBest regards,\nFundaMedical Team`;
             await base44.integrations.Core.SendEmail({
               to: item.email,
               subject: `You've been invited to FundaMedical Sales Hub`,
-              body: `Hi ${item.name},\n\nYou've been invited to join FundaMedical Sales Hub with role: ${item.role}.\n\nPlease check your email for the invitation link and accept to get started.\n\nBest regards,\nFundaMedical Team`
+              body: inviteBody
+            });
+            // CC confirmation to frank
+            await base44.asServiceRole.integrations.Core.SendEmail({
+              to: 'frank@fundamedical.co.za',
+              subject: `[Invite Confirmation] ${item.name} invited as ${item.role}`,
+              body: `This is a confirmation that ${item.name} (${item.email}) was invited to FundaMedical Sales Hub with role: ${item.role}.\n\nInvited by: ${user.full_name || user.email}\nDate: ${new Date().toLocaleString('en-ZA')}`,
+              from_name: 'FundaMedical Sales Hub'
             });
           }
 
@@ -65,6 +73,13 @@ Deno.serve(async (req) => {
         to: email,
         subject: `You've been invited to FundaMedical Sales Hub`,
         body: `Hi ${name},\n\nYou've been invited to join FundaMedical Sales Hub with role: ${role}.\n\nPlease check your email for the invitation link and accept to get started.\n\nBest regards,\nFundaMedical Team`
+      });
+      // CC confirmation to frank
+      await base44.asServiceRole.integrations.Core.SendEmail({
+        to: 'frank@fundamedical.co.za',
+        subject: `[Invite Confirmation] ${name} invited as ${role}`,
+        body: `This is a confirmation that ${name} (${email}) was invited to FundaMedical Sales Hub with role: ${role}.\n\nInvited by: ${user.full_name || user.email}\nDate: ${new Date().toLocaleString('en-ZA')}`,
+        from_name: 'FundaMedical Sales Hub'
       });
     }
 
