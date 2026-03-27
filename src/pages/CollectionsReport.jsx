@@ -9,20 +9,20 @@ export default function CollectionsReport() {
   const [selectedKAC, setSelectedKAC] = useState(null);
   const [selectedFirm, setSelectedFirm] = useState(null);
 
+  const [selectedMonth, setSelectedMonth] = useState(null);
+  const [selectedBU, setSelectedBU] = useState(null);
+
   const { data: collections = [] } = useQuery({
-    queryKey: ["cbrCollections"],
-    queryFn: () => base44.entities.CBRCollection.list(),
-  });
+    queryKey: ["cbrPayments"],
+    queryFn: () => base44.entities.CBRPayment.list("-import_month", 5000),
 
   const metrics = useMemo(() => {
     let filtered = collections;
 
-    if (selectedKAC) {
-      filtered = filtered.filter((c) => c.kac === selectedKAC);
-    }
-    if (selectedFirm) {
-      filtered = filtered.filter((c) => c.law_firm === selectedFirm);
-    }
+    if (selectedKAC) filtered = filtered.filter((c) => c.kac === selectedKAC);
+    if (selectedFirm) filtered = filtered.filter((c) => c.law_firm === selectedFirm);
+    if (selectedMonth) filtered = filtered.filter((c) => c.import_month === selectedMonth);
+    if (selectedBU) filtered = filtered.filter((c) => c.business_unit === selectedBU);
 
     const totalAmount = filtered.reduce((sum, c) => sum + (c.amount || 0), 0);
 
@@ -59,18 +59,18 @@ export default function CollectionsReport() {
     });
     const prodData = Object.entries(byProd).map(([name, value]) => ({ name, value }));
 
-    // By Payment Type
+    // By Dep/Set type
     const byType = {};
     filtered.forEach((c) => {
-      if (c.payment_type) {
-        byType[c.payment_type] = (byType[c.payment_type] || 0) + (c.amount || 0);
-      }
+      const t = c.dep_or_set || 'Unknown';
+      byType[t] = (byType[t] || 0) + (c.amount || 0);
     });
-    const typeData = Object.entries(byType).map(([name, value]) => ({ name, value }));
 
     // Unique KACs for filter
     const uniqueKACs = [...new Set(collections.map((c) => c.kac).filter(Boolean))].sort();
     const uniqueFirms = [...new Set(collections.map((c) => c.law_firm).filter(Boolean))].sort();
+    const uniqueMonths = [...new Set(collections.map((c) => c.import_month).filter(Boolean))].sort().reverse();
+    const uniqueBUs = [...new Set(collections.map((c) => c.business_unit).filter(Boolean))].sort();
 
     return {
       totalAmount,
@@ -81,6 +81,8 @@ export default function CollectionsReport() {
       typeData,
       uniqueKACs,
       uniqueFirms,
+      uniqueMonths,
+      uniqueBUs,
     };
   }, [collections, selectedKAC, selectedFirm]);
 
@@ -150,20 +152,38 @@ export default function CollectionsReport() {
       {/* Filters */}
       <div className="flex flex-wrap gap-4 bg-slate-800/50 p-4 rounded-lg border border-slate-700">
         <div>
-          <label className="text-xs text-slate-400">Filter by KAC</label>
-          <select
-            value={selectedKAC || ""}
-            onChange={(e) => setSelectedKAC(e.target.value || null)}
-            className="mt-1 px-3 py-2 bg-slate-700 border border-slate-600 text-white rounded text-sm"
-          >
-            <option value="">All KACs</option>
-            {metrics.uniqueKACs.map((kac) => (
-              <option key={kac} value={kac}>
-                {kac}
-              </option>
-            ))}
+          <label className="text-xs text-slate-400">Filter by Month</label>
+          <select value={selectedMonth || ""} onChange={(e) => setSelectedMonth(e.target.value || null)}
+            className="mt-1 px-3 py-2 bg-slate-700 border border-slate-600 text-white rounded text-sm block">
+            <option value="">All Months</option>
+            {metrics.uniqueMonths.map((m) => <option key={m} value={m}>{m}</option>)}
           </select>
         </div>
+        <div>
+          <label className="text-xs text-slate-400">Filter by KAC</label>
+          <select value={selectedKAC || ""} onChange={(e) => setSelectedKAC(e.target.value || null)}
+            className="mt-1 px-3 py-2 bg-slate-700 border border-slate-600 text-white rounded text-sm block">
+            <option value="">All KACs</option>
+            {metrics.uniqueKACs.map((kac) => <option key={kac} value={kac}>{kac}</option>)}
+          </select>
+        </div>
+        <div>
+          <label className="text-xs text-slate-400">Filter by Business Unit</label>
+          <select value={selectedBU || ""} onChange={(e) => setSelectedBU(e.target.value || null)}
+            className="mt-1 px-3 py-2 bg-slate-700 border border-slate-600 text-white rounded text-sm block">
+            <option value="">All Units</option>
+            {metrics.uniqueBUs.map((bu) => <option key={bu} value={bu}>{bu}</option>)}
+          </select>
+        </div>
+        <div>
+          <label className="text-xs text-slate-400">Filter by Law Firm</label>
+          <select value={selectedFirm || ""} onChange={(e) => setSelectedFirm(e.target.value || null)}
+            className="mt-1 px-3 py-2 bg-slate-700 border border-slate-600 text-white rounded text-sm block">
+            <option value="">All Firms</option>
+            {metrics.uniqueFirms.map((firm) => <option key={firm} value={firm}>{firm}</option>)}
+          </select>
+        </div>
+      </div>
 
         <div>
           <label className="text-xs text-slate-400">Filter by Law Firm</label>
@@ -208,30 +228,7 @@ export default function CollectionsReport() {
         {/* Payment Type Distribution */}
         <Card className="bg-slate-800/50 border-slate-700">
           <CardHeader>
-            <CardTitle className="text-white">Collections by Payment Type</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie data={metrics.typeData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100}>
-                  {metrics.typeData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
-                  ))}
-                </Pie>
-                <Tooltip 
-                  formatter={(value) => `R${value.toFixed(0)}`}
-                  contentStyle={{ backgroundColor: "#1e293b", border: "1px solid #475569" }}
-                />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        {/* Top Law Firms */}
-        <Card className="bg-slate-800/50 border-slate-700">
-          <CardHeader>
-            <CardTitle className="text-white">Top Law Firms by Collections</CardTitle>
+            <CardTitle className="text-white">Collections by Deposit/Settlement Type</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>

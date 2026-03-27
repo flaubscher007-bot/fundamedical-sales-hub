@@ -22,30 +22,34 @@ export default function FinanceReporting() {
   const [filterStatus, setFilterStatus] = useState("all");
   const [searchFirm, setSearchFirm] = useState("");
 
+  const [filterMonth, setFilterMonth] = useState("all");
+
   const { data: statements = [] } = useQuery({
-    queryKey: ["statements"],
-    queryFn: () => base44.entities.Statement.list("-sync_date", 500),
+    queryKey: ["statementRecords"],
+    queryFn: () => base44.entities.StatementRecord.list("-import_month", 2000),
   });
 
   const uniqueBUs = [...new Set(statements.map(s => s.business_unit).filter(Boolean))];
-  const uniqueStatuses = [...new Set(statements.map(s => s.account_status).filter(Boolean))];
+  const uniqueStatuses = [...new Set(statements.map(s => s.status).filter(Boolean))];
+  const uniqueMonths = [...new Set(statements.map(s => s.import_month).filter(Boolean))].sort().reverse();
 
   const filteredStatements = useMemo(() => {
     return statements.filter(stmt => {
       const matchesBU = filterBU === "all" || stmt.business_unit === filterBU;
-      const matchesStatus = filterStatus === "all" || stmt.account_status === filterStatus;
-      const matchesSearch = stmt.law_firm.toLowerCase().includes(searchFirm.toLowerCase());
-      return matchesBU && matchesStatus && matchesSearch;
+      const matchesStatus = filterStatus === "all" || stmt.status === filterStatus;
+      const matchesMonth = filterMonth === "all" || stmt.import_month === filterMonth;
+      const matchesSearch = !searchFirm || (stmt.law_firm || "").toLowerCase().includes(searchFirm.toLowerCase());
+      return matchesBU && matchesStatus && matchesMonth && matchesSearch;
     });
-  }, [statements, filterBU, filterStatus, searchFirm]);
+  }, [statements, filterBU, filterStatus, filterMonth, searchFirm]);
 
   // Calculate metrics
   const metrics = useMemo(() => {
     const totalDue = filteredStatements.reduce((sum, s) => sum + (s.total_due || 0), 0);
-    const totalBalance = filteredStatements.reduce((sum, s) => sum + (s.total_balance || 0), 0);
-    const totalDeposit = filteredStatements.reduce((sum, s) => sum + (s.total_deposit || 0), 0);
+    const totalBalance = filteredStatements.reduce((sum, s) => sum + (s.total_bal || 0), 0);
+    const totalDeposit = filteredStatements.reduce((sum, s) => sum + (s.total_dep || 0), 0);
     const avgBalance = filteredStatements.length > 0 ? totalBalance / filteredStatements.length : 0;
-    const criticalAccounts = filteredStatements.filter(s => (s.balance_48_plus || 0) + (s.balance_37_47 || 0) > 0).length;
+    const criticalAccounts = filteredStatements.filter(s => (s.bal_48_plus || 0) + (s.bal_37_47 || 0) > 0).length;
 
     return {
       totalDue,
@@ -103,6 +107,21 @@ export default function FinanceReporting() {
                 <SelectItem value="all">All Statuses</SelectItem>
                 {uniqueStatuses.map(status => (
                   <SelectItem key={status} value={status}>{status}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <label className="text-xs font-medium block mb-2" style={{color: '#92F21D'}}>Month</label>
+            <Select value={filterMonth} onValueChange={setFilterMonth}>
+              <SelectTrigger className="h-9">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Months</SelectItem>
+                {uniqueMonths.map(m => (
+                  <SelectItem key={m} value={m}>{m}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
