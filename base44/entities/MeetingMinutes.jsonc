@@ -1,0 +1,239 @@
+{
+  "name": "MeetingMinutes",
+  "type": "object",
+  "properties": {
+    "meeting_reference": {
+      "type": "string",
+      "description": "Auto-generated reference e.g. A Wolmarans Inc - George - 2026/03/27"
+    },
+    "appointment_id": {
+      "type": "string"
+    },
+    "client_id": {
+      "type": "string"
+    },
+    "client_name": {
+      "type": "string"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "attendees": {
+      "type": "string"
+    },
+    "law_firm_representatives": {
+      "type": "string",
+      "description": "Names of law firm representatives present"
+    },
+    "agenda": {
+      "type": "string"
+    },
+    "minutes": {
+      "type": "string"
+    },
+    "additional_notes": {
+      "type": "string"
+    },
+    "transcript": {
+      "type": "string",
+      "description": "Auto-generated or manual transcript"
+    },
+    "recording_url": {
+      "type": "string",
+      "description": "URL to uploaded recording file"
+    },
+    "action_items": {
+      "type": "string"
+    },
+    "follow_up_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "assigned_bul": {
+      "type": "string"
+    },
+    "recorded_by": {
+      "type": "string",
+      "description": "Full name of person who created the record"
+    },
+    "city": {
+      "type": "string",
+      "description": "City where meeting was held (geotagged)"
+    },
+    "latitude": {
+      "type": "number"
+    },
+    "longitude": {
+      "type": "number"
+    },
+    "geo_captured_at": {
+      "type": "string",
+      "description": "When geotag was captured"
+    },
+    "attachment_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "URLs of attached documents/screenshots"
+    },
+    "bu_services": {
+      "type": "object",
+      "description": "FundaMedical services discussed",
+      "properties": {
+        "bookings": {
+          "type": "boolean",
+          "default": false
+        },
+        "production": {
+          "type": "boolean",
+          "default": false
+        },
+        "finance_affidavits": {
+          "type": "boolean",
+          "default": false
+        },
+        "finance_deposits": {
+          "type": "boolean",
+          "default": false
+        },
+        "finance_oldest_matters": {
+          "type": "boolean",
+          "default": false
+        },
+        "finance_settlement_requests": {
+          "type": "boolean",
+          "default": false
+        },
+        "finance_queries": {
+          "type": "boolean",
+          "default": false
+        },
+        "fundabistro": {
+          "type": "boolean",
+          "default": false
+        },
+        "fundamobile": {
+          "type": "boolean",
+          "default": false
+        },
+        "fundadrive": {
+          "type": "boolean",
+          "default": false
+        },
+        "fundamali": {
+          "type": "boolean",
+          "default": false
+        },
+        "fundalodge": {
+          "type": "boolean",
+          "default": false
+        },
+        "fundatrust": {
+          "type": "boolean",
+          "default": false
+        },
+        "funda_imaging": {
+          "type": "boolean",
+          "default": false
+        },
+        "funding": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "meeting_status": {
+      "type": "string",
+      "enum": [
+        "Prep",
+        "In Progress",
+        "Completed"
+      ],
+      "default": "Prep"
+    }
+  },
+  "required": [
+    "client_name",
+    "date"
+  ],
+  "rls": {
+    "create": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$ne": ""
+            }
+          }
+        }
+      ]
+    },
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "data.assigned_bul": "{{user.full_name}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "admin",
+                "Sales Manager",
+                "senior_management",
+                "bul_manager"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "data.assigned_bul": "{{user.full_name}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "admin",
+                "Sales Manager",
+                "senior_management",
+                "bul_manager"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "admin",
+                "Sales Manager",
+                "senior_management"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

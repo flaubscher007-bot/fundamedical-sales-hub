@@ -92,6 +92,7 @@ import TeamCalendar from './pages/TeamCalendar';
 import UserManagement from './pages/UserManagement';
 import UserProfile from './pages/UserProfile';
 import UserRoleManagement from './pages/UserRoleManagement';
+import BUVisitReport from './pages/BUVisitReport';
 import __Layout from './Layout.jsx';
 
 
@@ -141,6 +142,7 @@ export const PAGES = {
     "UserManagement": UserManagement,
     "UserProfile": UserProfile,
     "UserRoleManagement": UserRoleManagement,
+    "BUVisitReport": BUVisitReport,
 }
 
 export const pagesConfig = {

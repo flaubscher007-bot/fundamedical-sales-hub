@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Clock, MapPin, Navigation, CheckCircle2, Mail, MessageCircle, FileText, Star } from "lucide-react";
+import { Clock, MapPin, Navigation, CheckCircle2, Mail, FileText, Star } from "lucide-react";
 import { format, parseISO } from "date-fns";
 
 const statusColors = {
@@ -12,7 +12,7 @@ const statusColors = {
   Rescheduled: "bg-amber-100 text-amber-700",
 };
 
-export default function AppointmentCard({ apt, onEdit, onSendRequest, onConfirm, onMinutes, onFeedback }) {
+export default function AppointmentCard({ apt, onEdit, onSendRequest, onConfirm, onMinutes, onFeedback, onMeetingRecord }) {
   return (
     <Card className="border-0 shadow-sm hover:shadow-md transition-shadow">
       <CardContent className="p-4">
@@ -62,7 +62,7 @@ export default function AppointmentCard({ apt, onEdit, onSendRequest, onConfirm,
             <Button size="icon" variant="ghost" className="w-8 h-8 text-slate-400 hover:text-green-600" title="Confirm Attendance" onClick={() => onConfirm(apt)}>
               <CheckCircle2 className="w-3.5 h-3.5" />
             </Button>
-            <Button size="icon" variant="ghost" className="w-8 h-8 text-slate-400 hover:text-purple-600" title="Record Minutes" onClick={() => onMinutes(apt)}>
+            <Button size="icon" variant="ghost" className="w-8 h-8 text-slate-400 hover:text-purple-600" title="Record Meeting" onClick={() => (onMeetingRecord || onMinutes)?.(apt)}>
               <FileText className="w-3.5 h-3.5" />
             </Button>
             <Button size="icon" variant="ghost" className="w-8 h-8 text-slate-400 hover:text-amber-600" title="Record Feedback" onClick={() => onFeedback(apt)}>

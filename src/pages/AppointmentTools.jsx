@@ -26,6 +26,7 @@ import SummaryDialog from "../components/appointmentTools/SummaryDialog";
 import MeetingMinutesTab from "../components/appointmentTools/MeetingMinutesTab.jsx";
 import FollowUpsTab from "../components/appointmentTools/FollowUpsTab.jsx";
 import ExpertScheduleSection from "../components/appointmentTools/ExpertScheduleSection";
+import BUMeetingRecordDialog from "../components/appointmentTools/BUMeetingRecordDialog";
 import ScheduleCalendarView from "../components/appointmentTools/ScheduleCalendarView";
 import UpcomingAppointmentsList from "../components/appointmentTools/UpcomingAppointmentsList";
 
@@ -64,6 +65,7 @@ export default function AppointmentTools() {
   const [minutesApt, setMinutesApt] = useState(null);
   const [feedbackApt, setFeedbackApt] = useState(null);
   const [summaryOpen, setSummaryOpen] = useState(false);
+  const [meetingRecordApt, setMeetingRecordApt] = useState(null);
 
   useEffect(() => { base44.auth.me().then(setUser).catch(() => {}); }, []);
 
@@ -135,12 +137,28 @@ export default function AppointmentTools() {
         </TabsContent>
 
         <TabsContent value="appointments" className="mt-4 space-y-4">
-          {/* Calendar and upcoming appointments - same layout as Expert Schedule */}
+          {/* Calendar and upcoming appointments */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <div className="lg:col-span-2">
-              <ScheduleCalendarView appointments={appointments} month="February" year={2026} />
+              <ScheduleCalendarView appointments={appointments} month="March" year={2026} />
             </div>
             <UpcomingAppointmentsList appointments={appointments} limit={15} />
+          </div>
+          {/* Appointment List with Record Meeting */}
+          <div className="space-y-2">
+            <p className="text-sm font-semibold" style={{color: '#92F21D'}}>All Law Firm Appointments</p>
+            {appointments.slice(0, 50).map(apt => (
+              <AppointmentCard
+                key={apt.id}
+                apt={apt}
+                onEdit={openEdit}
+                onSendRequest={setSendReqApt}
+                onConfirm={setConfirmApt}
+                onMinutes={setMinutesApt}
+                onFeedback={setFeedbackApt}
+                onMeetingRecord={setMeetingRecordApt}
+              />
+            ))}
           </div>
         </TabsContent>
 
@@ -270,6 +288,7 @@ export default function AppointmentTools() {
       {minutesApt && <MeetingMinutesDialog open={!!minutesApt} onClose={() => setMinutesApt(null)} appointment={minutesApt} />}
       {feedbackApt && <FeedbackDialog open={!!feedbackApt} onClose={() => setFeedbackApt(null)} appointment={feedbackApt} />}
       {summaryOpen && <SummaryDialog open={summaryOpen} onClose={() => setSummaryOpen(false)} appointments={appointments} />}
+      {meetingRecordApt && <BUMeetingRecordDialog open={!!meetingRecordApt} onClose={() => setMeetingRecordApt(null)} appointment={meetingRecordApt} user={user} />}
     </div>
   );
 }
