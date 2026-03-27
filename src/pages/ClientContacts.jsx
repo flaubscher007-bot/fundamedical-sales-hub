@@ -6,28 +6,18 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Search, Building2, Copy, Briefcase, Pencil, X } from "lucide-react";
-import { Link, useSearchParams } from "react-router-dom";
-import { createPageUrl } from "@/utils";
+import { Search, Building2, Copy, Briefcase, Pencil } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
+import ContactSectionEditor from "@/components/clients/ContactSectionEditor";
 
 const copyToClipboard = (text) => navigator.clipboard.writeText(text);
 
 const SECTIONS = [
-  { key: "director", label: "Director", color: "#34CCD0" },
-  { key: "attorney", label: "Attorney", color: "#92F21D" },
-  { key: "legal_secretary", label: "Legal Secretary", color: "#f59e0b" },
-  { key: "finance_person", label: "Finance Person", color: "#a78bfa" },
-];
-
-const FIELDS = [
-  { key: "name", label: "Name" },
-  { key: "surname", label: "Surname" },
-  { key: "designation", label: "Designation" },
-  { key: "landline", label: "Landline" },
-  { key: "cellphone", label: "Cellphone" },
-  { key: "email", label: "Email", type: "email" },
+  { key: "directors", label: "Directors", color: "#34CCD0" },
+  { key: "attorneys", label: "Attorneys", color: "#92F21D" },
+  { key: "legal_secretaries", label: "Legal Secretaries", color: "#f59e0b" },
+  { key: "finance_persons", label: "Finance Persons", color: "#a78bfa" },
 ];
 
 const activityColors = {
@@ -36,40 +26,57 @@ const activityColors = {
   Prospect: "bg-blue-900 text-blue-300",
 };
 
-function ContactSection({ label, color, data }) {
-  if (!data) return null;
-  const fullName = [data.name, data.surname].filter(Boolean).join(" ");
-  const hasAny = Object.values(data).some(Boolean);
-  if (!hasAny) return null;
+function PersonChip({ person, color }) {
+  const fullName = [person.name, person.surname].filter(Boolean).join(" ");
+  if (!fullName && !person.email) return null;
   return (
-    <div className="space-y-1.5">
-      <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color }}>{label}</p>
-      {fullName && <p className="text-sm font-semibold" style={{ color: "#ffffff" }}>{fullName}</p>}
-      {data.designation && <p className="text-xs" style={{ color: "#92F21D" }}>{data.designation}</p>}
-      {data.email && (
+    <div className="text-xs space-y-0.5">
+      {fullName && <p className="font-semibold" style={{ color: "#ffffff" }}>{fullName}</p>}
+      {person.designation && <p style={{ color: "#92F21D" }}>{person.designation}</p>}
+      {person.email && (
         <div className="flex items-center gap-1 group">
-          <a href={`mailto:${data.email}`} className="text-xs truncate hover:underline" style={{ color: "#34CCD0" }}>{data.email}</a>
-          <button onClick={e => { e.stopPropagation(); copyToClipboard(data.email); }} className="opacity-0 group-hover:opacity-100"><Copy className="w-3 h-3" style={{ color: "#92F21D" }} /></button>
+          <a href={`mailto:${person.email}`} className="truncate hover:underline" style={{ color: "#34CCD0" }}>{person.email}</a>
+          <button onClick={e => { e.stopPropagation(); copyToClipboard(person.email); }} className="opacity-0 group-hover:opacity-100">
+            <Copy className="w-3 h-3" style={{ color: "#92F21D" }} />
+          </button>
         </div>
       )}
-      {(data.cellphone || data.landline) && (
-        <p className="text-xs" style={{ color: "#ffffff" }}>{data.cellphone}{data.landline && data.cellphone ? ` / ${data.landline}` : data.landline}</p>
+      {(person.cellphone || person.landline) && (
+        <p style={{ color: "#ffffff" }}>{person.cellphone || person.landline}</p>
       )}
+    </div>
+  );
+}
+
+function ContactsDisplay({ client }) {
+  const hasAny = SECTIONS.some(s => client[s.key]?.length > 0);
+  if (!hasAny) return <p className="text-xs italic pt-1" style={{ color: "rgba(146,242,29,0.5)" }}>No contacts on file — click to add</p>;
+
+  return (
+    <div className="space-y-3 border-t pt-3" style={{ borderColor: "rgba(52,204,208,0.15)" }}>
+      {SECTIONS.map(({ key, label, color }) => {
+        const list = client[key] || [];
+        if (!list.length) return null;
+        return (
+          <div key={key}>
+            <p className="text-[10px] font-bold uppercase tracking-wider mb-1.5" style={{ color }}>{label} ({list.length})</p>
+            <div className="grid grid-cols-2 gap-2">
+              {list.map((p, i) => <PersonChip key={i} person={p} color={color} />)}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
 
 function EditContactDialog({ client, open, onClose, onSave }) {
   const [form, setForm] = useState(() => ({
-    director: client?.director || {},
-    attorney: client?.attorney || {},
-    legal_secretary: client?.legal_secretary || {},
-    finance_person: client?.finance_person || {},
+    directors: client?.directors || [],
+    attorneys: client?.attorneys || [],
+    legal_secretaries: client?.legal_secretaries || [],
+    finance_persons: client?.finance_persons || [],
   }));
-
-  const setField = (section, field, value) => {
-    setForm(f => ({ ...f, [section]: { ...f[section], [field]: value } }));
-  };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -77,24 +84,15 @@ function EditContactDialog({ client, open, onClose, onSave }) {
         <DialogHeader>
           <DialogTitle>Edit Contacts — {client?.firm_name}</DialogTitle>
         </DialogHeader>
-        <div className="space-y-5 py-2">
+        <div className="space-y-4 py-2">
           {SECTIONS.map(({ key, label, color }) => (
-            <div key={key} className="rounded-lg p-4 space-y-3" style={{ border: `1px solid ${color}33`, backgroundColor: "rgba(10,30,58,0.5)" }}>
-              <p className="text-sm font-bold" style={{ color }}>{label}</p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {FIELDS.map(({ key: fk, label: fl, type }) => (
-                  <div key={fk}>
-                    <Label className="text-xs">{fl}</Label>
-                    <Input
-                      type={type || "text"}
-                      value={form[key]?.[fk] || ""}
-                      onChange={e => setField(key, fk, e.target.value)}
-                      placeholder={fl}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
+            <ContactSectionEditor
+              key={key}
+              label={label}
+              color={color}
+              contacts={form[key]}
+              onChange={val => setForm(f => ({ ...f, [key]: val }))}
+            />
           ))}
         </div>
         <DialogFooter>
@@ -129,7 +127,7 @@ export default function ClientContacts() {
 
   const filtered = clients.filter(c => {
     const q = search.toLowerCase();
-    const matchSearch = !search || c.firm_name?.toLowerCase().includes(q) || c.contact_person?.toLowerCase().includes(q) || c.contact_email?.toLowerCase().includes(q);
+    const matchSearch = !search || c.firm_name?.toLowerCase().includes(q) || c.contact_person?.toLowerCase().includes(q);
     const matchActivity = activityFilter === "all" || c.activity_status === activityFilter;
     const matchBul = bulFilter === "all" || c.business_unit_leader?.toUpperCase() === bulFilter.toUpperCase();
     const matchFirm = !firmFilter || c.firm_name === firmFilter;
@@ -138,17 +136,15 @@ export default function ClientContacts() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="text-2xl font-bold" style={{ color: "#92F21D" }}>Law Firm Contacts</h1>
-          <p className="text-sm mt-1" style={{ color: "#ffffff" }}>{firmFilter ? `Contacts for ${firmFilter}` : "Key personnel at each firm"}</p>
-        </div>
+      <div>
+        <h1 className="text-2xl font-bold" style={{ color: "#92F21D" }}>Law Firm Contacts</h1>
+        <p className="text-sm mt-1" style={{ color: "#ffffff" }}>{firmFilter ? `Contacts for ${firmFilter}` : "Key personnel at each firm"}</p>
       </div>
 
       <div className="flex flex-wrap gap-3 items-center">
         <div className="relative flex-1 min-w-[220px] max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#92F21D" }} />
-          <Input placeholder="Search firm, email, contact..." value={search} onChange={e => setSearch(e.target.value)} className="pl-10" />
+          <Input placeholder="Search firm, contact..." value={search} onChange={e => setSearch(e.target.value)} className="pl-10" />
         </div>
         <Select value={activityFilter} onValueChange={setActivityFilter}>
           <SelectTrigger className="w-36"><SelectValue placeholder="Status" /></SelectTrigger>
@@ -177,7 +173,6 @@ export default function ClientContacts() {
         {filtered.map(c => (
           <Card key={c.id} className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setEditingClient(c)}>
             <CardContent className="p-5 space-y-4">
-              {/* Firm Header */}
               <div className="flex items-start gap-3">
                 <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(52,204,208,0.15)" }}>
                   <Building2 className="w-4 h-4" style={{ color: "#34CCD0" }} />
@@ -197,17 +192,7 @@ export default function ClientContacts() {
                   <Pencil className="w-3.5 h-3.5" style={{ color: "#92F21D" }} />
                 </button>
               </div>
-
-              {/* Contacts */}
-              <div className="grid grid-cols-2 gap-3 border-t pt-3" style={{ borderColor: "rgba(52,204,208,0.15)" }}>
-                {SECTIONS.map(({ key, label, color }) => (
-                  <ContactSection key={key} label={label} color={color} data={c[key]} />
-                ))}
-              </div>
-
-              {!SECTIONS.some(s => c[s.key] && Object.values(c[s.key]).some(Boolean)) && (
-                <p className="text-xs italic pt-1" style={{ color: "#92F21D" }}>No contacts on file — click to add</p>
-              )}
+              <ContactsDisplay client={c} />
             </CardContent>
           </Card>
         ))}
@@ -225,7 +210,7 @@ export default function ClientContacts() {
           client={editingClient}
           open={!!editingClient}
           onClose={() => setEditingClient(null)}
-          onSave={(data) => saveMutation.mutate({ id: editingClient.id, data })}
+          onSave={data => saveMutation.mutate({ id: editingClient.id, data })}
         />
       )}
     </div>

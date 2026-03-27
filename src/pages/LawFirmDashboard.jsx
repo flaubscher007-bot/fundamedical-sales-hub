@@ -10,24 +10,31 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { format, subYears, startOfYear } from "date-fns";
 
 const CONTACT_ROLE_COLORS = {
-  Director: "#34CCD0",
-  Attorney: "#92F21D",
-  "Legal Secretary": "#f59e0b",
-  "Finance Person": "#a78bfa",
+  Directors: "#34CCD0",
+  Attorneys: "#92F21D",
+  "Legal Secretaries": "#f59e0b",
+  "Finance Persons": "#a78bfa",
 };
 
-function ContactBadge({ role, contact }) {
-  if (!contact || (!contact.name && !contact.email)) return null;
-  const fullName = [contact.name, contact.surname].filter(Boolean).join(" ");
+function ContactGroup({ role, contacts = [] }) {
+  const color = CONTACT_ROLE_COLORS[role];
+  if (!contacts.length) return null;
   return (
-    <div className="rounded-lg p-3 space-y-1" style={{ backgroundColor: "rgba(52,204,208,0.08)", border: `1px solid ${CONTACT_ROLE_COLORS[role]}33` }}>
-      <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: CONTACT_ROLE_COLORS[role] }}>{role}</p>
-      {fullName && <p className="text-sm font-semibold" style={{ color: "#ffffff" }}>{fullName}</p>}
-      {contact.designation && <p className="text-xs" style={{ color: "#92F21D" }}>{contact.designation}</p>}
-      {contact.email && <a href={`mailto:${contact.email}`} className="text-xs block truncate" style={{ color: "#34CCD0" }}>{contact.email}</a>}
-      {(contact.cellphone || contact.landline) && (
-        <p className="text-xs" style={{ color: "#ffffff" }}>{contact.cellphone || contact.landline}</p>
-      )}
+    <div className="space-y-2">
+      <p className="text-xs font-bold uppercase tracking-wider" style={{ color }}>{role} ({contacts.length})</p>
+      <div className="space-y-2">
+        {contacts.map((contact, i) => {
+          const fullName = [contact.name, contact.surname].filter(Boolean).join(" ");
+          return (
+            <div key={i} className="rounded-lg p-2.5 space-y-1" style={{ backgroundColor: "rgba(52,204,208,0.06)", border: `1px solid ${color}22` }}>
+              {fullName && <p className="text-sm font-semibold" style={{ color: "#ffffff" }}>{fullName}</p>}
+              {contact.designation && <p className="text-xs" style={{ color: "#92F21D" }}>{contact.designation}</p>}
+              {contact.email && <a href={`mailto:${contact.email}`} className="text-xs block truncate" style={{ color: "#34CCD0" }}>{contact.email}</a>}
+              {(contact.cellphone || contact.landline) && <p className="text-xs" style={{ color: "#ffffff" }}>{contact.cellphone || contact.landline}</p>}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -211,11 +218,11 @@ export default function LawFirmDashboard() {
           {/* Key People */}
           <div>
             <h3 className="text-sm font-semibold mb-3" style={{ color: "#92F21D" }}>Key Contacts</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <ContactBadge role="Director" contact={client.director} />
-              <ContactBadge role="Attorney" contact={client.attorney} />
-              <ContactBadge role="Legal Secretary" contact={client.legal_secretary} />
-              <ContactBadge role="Finance Person" contact={client.finance_person} />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <ContactGroup role="Directors" contacts={client.directors} />
+              <ContactGroup role="Attorneys" contacts={client.attorneys} />
+              <ContactGroup role="Legal Secretaries" contacts={client.legal_secretaries} />
+              <ContactGroup role="Finance Persons" contacts={client.finance_persons} />
             </div>
           </div>
 
