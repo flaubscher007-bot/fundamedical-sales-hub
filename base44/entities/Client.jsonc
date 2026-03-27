@@ -1,0 +1,303 @@
+{
+  "name": "Client",
+  "type": "object",
+  "properties": {
+    "firm_name": {
+      "type": "string",
+      "description": "Name of the law firm"
+    },
+    "account_status": {
+      "type": "string",
+      "description": "Payment classification e.g. GREEN: PRIORITY"
+    },
+    "activity_status": {
+      "type": "string",
+      "enum": [
+        "ACTIVE",
+        "INACTIVE",
+        "Prospect"
+      ],
+      "default": "ACTIVE"
+    },
+    "assigned_bul": {
+      "type": "string",
+      "description": "Name of assigned Business Unit Leader"
+    },
+    "case_administrator": {
+      "type": "string",
+      "description": "FundaMedical case administrator assigned to this firm"
+    },
+    "finance_clerk": {
+      "type": "string",
+      "description": "FundaMedical finance clerk handling invoices/statements for this firm"
+    },
+    "business_unit_leader": {
+      "type": "string",
+      "description": "Sales person / BUL managing this account"
+    },
+    "contact_person": {
+      "type": "string",
+      "description": "Primary contact name at the law firm"
+    },
+    "contact_email": {
+      "type": "string",
+      "description": "Director/Attorney email addresses"
+    },
+    "finance_email": {
+      "type": "string",
+      "description": "Finance person email at the law firm"
+    },
+    "legal_clerk_emails": {
+      "type": "string",
+      "description": "Legal clerk email addresses"
+    },
+    "contact_phone": {
+      "type": "string",
+      "description": "Primary contact phone"
+    },
+    "director": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "surname": {
+          "type": "string"
+        },
+        "designation": {
+          "type": "string"
+        },
+        "landline": {
+          "type": "string"
+        },
+        "cellphone": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        }
+      },
+      "description": "Director contact details"
+    },
+    "attorney": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "surname": {
+          "type": "string"
+        },
+        "designation": {
+          "type": "string"
+        },
+        "landline": {
+          "type": "string"
+        },
+        "cellphone": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        }
+      },
+      "description": "Attorney contact details"
+    },
+    "legal_secretary": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "surname": {
+          "type": "string"
+        },
+        "designation": {
+          "type": "string"
+        },
+        "landline": {
+          "type": "string"
+        },
+        "cellphone": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        }
+      },
+      "description": "Legal secretary contact details"
+    },
+    "finance_person": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "surname": {
+          "type": "string"
+        },
+        "designation": {
+          "type": "string"
+        },
+        "landline": {
+          "type": "string"
+        },
+        "cellphone": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        }
+      },
+      "description": "Finance person contact details"
+    },
+    "address": {
+      "type": "string",
+      "description": "Physical address"
+    },
+    "city": {
+      "type": "string",
+      "description": "City"
+    },
+    "province": {
+      "type": "string",
+      "enum": [
+        "Western Cape",
+        "KwaZulu-Natal",
+        "Gauteng",
+        "Eastern Cape",
+        "Free State",
+        "Limpopo",
+        "Mpumalanga",
+        "North West",
+        "Northern Cape"
+      ],
+      "description": "Province"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Personal Injury",
+        "Medical Negligence",
+        "Class Action",
+        "COIDA",
+        "MVA/RAF",
+        "General"
+      ],
+      "description": "Primary practice area"
+    },
+    "special_requirements": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "last_contact_date": {
+      "type": "string",
+      "format": "date"
+    }
+  },
+  "required": [
+    "firm_name"
+  ],
+  "rls": {
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "created_by": "{{user.email}}"
+        }
+      ]
+    },
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "data.assigned_bul": "{{user.full_name}}"
+        },
+        {
+          "data.business_unit_leader": "{{user.full_name}}"
+        },
+        {
+          "data.case_administrator": "{{user.full_name}}"
+        },
+        {
+          "data.finance_clerk": "{{user.full_name}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "Sales Manager",
+                "senior_management",
+                "bul_manager",
+                "kac",
+                "finance_user"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "data.assigned_bul": "{{user.full_name}}"
+        },
+        {
+          "data.business_unit_leader": "{{user.full_name}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "Sales Manager",
+                "senior_management",
+                "bul_manager",
+                "kac"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "Sales Manager",
+                "senior_management"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}
