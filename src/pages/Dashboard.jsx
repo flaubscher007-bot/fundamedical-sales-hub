@@ -125,12 +125,12 @@ export default function Dashboard() {
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2 sm:gap-3 lg:gap-4">
-              <StatsCard title="Active Clients" value={activeClients} icon={Users} color="teal" />
-              <StatsCard title="Today's Meetings" value={todayAppointments} icon={Calendar} color="green" />
-              <StatsCard title="Follow-Ups" value={pendingFollowUps} icon={Phone} color="orange" />
-              <StatsCard title="Open Proposals" value={openProposals} icon={DollarSign} color="purple" />
-              <StatsCard title="Total KM" value={`${totalKm.toLocaleString()}`} icon={Car} color="navy" />
-              <StatsCard title="Expenses" value={`R${totalExpenses.toLocaleString()}`} icon={Receipt} color="red" />
+              <StatsCard title="Active Clients" value={activeClients} icon={Users} color="teal" href="/Clients" />
+              <StatsCard title="Today's Meetings" value={todayAppointments} icon={Calendar} color="green" href="/AppointmentTools" />
+              <StatsCard title="Follow-Ups" value={pendingFollowUps} icon={Phone} color="orange" href="/AppointmentTools?tab=follow-ups" />
+              <StatsCard title="Open Proposals" value={openProposals} icon={DollarSign} color="purple" href="/Contracts" />
+              <StatsCard title="Total KM" value={`${totalKm.toLocaleString()}`} icon={Car} color="navy" href="/ExpensesHub" />
+              <StatsCard title="Expenses" value={`R${totalExpenses.toLocaleString()}`} icon={Receipt} color="red" href="/ExpensesHub" />
             </div>
 
             <ContractKPIs contracts={contracts} proposals={proposals} />

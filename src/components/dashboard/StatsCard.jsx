@@ -1,7 +1,9 @@
 import React from "react";
 import { Card } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
 
-export default function StatsCard({ title, value, icon: Icon, color = "teal", trend }) {
+export default function StatsCard({ title, value, icon: Icon, color = "teal", trend, href }) {
+  const navigate = useNavigate();
   const colorMap = {
     teal: "bg-[#00bcd4]/10 text-[#00bcd4]",
     green: "bg-[#7ed957]/10 text-[#7ed957]",
@@ -12,7 +14,10 @@ export default function StatsCard({ title, value, icon: Icon, color = "teal", tr
   };
 
   return (
-    <Card className="p-5 border-0 shadow-sm hover:shadow-md transition-shadow duration-300">
+    <Card
+      className={`p-5 border-0 shadow-sm hover:shadow-md transition-shadow duration-300 ${href ? "cursor-pointer hover:ring-2 hover:ring-[#34CCD0]/50" : ""}`}
+      onClick={href ? () => navigate(href) : undefined}
+    >
       <div className="flex items-start justify-between">
         <div>
           <p className="text-xs font-medium uppercase tracking-wider" style={{color: '#92F21D'}}>{title}</p>

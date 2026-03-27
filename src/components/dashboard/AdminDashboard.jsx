@@ -61,10 +61,10 @@ export default function AdminDashboard({ user }) {
 
       {/* Key Metrics */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatsCard title="Active Clients" value={activeClients} icon={Users} color="teal" />
-        <StatsCard title="System Users" value={systemUsers} icon={Users} color="blue" />
-        <StatsCard title="Monthly Revenue" value={`R${totalRevenue.toLocaleString()}`} icon={DollarSign} color="green" />
-        <StatsCard title="Total Bookings" value={totalBookings} icon={BarChart3} color="purple" />
+        <StatsCard title="Active Clients" value={activeClients} icon={Users} color="teal" href="/Clients" />
+        <StatsCard title="System Users" value={systemUsers} icon={Users} color="blue" href="/UserManagement" />
+        <StatsCard title="Monthly Revenue" value={`R${totalRevenue.toLocaleString()}`} icon={DollarSign} color="green" href="/FinanceDashboard" />
+        <StatsCard title="Total Bookings" value={totalBookings} icon={BarChart3} color="purple" href="/BULPerformance" />
       </div>
 
       {/* Critical Alerts */}
