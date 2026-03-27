@@ -1,0 +1,68 @@
+{
+  "name": "CBRPayment",
+  "type": "object",
+  "properties": {
+    "payment_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "law_firm": {
+      "type": "string"
+    },
+    "x3_account_no": {
+      "type": "string"
+    },
+    "dc_stm": {
+      "type": "string"
+    },
+    "kac": {
+      "type": "string"
+    },
+    "business_unit": {
+      "type": "string"
+    },
+    "bank_reference": {
+      "type": "string"
+    },
+    "x3_bank_select": {
+      "type": "string"
+    },
+    "amount": {
+      "type": "number"
+    },
+    "refunds": {
+      "type": "number"
+    },
+    "expert_name": {
+      "type": "string"
+    },
+    "prod": {
+      "type": "string",
+      "description": "Product type (XRAYS, TRANS, etc)"
+    },
+    "dep_or_set": {
+      "type": "string",
+      "description": "Deposit or Settlement"
+    },
+    "ja_comments": {
+      "type": "string"
+    },
+    "dc_comments": {
+      "type": "string"
+    },
+    "dc_inv_number": {
+      "type": "string"
+    },
+    "allocated": {
+      "type": "string"
+    },
+    "import_month": {
+      "type": "string",
+      "description": "YYYY-MM import batch identifier"
+    }
+  },
+  "required": [
+    "law_firm",
+    "amount"
+  ]
+}

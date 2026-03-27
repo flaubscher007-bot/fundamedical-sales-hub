@@ -1,0 +1,114 @@
+{
+  "name": "StatementRecord",
+  "type": "object",
+  "properties": {
+    "law_firm": {
+      "type": "string"
+    },
+    "x3_account_no": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "dc_stm": {
+      "type": "string"
+    },
+    "business_unit": {
+      "type": "string"
+    },
+    "kac": {
+      "type": "string"
+    },
+    "bul": {
+      "type": "string"
+    },
+    "movement": {
+      "type": "string"
+    },
+    "statement_status": {
+      "type": "string"
+    },
+    "stm_analysis_month": {
+      "type": "string"
+    },
+    "funded": {
+      "type": "string"
+    },
+    "total_dep": {
+      "type": "number"
+    },
+    "total_due": {
+      "type": "number"
+    },
+    "dep_90_plus": {
+      "type": "number"
+    },
+    "dep_61_90": {
+      "type": "number"
+    },
+    "dep_31_60": {
+      "type": "number"
+    },
+    "dep_1_30": {
+      "type": "number"
+    },
+    "total_bal": {
+      "type": "number"
+    },
+    "bal_48_plus": {
+      "type": "number"
+    },
+    "bal_37_47": {
+      "type": "number"
+    },
+    "bal_25_36": {
+      "type": "number"
+    },
+    "bal_19_24": {
+      "type": "number"
+    },
+    "bal_0_18": {
+      "type": "number"
+    },
+    "f_total_due": {
+      "type": "number"
+    },
+    "xrays_due": {
+      "type": "number"
+    },
+    "transport_due": {
+      "type": "number"
+    },
+    "fundalodge_due": {
+      "type": "number"
+    },
+    "fundabistro_due": {
+      "type": "number"
+    },
+    "sett_req_not_paid": {
+      "type": "number"
+    },
+    "stm_comments": {
+      "type": "string"
+    },
+    "kac_feedback": {
+      "type": "string"
+    },
+    "dc_planned_send_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "dc_date_stm_sent": {
+      "type": "string",
+      "format": "date"
+    },
+    "import_month": {
+      "type": "string",
+      "description": "YYYY-MM import batch"
+    }
+  },
+  "required": [
+    "law_firm"
+  ]
+}

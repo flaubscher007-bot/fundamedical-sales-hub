@@ -1,0 +1,72 @@
+{
+  "name": "CallLog",
+  "type": "object",
+  "properties": {
+    "call_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of the call"
+    },
+    "reason_for_call": {
+      "type": "string"
+    },
+    "who_called": {
+      "type": "string",
+      "description": "Name of person who made the call"
+    },
+    "law_firm": {
+      "type": "string",
+      "description": "Law firm name"
+    },
+    "x3_account_no": {
+      "type": "string"
+    },
+    "law_firm_status": {
+      "type": "string"
+    },
+    "dc_stm": {
+      "type": "string",
+      "description": "Finance clerk (DC-STM)"
+    },
+    "kac": {
+      "type": "string",
+      "description": "Key Account Consultant"
+    },
+    "business_unit": {
+      "type": "string"
+    },
+    "deposit_ptp": {
+      "type": "number"
+    },
+    "deposit_ptp_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "deposit_rec_in_bank": {
+      "type": "string"
+    },
+    "balance_ptp": {
+      "type": "number"
+    },
+    "balance_ptp_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "balance_rec_in_bank": {
+      "type": "string"
+    },
+    "feedback": {
+      "type": "string"
+    },
+    "forecast_balance": {
+      "type": "number"
+    },
+    "import_month": {
+      "type": "string",
+      "description": "YYYY-MM import batch identifier"
+    }
+  },
+  "required": [
+    "law_firm"
+  ]
+}
