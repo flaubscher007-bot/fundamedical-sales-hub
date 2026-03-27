@@ -7,6 +7,7 @@ import PageNotFound from './lib/PageNotFound';
 import Prospects from './pages/Prospects';
 import SalesManagerDashboard from './pages/SalesManagerDashboard';
 import LawFirmDashboard from './pages/LawFirmDashboard';
+import FirmReferenceTable from './pages/FirmReferenceTable';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
@@ -63,6 +64,7 @@ const AuthenticatedApp = () => {
       <Route path="/Prospects" element={<LayoutWrapper currentPageName="Prospects"><Prospects /></LayoutWrapper>} />
       <Route path="/SalesManagerDashboard" element={<LayoutWrapper currentPageName="SalesManagerDashboard"><SalesManagerDashboard /></LayoutWrapper>} />
       <Route path="/LawFirmDashboard" element={<LayoutWrapper currentPageName="LawFirmDashboard"><LawFirmDashboard /></LayoutWrapper>} />
+      <Route path="/FirmReferenceTable" element={<LayoutWrapper currentPageName="FirmReferenceTable"><FirmReferenceTable /></LayoutWrapper>} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

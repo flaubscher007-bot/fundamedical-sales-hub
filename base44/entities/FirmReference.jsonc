@@ -1,0 +1,53 @@
+{
+  "name": "FirmReference",
+  "type": "object",
+  "properties": {
+    "x3_account_no": {
+      "type": "string",
+      "description": "X3 Account Number"
+    },
+    "finance_name": {
+      "type": "string",
+      "description": "Finance Site law firm name"
+    },
+    "tracking_name": {
+      "type": "string",
+      "description": "Tracking Site law firm name"
+    },
+    "dropdown_name": {
+      "type": "string",
+      "description": "Tracking Site dropdown name"
+    },
+    "status": {
+      "type": "string",
+      "description": "USE X3-New Status July 2025"
+    },
+    "dc_stm": {
+      "type": "string",
+      "description": "Finance Case Person (DC-STM)"
+    },
+    "dc_inv": {
+      "type": "string",
+      "description": "DC-INV person"
+    },
+    "bul": {
+      "type": "string",
+      "description": "Business Unit Leader (BUL FEB 2026)"
+    },
+    "business_unit": {
+      "type": "string",
+      "description": "Business Unit Team"
+    },
+    "case_administrator": {
+      "type": "string",
+      "description": "Case Administrator name"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Any notes or flags"
+    }
+  },
+  "required": [
+    "finance_name"
+  ]
+}
