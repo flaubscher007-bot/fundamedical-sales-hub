@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, TrendingUp, AlertCircle, CheckCircle2, DollarSign, BarChart3 } from "lucide-react";
 import StatsCard from "@/components/dashboard/StatsCard";
 import TeamPerformanceDashboard from "@/components/dashboard/TeamPerformanceDashboard";
+import PriorityFollowUps from "@/components/dashboard/PriorityFollowUps";
+import MeetingMapView from "@/components/dashboard/MeetingMapView";
 import { format } from "date-fns";
 
 export default function AdminDashboard({ user }) {
@@ -79,6 +81,12 @@ export default function AdminDashboard({ user }) {
           </CardContent>
         </Card>
       )}
+
+      {/* Priority Follow-ups & Map */}
+      <div className="grid lg:grid-cols-2 gap-6">
+        <PriorityFollowUps />
+        <MeetingMapView />
+      </div>
 
       {/* Team Performance vs Targets */}
       <TeamPerformanceDashboard />

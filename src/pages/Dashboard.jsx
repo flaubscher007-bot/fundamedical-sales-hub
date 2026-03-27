@@ -12,6 +12,8 @@ import AdminDashboard from "@/components/dashboard/AdminDashboard";
 import FinanceDashboard from "@/components/dashboard/FinanceDashboard";
 import DashboardCharts from "@/components/dashboard/DashboardCharts";
 import EnhancedOnboardingTour from "@/components/EnhancedOnboardingTour";
+import PriorityFollowUps from "@/components/dashboard/PriorityFollowUps";
+import MeetingMapView from "@/components/dashboard/MeetingMapView";
 import { format } from "date-fns";
 
 export default function Dashboard() {
@@ -138,6 +140,11 @@ export default function Dashboard() {
             <div className="grid lg:grid-cols-2 gap-4 sm:gap-6">
               <UpcomingAppointments appointments={appointments} />
               <PendingFollowUps followUps={followUps} />
+            </div>
+
+            <div className="grid lg:grid-cols-2 gap-4 sm:gap-6">
+              <PriorityFollowUps />
+              <MeetingMapView />
             </div>
           </div>
         );

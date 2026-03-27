@@ -140,9 +140,9 @@ export default function AppointmentTools() {
           {/* Calendar and upcoming appointments */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <div className="lg:col-span-2">
-              <ScheduleCalendarView appointments={appointments} month="March" year={2026} />
+              <ScheduleCalendarView appointments={appointments} month="March" year={2026} onAppointmentClick={openEdit} />
             </div>
-            <UpcomingAppointmentsList appointments={appointments} limit={15} />
+            <UpcomingAppointmentsList appointments={appointments} limit={15} onAppointmentClick={openEdit} />
           </div>
           {/* Appointment List with Record Meeting */}
           <div className="space-y-2">
