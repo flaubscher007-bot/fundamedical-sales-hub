@@ -16,6 +16,8 @@ import {
 import { format, parseISO } from "date-fns";
 
 import AppointmentCard from "../components/appointmentTools/AppointmentCard";
+import SearchableClientSelect from "../components/appointmentTools/SearchableClientSelect";
+import AddProspectDialog from "../components/appointmentTools/AddProspectDialog";
 import SendRequestDialog from "../components/appointmentTools/SendRequestDialog";
 import ConfirmAttendanceDialog from "../components/appointmentTools/ConfirmAttendanceDialog";
 import MeetingMinutesDialog from "../components/appointmentTools/MeetingMinutesDialog";
@@ -67,6 +69,8 @@ export default function AppointmentTools() {
   const [summaryOpen, setSummaryOpen] = useState(false);
   const [meetingRecordApt, setMeetingRecordApt] = useState(null);
   const [calendarClickApt, setCalendarClickApt] = useState(null);
+  const [addProspectOpen, setAddProspectOpen] = useState(false);
+  const [prospectPrefill, setProspectPrefill] = useState("");
 
   useEffect(() => { base44.auth.me().then(setUser).catch(() => {}); }, []);
 
@@ -243,15 +247,14 @@ export default function AppointmentTools() {
             </div>
             <div>
               <Label>Client</Label>
-              <Select value={form.client_id || ""} onValueChange={v => {
-                const client = clients.find(c => c.id === v);
-                setForm({ ...form, client_id: v, client_name: client?.firm_name || "" });
-              }}>
-                <SelectTrigger className="mt-1"><SelectValue placeholder="Select client" /></SelectTrigger>
-                <SelectContent>
-                  {clients.map(c => <SelectItem key={c.id} value={c.id}>{c.firm_name}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              <div className="mt-1">
+                <SearchableClientSelect
+                  clients={clients}
+                  value={form.client_id || ""}
+                  onChange={(id, name) => setForm({ ...form, client_id: id, client_name: name })}
+                  onAddProspect={(prefill) => { setProspectPrefill(prefill || ""); setAddProspectOpen(true); }}
+                />
+              </div>
             </div>
             <div className="grid grid-cols-3 gap-3">
               <div><Label>Date *</Label><Input className="mt-1" type="date" value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} /></div>
@@ -312,6 +315,15 @@ export default function AppointmentTools() {
           user={user}
         />
       )}
+      <AddProspectDialog
+        open={addProspectOpen}
+        onClose={() => setAddProspectOpen(false)}
+        prefillName={prospectPrefill}
+        onCreated={(newClient) => {
+          qc.invalidateQueries({ queryKey: ["clients"] });
+          setForm(prev => ({ ...prev, client_id: newClient.id, client_name: newClient.firm_name }));
+        }}
+      />
     </div>
   );
 }
