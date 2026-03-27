@@ -86,6 +86,7 @@ export default function BUMeetingRecordDialog({ open, onClose, appointment, exis
     attendees: appointment?.assigned_bul || "",
     law_firm_representatives: "",
     agenda: "",
+    prep_notes: "",
     minutes: "",
     additional_notes: "",
     transcript: "",
@@ -303,6 +304,20 @@ export default function BUMeetingRecordDialog({ open, onClose, appointment, exis
                 placeholder="BUL / KAC names" />
             </div>
 
+            <div>
+              <Label>Meeting Agenda / Purpose</Label>
+              <Textarea className="mt-1" rows={3} value={form.agenda}
+                onChange={e => setForm(f => ({ ...f, agenda: e.target.value }))}
+                placeholder="What topics will be covered in this meeting?" />
+            </div>
+
+            <div>
+              <Label>Preparation Notes</Label>
+              <Textarea className="mt-1" rows={3} value={form.prep_notes || ""}
+                onChange={e => setForm(f => ({ ...f, prep_notes: e.target.value }))}
+                placeholder="Notes to prepare before the meeting..." />
+            </div>
+
             {/* FUNDAMEDICAL Services */}
             <div className="border border-[#34CCD0]/30 rounded-xl p-4">
               <p className="text-sm font-bold mb-3" style={{ color: "#92F21D" }}>FUNDAMEDICAL — Items Discussed</p>
@@ -454,17 +469,24 @@ export default function BUMeetingRecordDialog({ open, onClose, appointment, exis
           {/* NOTES & FILES TAB */}
           <TabsContent value="notes" className="space-y-4 pt-4">
             <div>
-              <Label>Additional Notes</Label>
-              <Textarea className="mt-1" rows={5} value={form.additional_notes}
-                onChange={e => setForm(f => ({ ...f, additional_notes: e.target.value }))}
-                placeholder="Any additional notes from the meeting..." />
+              <Label>Meeting Minutes / Summary</Label>
+              <Textarea className="mt-1" rows={6} value={form.minutes}
+                onChange={e => setForm(f => ({ ...f, minutes: e.target.value }))}
+                placeholder="Detailed notes and summary of what was discussed..." />
             </div>
 
             <div>
-              <Label>Minutes / Summary</Label>
-              <Textarea className="mt-1" rows={4} value={form.minutes}
-                onChange={e => setForm(f => ({ ...f, minutes: e.target.value }))}
-                placeholder="Summary of the meeting..." />
+              <Label>Action Items</Label>
+              <Textarea className="mt-1" rows={4} value={form.action_items || ""}
+                onChange={e => setForm(f => ({ ...f, action_items: e.target.value }))}
+                placeholder="List action items, responsible persons and due dates..." />
+            </div>
+
+            <div>
+              <Label>Additional Notes</Label>
+              <Textarea className="mt-1" rows={3} value={form.additional_notes}
+                onChange={e => setForm(f => ({ ...f, additional_notes: e.target.value }))}
+                placeholder="Any other notes..." />
             </div>
 
             <div>

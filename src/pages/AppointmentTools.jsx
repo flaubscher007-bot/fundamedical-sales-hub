@@ -66,6 +66,7 @@ export default function AppointmentTools() {
   const [feedbackApt, setFeedbackApt] = useState(null);
   const [summaryOpen, setSummaryOpen] = useState(false);
   const [meetingRecordApt, setMeetingRecordApt] = useState(null);
+  const [calendarClickApt, setCalendarClickApt] = useState(null);
 
   useEffect(() => { base44.auth.me().then(setUser).catch(() => {}); }, []);
 
@@ -78,6 +79,19 @@ export default function AppointmentTools() {
     queryKey: ["clients"],
     queryFn: () => base44.entities.Client.list("-created_date", 200),
   });
+
+  const { data: allMinutes = [] } = useQuery({
+    queryKey: ["meeting-minutes"],
+    queryFn: () => base44.entities.MeetingMinutes.list("-date", 300),
+  });
+
+  // When clicking calendar/upcoming — open meeting record dialog, pre-linked to existing minutes if any
+  const openMeetingRecord = (apt) => {
+    const existing = allMinutes.find(
+      m => m.appointment_id === apt.id || (m.client_name === apt.client_name && m.date === apt.date)
+    );
+    setCalendarClickApt({ apt, existing: existing || null });
+  };
 
   const saveMutation = useMutation({
     mutationFn: (data) => editing
@@ -140,9 +154,9 @@ export default function AppointmentTools() {
           {/* Calendar and upcoming appointments */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <div className="lg:col-span-2">
-              <ScheduleCalendarView appointments={appointments} month="March" year={2026} onAppointmentClick={openEdit} />
+              <ScheduleCalendarView appointments={appointments} month="March" year={2026} onAppointmentClick={openMeetingRecord} />
             </div>
-            <UpcomingAppointmentsList appointments={appointments} limit={15} onAppointmentClick={openEdit} />
+            <UpcomingAppointmentsList appointments={appointments} limit={15} onAppointmentClick={openMeetingRecord} />
           </div>
           {/* Appointment List with Record Meeting */}
           <div className="space-y-2">
@@ -289,6 +303,15 @@ export default function AppointmentTools() {
       {feedbackApt && <FeedbackDialog open={!!feedbackApt} onClose={() => setFeedbackApt(null)} appointment={feedbackApt} />}
       {summaryOpen && <SummaryDialog open={summaryOpen} onClose={() => setSummaryOpen(false)} appointments={appointments} />}
       {meetingRecordApt && <BUMeetingRecordDialog open={!!meetingRecordApt} onClose={() => setMeetingRecordApt(null)} appointment={meetingRecordApt} user={user} />}
+      {calendarClickApt && (
+        <BUMeetingRecordDialog
+          open={!!calendarClickApt}
+          onClose={() => setCalendarClickApt(null)}
+          appointment={calendarClickApt.apt}
+          existing={calendarClickApt.existing}
+          user={user}
+        />
+      )}
     </div>
   );
 }
