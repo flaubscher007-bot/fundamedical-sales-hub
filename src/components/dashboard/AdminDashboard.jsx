@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, TrendingUp, AlertCircle, CheckCircle2, DollarSign, BarChart3 } from "lucide-react";
+import RevenueForecasting from "@/components/dashboard/RevenueForecasting";
 import StatsCard from "@/components/dashboard/StatsCard";
 import TeamPerformanceDashboard from "@/components/dashboard/TeamPerformanceDashboard";
 import PriorityFollowUps from "@/components/dashboard/PriorityFollowUps";
@@ -87,6 +88,9 @@ export default function AdminDashboard({ user }) {
         <PriorityFollowUps />
         <MeetingMapView />
       </div>
+
+      {/* Revenue Forecasting */}
+      <RevenueForecasting />
 
       {/* Team Performance vs Targets */}
       <TeamPerformanceDashboard />

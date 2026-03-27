@@ -9,6 +9,7 @@ import ContractKPIs from "@/components/dashboard/ContractKPIs";
 import BULPerformanceSummary from "@/components/dashboard/BULPerformanceSummary";
 import BULDashboard from "@/components/dashboard/BULDashboard";
 import AdminDashboard from "@/components/dashboard/AdminDashboard";
+import SalesManagerDashboard from "./SalesManagerDashboard";
 import FinanceDashboard from "@/components/dashboard/FinanceDashboard";
 import DashboardCharts from "@/components/dashboard/DashboardCharts";
 import EnhancedOnboardingTour from "@/components/EnhancedOnboardingTour";
@@ -90,8 +91,9 @@ export default function Dashboard() {
 
     switch (user.role) {
       case "admin":
-      case "Sales Manager":
         return <AdminDashboard user={user} />;
+      case "Sales Manager":
+        return <SalesManagerDashboard user={user} />; 
       case "finance_user":
       case "Finance Clerk":
         return <FinanceDashboard user={user} />;
