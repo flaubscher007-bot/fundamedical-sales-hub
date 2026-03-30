@@ -28,7 +28,7 @@ export default function AppointmentCard({ apt, onEdit, onSendRequest, onConfirm,
 
           <div className="flex-1 min-w-0" onClick={() => onEdit(apt)} style={{ cursor: "pointer" }}>
             <div className="flex items-center gap-2 flex-wrap">
-              <p className="font-semibold text-slate-800">{apt.title}</p>
+              <p className="font-semibold text-green-200">{apt.title}</p>
               <Badge className={`text-[10px] ${statusColors[apt.status]}`}>{apt.status}</Badge>
               {apt.attendance_confirmed && (
                 <Badge className="text-[10px] bg-green-100 text-green-700">
