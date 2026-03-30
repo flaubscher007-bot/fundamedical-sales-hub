@@ -9,7 +9,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Search, Building2, MapPin, Pencil, Trash2, UserCog, Briefcase, AlertCircle, DollarSign } from "lucide-react";
+import { Plus, Search, Building2, MapPin, Pencil, Trash2, UserCog, Briefcase, AlertCircle, DollarSign, UserPlus } from "lucide-react";
+import InviteContactDialog from "@/components/InviteContactDialog";
 import { Link, useNavigate } from "react-router-dom";
 import ClientOnboardingWizard from "@/components/clients/ClientOnboardingWizard";
 
@@ -56,6 +57,7 @@ export default function Clients() {
   const [provinceFilter, setProvinceFilter] = useState("all");
   const [wizardOpen, setWizardOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [inviteTarget, setInviteTarget] = useState(null); // { name, email, context }
   const [editingClient, setEditingClient] = useState(null);
   const [form, setForm] = useState(emptyClient);
   const qc = useQueryClient();
@@ -215,6 +217,13 @@ export default function Clients() {
                   )}
                 </div>
                 <button
+                  onClick={e => { e.stopPropagation(); setInviteTarget({ name: c.contact_person || "", email: c.contact_email || "", context: `Inviting contact for ${c.firm_name}` }); }}
+                  className="flex-shrink-0 p-2 rounded-lg hover:bg-white/10 transition-colors"
+                  title="Invite contact as app user"
+                >
+                  <UserPlus className="w-4 h-4" style={{ color: "#34CCD0" }} />
+                </button>
+                <button
                   onClick={e => openEdit(c, e)}
                   className="flex-shrink-0 p-2 rounded-lg hover:bg-white/10 transition-colors"
                 >
@@ -232,6 +241,14 @@ export default function Clients() {
           <p className="mt-3" style={{ color: "#ffffff" }}>No clients found</p>
         </div>
       )}
+
+      <InviteContactDialog
+        open={!!inviteTarget}
+        onClose={() => setInviteTarget(null)}
+        defaultName={inviteTarget?.name || ""}
+        defaultEmail={inviteTarget?.email || ""}
+        context={inviteTarget?.context || ""}
+      />
 
       <ClientOnboardingWizard open={wizardOpen} onClose={() => setWizardOpen(false)} onSave={(data) => { saveMutation.mutate(data); setWizardOpen(false); }} />
 

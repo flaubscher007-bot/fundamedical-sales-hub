@@ -7,7 +7,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Search, Building2, Copy, Briefcase, Pencil } from "lucide-react";
+import { Search, Building2, Copy, Briefcase, Pencil, UserPlus } from "lucide-react";
+import InviteContactDialog from "@/components/InviteContactDialog";
 import { useSearchParams } from "react-router-dom";
 import ContactSectionEditor from "@/components/clients/ContactSectionEditor";
 
@@ -111,6 +112,7 @@ export default function ClientContacts() {
   const [bulFilter, setBulFilter] = useState("all");
   const [activityFilter, setActivityFilter] = useState("ACTIVE");
   const [editingClient, setEditingClient] = useState(null);
+  const [inviteTarget, setInviteTarget] = useState(null);
   const qc = useQueryClient();
 
   const { data: clients = [], isLoading } = useQuery({
@@ -188,6 +190,13 @@ export default function ClientContacts() {
                     )}
                   </div>
                 </div>
+                <button
+                  onClick={e => { e.stopPropagation(); setInviteTarget({ name: c.contact_person || "", email: c.contact_email || "", context: `Inviting contact for ${c.firm_name}` }); }}
+                  className="flex-shrink-0 p-1 rounded hover:bg-white/10"
+                  title="Invite as app user"
+                >
+                  <UserPlus className="w-3.5 h-3.5" style={{ color: "#34CCD0" }} />
+                </button>
                 <button onClick={e => { e.stopPropagation(); setEditingClient(c); }} className="flex-shrink-0 p-1 rounded hover:bg-white/10">
                   <Pencil className="w-3.5 h-3.5" style={{ color: "#92F21D" }} />
                 </button>
@@ -204,6 +213,14 @@ export default function ClientContacts() {
           <p className="mt-3" style={{ color: "#ffffff" }}>No firms found</p>
         </div>
       )}
+
+      <InviteContactDialog
+        open={!!inviteTarget}
+        onClose={() => setInviteTarget(null)}
+        defaultName={inviteTarget?.name || ""}
+        defaultEmail={inviteTarget?.email || ""}
+        context={inviteTarget?.context || ""}
+      />
 
       {editingClient && (
         <EditContactDialog

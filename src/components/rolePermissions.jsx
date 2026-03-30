@@ -241,6 +241,13 @@ export const ROLE_PERMISSIONS = {
     canDelete: ["own_records"],
     filterRule: "assigned_clients",
   },
+  external_contact: {
+    label: "External Contact",
+    canAccess: ["AppointmentTools", "Appointments"],
+    canEdit: [],
+    canDelete: [],
+    filterRule: "own_appointments",
+  },
 };
 
 export const canAccessPage = (role, pageName) => {

@@ -9,7 +9,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Search, Plus, Stethoscope, Calendar, CheckCircle2, Pencil, Eye } from "lucide-react";
+import { Search, Plus, Stethoscope, Calendar, CheckCircle2, Pencil, Eye, UserPlus } from "lucide-react";
+import InviteContactDialog from "@/components/InviteContactDialog";
 import { createPageUrl } from "@/utils";
 import { Link } from "react-router-dom";
 
@@ -28,6 +29,7 @@ export default function Experts() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingExpert, setEditingExpert] = useState(null);
   const [form, setForm] = useState(emptyForm);
+  const [inviteTarget, setInviteTarget] = useState(null);
 
   const hasActiveFilters = search || disciplineFilter !== "all" || activeFilter !== "all";
 
@@ -216,6 +218,13 @@ export default function Experts() {
                            <td className="px-4 py-3 text-xs" style={{color: '#ffffff'}}>{expert.address || "—"}</td>
                            <td className="px-4 py-3">
                              <div className="flex gap-1">
+                               <Button
+                                 size="icon" variant="ghost" className="h-7 w-7"
+                                 title="Invite as app user"
+                                 onClick={() => setInviteTarget({ name: expert.name, email: expert.email || "", context: `Inviting expert: ${expert.name}` })}
+                               >
+                                 <UserPlus className="w-3.5 h-3.5" style={{ color: "#34CCD0" }} />
+                               </Button>
                                <Link to={createPageUrl("ExpertDetails") + `?id=${expert.id}`}>
                                  <Button size="icon" variant="ghost" className="h-7 w-7">
                                    <Eye className="w-3.5 h-3.5 text-[#92F21D]" />
@@ -239,6 +248,14 @@ export default function Experts() {
           </Card>
         </>
       )}
+
+      <InviteContactDialog
+        open={!!inviteTarget}
+        onClose={() => setInviteTarget(null)}
+        defaultName={inviteTarget?.name || ""}
+        defaultEmail={inviteTarget?.email || ""}
+        context={inviteTarget?.context || ""}
+      />
 
       {/* Edit/Add Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
