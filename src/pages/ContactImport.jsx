@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Upload, CheckCircle, AlertCircle, XCircle, ChevronDown, ChevronUp,
-  Search, AlertTriangle, Building2, Users, Loader2, RefreshCw
+  Search, AlertTriangle, Building2, Users, Loader2, RefreshCw, Download
 } from "lucide-react";
 
 // ─── Phone formatting ─────────────────────────────────────────────────────────
@@ -50,6 +50,8 @@ function similarity(a, b) {
   return score;
 }
 
+const MATCH_THRESHOLD = 0.8;
+
 function findBestMatch(companyName, clients) {
   let best = null;
   let bestScore = 0;
@@ -57,7 +59,27 @@ function findBestMatch(companyName, clients) {
     const s = similarity(companyName, c.firm_name || "");
     if (s > bestScore) { bestScore = s; best = c; }
   }
-  return { client: bestScore >= 0.5 ? best : null, score: bestScore, bestGuess: best };
+  return { client: bestScore >= MATCH_THRESHOLD ? best : null, score: bestScore, bestGuess: best };
+}
+
+function exportErrorsToCSV(firms) {
+  const lowMatch = firms.filter(f => !f.matchedClient || f.matchScore < MATCH_THRESHOLD);
+  const headers = ["File Company Name", "Best Match Found", "Match Score (%)", "Contacts", "Reason"];
+  const rows = lowMatch.map(f => [
+    `"${f.companyName}"`,
+    `"${f.bestGuess?.firm_name || 'No match'}"`,
+    Math.round((f.matchScore || 0) * 100),
+    f.contacts.length,
+    `"${f.matchScore < MATCH_THRESHOLD ? `Below 80% threshold (${Math.round(f.matchScore*100)}%)` : 'Manually skipped'}"`
+  ]);
+  const csv = [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `import-errors-${new Date().toISOString().split("T")[0]}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 // ─── Parse rows into grouped firm data ──────────────────────────────────────
@@ -197,6 +219,7 @@ export default function ContactImport() {
   });
 
   const matchedCount = firms.filter(f => f.matchedClient && !f.skip).length;
+  const lowMatchCount = firms.filter(f => (!f.matchedClient || f.matchScore < MATCH_THRESHOLD) && !f.skip).length;
   const unmatchedCount = firms.filter(f => !f.matchedClient && !f.skip).length;
   const skippedCount = firms.filter(f => f.skip).length;
   const totalContacts = firms.filter(f => f.matchedClient && !f.skip).reduce((n, f) => n + f.contacts.length, 0);
@@ -272,11 +295,18 @@ export default function ContactImport() {
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-2xl font-bold" style={{ color: "#92F21D" }}>Verify & Import Contacts</h1>
-          <p className="text-sm mt-0.5" style={{ color: "#94a3b8" }}>{firms.length} firms found in file</p>
+          <p className="text-sm mt-0.5" style={{ color: "#94a3b8" }}>{firms.length} firms found in file · only ≥80% matches will be imported</p>
         </div>
-        <Button onClick={doImport} disabled={matchedCount === 0} style={{ backgroundColor: "#92F21D", color: "#081F3F" }}>
-          <Upload className="w-4 h-4 mr-2" /> Import {matchedCount} Firms ({totalContacts} contacts)
-        </Button>
+        <div className="flex gap-2">
+          {lowMatchCount > 0 && (
+            <Button variant="outline" onClick={() => exportErrorsToCSV(firms)} style={{ borderColor: "#f59e0b", color: "#f59e0b" }}>
+              <Download className="w-4 h-4 mr-2" /> Export {lowMatchCount} Errors
+            </Button>
+          )}
+          <Button onClick={doImport} disabled={matchedCount === 0} style={{ backgroundColor: "#92F21D", color: "#081F3F" }}>
+            <Upload className="w-4 h-4 mr-2" /> Import {matchedCount} Firms ({totalContacts} contacts)
+          </Button>
+        </div>
       </div>
 
       {/* Summary bar */}
@@ -295,12 +325,13 @@ export default function ContactImport() {
         ))}
       </div>
 
-      {unmatchedCount > 0 && (
+      {lowMatchCount > 0 && (
         <div className="flex items-start gap-2 px-4 py-3 rounded-lg" style={{ backgroundColor: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.3)" }}>
           <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#f59e0b" }} />
-          <p className="text-sm" style={{ color: "#f59e0b" }}>
-            <strong>{unmatchedCount}</strong> firm{unmatchedCount > 1 ? "s" : ""} could not be matched. Use the dropdown below to manually assign them or mark as skip.
-          </p>
+          <div className="text-sm" style={{ color: "#f59e0b" }}>
+            <strong>{lowMatchCount}</strong> firm{lowMatchCount > 1 ? "s" : ""} scored below 80% and will be skipped. 
+            Export the error list to CSV, correct the firm names, and re-import. You can also manually assign matches using the dropdowns below.
+          </div>
         </div>
       )}
 
