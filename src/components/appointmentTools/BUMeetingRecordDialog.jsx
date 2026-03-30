@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import JSZip from "jszip";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -227,34 +228,34 @@ export default function BUMeetingRecordDialog({ open, onClose, appointment, exis
     const buName = (form.attendees || form.assigned_bul || 'BU').replace(/[/\\:*?"<>|]/g, '_');
     const firmName = (form.client_name || 'LawFirm').replace(/[/\\:*?"<>|]/g, '_');
     const folderName = `${dateStr} - ${buName} - ${firmName}`;
-    try {
-      const dirHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
-      const subDir = await dirHandle.getDirectoryHandle(folderName, { create: true });
-      // Save recording
-      const recFile = await subDir.getFileHandle(`recording-${dateStr}.webm`, { create: true });
-      const recWritable = await recFile.createWritable();
-      await recWritable.write(recordingBlob);
-      await recWritable.close();
-      // Save transcript
-      if (form.transcript) {
-        const txFile = await subDir.getFileHandle(`transcript-${dateStr}.txt`, { create: true });
-        const txWritable = await txFile.createWritable();
-        await txWritable.write(form.transcript);
-        await txWritable.close();
-      }
-      // Save PDF
-      const pdfBlob = buildPDF().output('blob');
-      const pdfFile = await subDir.getFileHandle(`meeting-form-${dateStr}.pdf`, { create: true });
-      const pdfWritable = await pdfFile.createWritable();
-      await pdfWritable.write(pdfBlob);
-      await pdfWritable.close();
-      alert(`Saved to folder: ${folderName}`);
-    } catch (err) {
-      if (err.name !== 'AbortError') alert('Could not save: ' + err.message);
+
+    const zip = new JSZip();
+    const folder = zip.folder(folderName);
+
+    // Add recording
+    folder.file(`recording-${dateStr}.webm`, recordingBlob);
+
+    // Add transcript if available
+    if (form.transcript) {
+      folder.file(`transcript-${dateStr}.txt`, form.transcript);
     }
-    // Also upload to cloud as backup
+
+    // Add PDF
+    const pdfBlob = buildPDF().output('blob');
+    folder.file(`meeting-form-${dateStr}.pdf`, pdfBlob);
+
+    // Download ZIP
+    const zipBlob = await zip.generateAsync({ type: 'blob' });
+    const url = URL.createObjectURL(zipBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${folderName}.zip`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    // Also upload recording to cloud as backup
     setUploading(true);
-    const file = new File([recordingBlob], `meeting-recording-${Date.now()}.webm`, { type: "audio/webm" });
+    const file = new File([recordingBlob], `meeting-recording-${Date.now()}.webm`, { type: 'audio/webm' });
     const { file_url } = await base44.integrations.Core.UploadFile({ file });
     setForm(f => ({ ...f, recording_url: file_url }));
     setUploading(false);
@@ -572,11 +573,12 @@ export default function BUMeetingRecordDialog({ open, onClose, appointment, exis
             </div>
             <div className="flex flex-col gap-3">
               <Button onClick={saveToLocalFolder} className="flex items-center gap-2 justify-center" style={{ backgroundColor: '#92F21D', color: '#081F3F' }}>
-                <FolderOpen className="w-4 h-4" /> Save to Local Folder (File Explorer)
+                <Download className="w-4 h-4" /> Download as ZIP (recording + transcript + PDF)
               </Button>
               <Button onClick={saveToCloud} variant="outline" className="flex items-center gap-2 justify-center border-[#34CCD0] text-[#34CCD0]">
                 <Upload className="w-4 h-4" /> Save to Cloud Only
               </Button>
+              <Button onClick={() => setSaveDialog(false)} variant="ghost" className="text-slate-400 text-sm">Cancel</Button>
               <Button onClick={() => setSaveDialog(false)} variant="ghost" className="text-slate-400 text-sm">Cancel</Button>
             </div>
           </DialogContent>
