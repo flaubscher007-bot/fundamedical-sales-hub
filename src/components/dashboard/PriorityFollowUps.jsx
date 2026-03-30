@@ -114,6 +114,7 @@ export default function PriorityFollowUps() {
 
   return (
     <>
+      <Card style={{ borderColor: "#34CCD0", backgroundColor: "#081F3F" }}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2" style={{ color: "#92F21D" }}>
           <AlertTriangle className="w-5 h-5" style={{ color: "#f97316" }} />

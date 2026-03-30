@@ -124,8 +124,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   const navigateToLogin = () => {
-    // Use the SDK's redirectToLogin method
-    base44.auth.redirectToLogin(window.location.href);
+    // Use the SDK's redirectToLogin method — don't pass current URL to avoid redirect loops
+    base44.auth.redirectToLogin();
   };
 
   return (
