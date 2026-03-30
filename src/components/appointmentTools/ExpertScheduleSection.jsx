@@ -2,9 +2,7 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Upload, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
 import SyncStatusPanel from "./SyncStatusPanel";
 import ScheduleCalendarView from "./ScheduleCalendarView";
@@ -23,17 +21,14 @@ export default function ExpertScheduleSection() {
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
   useEffect(() => {
-    // Load appointments and BUL mappings on mount
     const loadData = async () => {
       try {
         const apts = await base44.entities.Appointment.list();
-        setAppointments(apts || []);
-
+        const expertApts = (apts || []).filter(a => !a.client_id || a.title?.toLowerCase().includes('expert'));
+        setAppointments(expertApts);
         const mappings = await base44.entities.BULNameMapping.list();
         const map = {};
-        mappings?.forEach(m => {
-          map[m.first_name] = m.full_name;
-        });
+        mappings?.forEach(m => { map[m.first_name] = m.full_name; });
         setBulMappings(map);
       } catch (err) {
         console.error('Error loading data:', err);
@@ -42,29 +37,20 @@ export default function ExpertScheduleSection() {
     loadData();
   }, []);
 
-  const handleFileSelect = async (e) => {
+  const handleFileSelect = (e) => {
     const selectedFile = e.target.files?.[0];
     if (!selectedFile) return;
-
     setFile(selectedFile);
     setError(null);
   };
 
   const handleImportSchedule = async () => {
-    if (!file || !selectedMonth) {
-      setError('Please select a file and month');
-      return;
-    }
-
+    if (!file || !selectedMonth) { setError('Please select a file and month'); return; }
     try {
       setLoading(true);
       setError(null);
-
-      // Upload file
       const uploadResponse = await base44.integrations.Core.UploadFile({ file });
       const fileUrl = uploadResponse.file_url;
-
-      // Extract schedule data
       const extractResponse = await base44.integrations.Core.ExtractDataFromUploadedFile({
         file_url: fileUrl,
         json_schema: {
@@ -78,41 +64,22 @@ export default function ExpertScheduleSection() {
           }
         }
       });
-
       if (extractResponse.status !== "success") {
         setError(`Failed to extract data: ${extractResponse.details}`);
         setLoading(false);
         return;
       }
-
       const scheduleData = Array.isArray(extractResponse.output) ? extractResponse.output : [extractResponse.output];
-
-      // Call import function
-      const importResponse = await base44.functions.invoke('importExpertSchedule', {
-        scheduleData,
-        month: selectedMonth,
-        year: 2026
-      });
-
+      const importResponse = await base44.functions.invoke('importExpertSchedule', { scheduleData, month: selectedMonth, year: 2026 });
       if (importResponse.data.status === 'success') {
         setResults(importResponse.data.results);
         setFile(null);
-        
-        // Now sync the schedule to appointments with two-way sync
         const batchId = `sync_${Date.now()}`;
         setSyncBatchId(batchId);
-        
-        await base44.functions.invoke('syncExpertSchedule', {
-          scheduleData,
-          month: selectedMonth,
-          year: 2026,
-          syncBatchId: batchId,
-          bulMappings
-        });
-
-        // Reload appointments
+        await base44.functions.invoke('syncExpertSchedule', { scheduleData, month: selectedMonth, year: 2026, syncBatchId: batchId, bulMappings });
         const apts = await base44.entities.Appointment.list();
-        setAppointments(apts || []);
+        const expertApts = apts.filter(a => !a.client_id || a.title?.toLowerCase().includes('expert'));
+        setAppointments(expertApts);
       } else {
         setError(importResponse.data.message);
       }
@@ -135,32 +102,18 @@ export default function ExpertScheduleSection() {
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label style={{ color: "#ffffff" }} className="block text-sm font-medium mb-2">
-                Select Month
-              </label>
-              <select
-                value={selectedMonth}
-                onChange={(e) => setSelectedMonth(e.target.value)}
+              <label style={{ color: "#ffffff" }} className="block text-sm font-medium mb-2">Select Month</label>
+              <select value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)}
                 className="w-full p-2 rounded-lg border"
-                style={{ borderColor: "#34CCD0", backgroundColor: "#0a1e3a", color: "#ffffff" }}
-              >
-                {months.map(m => (
-                  <option key={m} value={m}>{m}</option>
-                ))}
+                style={{ borderColor: "#34CCD0", backgroundColor: "#0a1e3a", color: "#ffffff" }}>
+                {months.map(m => <option key={m} value={m}>{m}</option>)}
               </select>
             </div>
-
             <div>
-              <label style={{ color: "#ffffff" }} className="block text-sm font-medium mb-2">
-                Upload Schedule File
-              </label>
-              <input
-                type="file"
-                accept=".xlsx"
-                onChange={handleFileSelect}
+              <label style={{ color: "#ffffff" }} className="block text-sm font-medium mb-2">Upload Schedule File</label>
+              <input type="file" accept=".xlsx" onChange={handleFileSelect}
                 className="w-full p-2 rounded-lg border"
-                style={{ borderColor: "#34CCD0", backgroundColor: "#0a1e3a", color: "#ffffff" }}
-              />
+                style={{ borderColor: "#34CCD0", backgroundColor: "#0a1e3a", color: "#ffffff" }} />
             </div>
           </div>
 
@@ -177,53 +130,46 @@ export default function ExpertScheduleSection() {
             </div>
           )}
 
-          {results && (
-            <Dialog open={!!results} onOpenChange={() => results && setResults(null)}>
-              <DialogContent style={{ backgroundColor: "#081F3F", borderColor: "#34CCD0" }}>
-                <DialogHeader>
-                  <DialogTitle style={{ color: "#92F21D" }}>Import Summary</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3 p-3 rounded-lg" style={{ backgroundColor: "rgba(16, 185, 129, 0.1)" }}>
-                    <CheckCircle2 className="w-5 h-5" style={{ color: "#10b981" }} />
-                    <p style={{ color: "#ffffff" }}>
-                      <span style={{ color: "#10b981", fontWeight: "600" }}>{results.created}</span> appointments created
-                    </p>
-                  </div>
-                  {results.failed > 0 && (
-                    <div className="flex items-center gap-3 p-3 rounded-lg" style={{ backgroundColor: "rgba(239, 68, 68, 0.1)" }}>
-                      <AlertCircle className="w-5 h-5" style={{ color: "#ef4444" }} />
-                      <p style={{ color: "#ffffff" }}>
-                        <span style={{ color: "#ef4444", fontWeight: "600" }}>{results.failed}</span> failed
-                      </p>
-                    </div>
-                  )}
-                </div>
-                <Button onClick={() => {
-                  setResults(null);
-                  setSyncBatchId(null);
-                }} className="w-full mt-4" style={{ backgroundColor: "#92F21D", color: "#081F3F" }}>
-                   Done
-                 </Button>
-                </DialogContent>
-                </Dialog>
-                )}
+          {syncBatchId && <SyncStatusPanel syncBatchId={syncBatchId} />}
 
-                {syncBatchId && <SyncStatusPanel syncBatchId={syncBatchId} />}
-
-                <Button
-            onClick={handleImportSchedule}
-            disabled={!file || loading}
-            className="w-full"
-            style={{ backgroundColor: "#92F21D", color: "#081F3F" }}
-          >
+          <Button onClick={handleImportSchedule} disabled={!file || loading} className="w-full" style={{ backgroundColor: "#92F21D", color: "#081F3F" }}>
             {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Upload className="w-4 h-4 mr-2" />}
             {loading ? "Importing..." : "Import Schedule"}
           </Button>
         </CardContent>
       </Card>
 
-      {/* Calendar and upcoming appointments */}
+      {results && (
+        <Dialog open={!!results} onOpenChange={() => setResults(null)}>
+          <DialogContent style={{ backgroundColor: "#081F3F", borderColor: "#34CCD0" }}>
+            <DialogHeader>
+              <DialogTitle style={{ color: "#92F21D" }}>Import Summary</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 p-3 rounded-lg" style={{ backgroundColor: "rgba(16, 185, 129, 0.1)" }}>
+                <CheckCircle2 className="w-5 h-5" style={{ color: "#10b981" }} />
+                <p style={{ color: "#ffffff" }}><span style={{ color: "#10b981", fontWeight: "600" }}>{results.created}</span> appointments created</p>
+              </div>
+              {results.failed > 0 && (
+                <div className="flex items-center gap-3 p-3 rounded-lg" style={{ backgroundColor: "rgba(239, 68, 68, 0.1)" }}>
+                  <AlertCircle className="w-5 h-5" style={{ color: "#ef4444" }} />
+                  <p style={{ color: "#ffffff" }}><span style={{ color: "#ef4444", fontWeight: "600" }}>{results.failed}</span> failed</p>
+                </div>
+              )}
+            </div>
+            <Button onClick={() => { setResults(null); setSyncBatchId(null); }} className="w-full mt-4" style={{ backgroundColor: "#92F21D", color: "#081F3F" }}>
+              Done
+            </Button>
+          </DialogContent>
+        </Dialog>
+      )}
+
+      <div className="mb-2 flex items-center gap-2">
+        <span className="text-xs px-2 py-1 rounded-full font-semibold" style={{ backgroundColor: 'rgba(52,204,208,0.15)', color: '#34CCD0', border: '1px solid #34CCD0' }}>
+          Showing {appointments.length} expert appointments only
+        </span>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="lg:col-span-2">
           <ScheduleCalendarView appointments={appointments} month={selectedMonth} year={2026} />
