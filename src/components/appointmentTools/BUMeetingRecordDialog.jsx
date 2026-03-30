@@ -11,7 +11,8 @@ import { base44 } from "@/api/base44Client";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   Upload, Loader2, Wand2, FileAudio, Mic, MicOff,
-  MapPin, Paperclip, X, CheckSquare, Square, FileText, Download, Mail
+  MapPin, Paperclip, X, CheckSquare, Square, FileText, Download, Mail,
+  Sparkles, FileInput
 } from "lucide-react";
 import { format } from "date-fns";
 import jsPDF from "jspdf";
@@ -119,9 +120,77 @@ export default function BUMeetingRecordDialog({ open, onClose, appointment, exis
   const [recordingBlob, setRecordingBlob] = useState(null);
   const [attachUploading, setAttachUploading] = useState(false);
   const [saveDialog, setSaveDialog] = useState(false);
+  const [analyzing, setAnalyzing] = useState(false);
+  const [analyzeResult, setAnalyzeResult] = useState(null);
+  const transcriptFileRef = useRef();
 
   const audioRef = useRef();
   const attachRef = useRef();
+
+  const handleTranscriptFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const text = await file.text();
+    setForm(f => ({ ...f, transcript: text }));
+  };
+
+  const analyzeTranscript = async () => {
+    if (!form.transcript?.trim()) return;
+    setAnalyzing(true);
+    setAnalyzeResult(null);
+    const result = await base44.integrations.Core.InvokeLLM({
+      prompt: `You are analyzing a meeting transcript between FundaMedical and the law firm "${form.client_name || "the client"}".
+
+Transcript:
+${form.transcript}
+
+Extract the following in JSON:
+- agenda: A concise 2-4 sentence summary of what topics were covered.
+- action_items: A newline-separated list of specific action items, each formatted as: "[Owner] Action description – Due: YYYY-MM-DD" (infer reasonable deadlines from context; use null if not mentioned).
+- service_notes: Key notes about services discussed, client pain points, or commitments made, written as a paragraph for the client record.
+- bu_services: An object with boolean values for which of these services were discussed: bookings, production, finance_affidavits, finance_deposits, finance_oldest_matters, finance_settlement_requests, finance_queries, fundabistro, fundamobile, fundadrive, fundamali, fundalodge, fundatrust, funda_imaging, funding.`,
+      response_json_schema: {
+        type: "object",
+        properties: {
+          agenda: { type: "string" },
+          action_items: { type: "string" },
+          service_notes: { type: "string" },
+          bu_services: { type: "object" },
+        }
+      }
+    });
+    setAnalyzeResult(result);
+    setAnalyzing(false);
+  };
+
+  const applyAnalysis = async () => {
+    if (!analyzeResult) return;
+    const merged_services = { ...emptyServices };
+    if (analyzeResult.bu_services) {
+      Object.keys(emptyServices).forEach(k => {
+        if (analyzeResult.bu_services[k]) merged_services[k] = true;
+      });
+    }
+    setForm(f => ({
+      ...f,
+      agenda: analyzeResult.agenda || f.agenda,
+      action_items: analyzeResult.action_items || f.action_items,
+      additional_notes: analyzeResult.service_notes
+        ? (f.additional_notes ? f.additional_notes + "\n" + analyzeResult.service_notes : analyzeResult.service_notes)
+        : f.additional_notes,
+      bu_services: { ...merged_services },
+    }));
+    // Update client notes in DB if client_name is known
+    if (form.client_name && analyzeResult.service_notes) {
+      const clients = await base44.entities.Client.filter({ firm_name: form.client_name }).catch(() => []);
+      if (clients[0]) {
+        const existingNotes = clients[0].notes || "";
+        const stamp = `\n\n[AI – ${form.date}] ${analyzeResult.service_notes}`;
+        await base44.entities.Client.update(clients[0].id, { notes: existingNotes + stamp });
+      }
+    }
+    setAnalyzeResult(null);
+  };
   const chunksRef = useRef([]);
 
   const toggleService = (key) => {
@@ -494,6 +563,56 @@ export default function BUMeetingRecordDialog({ open, onClose, appointment, exis
                   <Button onClick={transcribe} disabled={transcribing} className="bg-purple-600 hover:bg-purple-700">
                     {transcribing ? <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Processing...</> : <><Wand2 className="w-4 h-4 mr-2" /> AI Transcribe</>}
                   </Button>
+                </div>
+              )}
+
+              <div className="border border-[#92F21D]/30 rounded-xl p-5">
+                <p className="text-sm font-bold mb-3" style={{ color: "#92F21D" }}>Upload Transcript File</p>
+                <p className="text-xs mb-3" style={{ color: "#ffffff" }}>Upload a .txt or .docx transcript file to skip audio transcription.</p>
+                <input ref={transcriptFileRef} type="file" accept=".txt,.docx,text/*" className="hidden" onChange={handleTranscriptFileUpload} />
+                <Button variant="outline" size="sm" onClick={() => transcriptFileRef.current.click()} className="border-[#92F21D] text-[#92F21D]">
+                  <FileInput className="w-4 h-4 mr-2" /> Upload Transcript (.txt)
+                </Button>
+              </div>
+
+              {form.transcript && (
+                <div className="border border-[#92F21D]/40 rounded-xl p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-bold" style={{ color: "#92F21D" }}>AI Analysis</p>
+                    <Button onClick={analyzeTranscript} disabled={analyzing}
+                      style={{ backgroundColor: "#92F21D", color: "#081F3F" }} size="sm">
+                      {analyzing
+                        ? <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Analyzing...</>
+                        : <><Sparkles className="w-4 h-4 mr-2" /> Analyze Transcript</>}
+                    </Button>
+                  </div>
+                  <p className="text-xs" style={{ color: "#ffffff" }}>Auto-generates agenda, extracts action items with deadlines, and updates client service notes.</p>
+
+                  {analyzeResult && (
+                    <div className="space-y-3 mt-2">
+                      {analyzeResult.agenda && (
+                        <div className="p-3 rounded-lg" style={{ backgroundColor: "rgba(146,242,29,0.08)", border: "1px solid #92F21D40" }}>
+                          <p className="text-xs font-bold mb-1" style={{ color: "#92F21D" }}>Generated Agenda</p>
+                          <p className="text-xs" style={{ color: "#ffffff" }}>{analyzeResult.agenda}</p>
+                        </div>
+                      )}
+                      {analyzeResult.action_items && (
+                        <div className="p-3 rounded-lg" style={{ backgroundColor: "rgba(249,115,22,0.08)", border: "1px solid #f9731640" }}>
+                          <p className="text-xs font-bold mb-1" style={{ color: "#f97316" }}>Extracted Action Items</p>
+                          <pre className="text-xs whitespace-pre-wrap" style={{ color: "#ffffff" }}>{analyzeResult.action_items}</pre>
+                        </div>
+                      )}
+                      {analyzeResult.service_notes && (
+                        <div className="p-3 rounded-lg" style={{ backgroundColor: "rgba(52,204,208,0.08)", border: "1px solid #34CCD040" }}>
+                          <p className="text-xs font-bold mb-1" style={{ color: "#34CCD0" }}>Service Notes (will update client record)</p>
+                          <p className="text-xs" style={{ color: "#ffffff" }}>{analyzeResult.service_notes}</p>
+                        </div>
+                      )}
+                      <Button onClick={applyAnalysis} style={{ backgroundColor: "#92F21D", color: "#081F3F" }} className="w-full">
+                        <Sparkles className="w-4 h-4 mr-2" /> Apply to Meeting Record & Update Client
+                      </Button>
+                    </div>
+                  )}
                 </div>
               )}
 
