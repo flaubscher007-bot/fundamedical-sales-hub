@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from "react";
+import * as XLSX from "xlsx";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -112,33 +113,10 @@ export default function ContactImport() {
   });
 
   const handleFile = useCallback(async (file) => {
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
-    const result = await base44.integrations.Core.ExtractDataFromUploadedFile({
-      file_url,
-      json_schema: {
-        type: "object",
-        properties: {
-          rows: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-                Customer: { type: "string" },
-                "Company name": { type: "string" },
-                Category: { type: "string" },
-                Code: { type: "number" },
-                Function: { type: "string" },
-                "First name": { type: "string" },
-                "Last name": { type: "string" },
-                Telephone: { type: "string" },
-                Email: { type: "string" },
-              }
-            }
-          }
-        }
-      }
-    });
-    const rows = Array.isArray(result.output) ? result.output : result.output?.rows || [];
+    const buffer = await file.arrayBuffer();
+    const wb = XLSX.read(buffer, { type: "array" });
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(ws, { defval: "" });
     const parsed = parseRows(rows, clients);
     setFirms(parsed);
     setStep("verify");
