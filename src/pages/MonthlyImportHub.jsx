@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Upload, CheckCircle2, AlertCircle, FileSpreadsheet, RefreshCw, Eye, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import * as XLSX from "https://esm.sh/xlsx@0.18.5";
+// xlsx loaded dynamically to avoid React duplicate instance issues
 
 const MONTHS = Array.from({ length: 12 }, (_, i) => {
   const d = new Date(2026, i, 1);
@@ -57,16 +57,14 @@ const DATA_TYPES = [
 function FileUploadZone({ onFile, loading }) {
   const [dragging, setDragging] = useState(false);
 
-  const handleFile = useCallback((file) => {
+  const handleFile = useCallback(async (file) => {
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const wb = XLSX.read(e.target.result, { type: "array" });
-      const ws = wb.Sheets[wb.SheetNames[0]];
-      const rows = XLSX.utils.sheet_to_json(ws, { defval: null });
-      onFile(rows, file.name);
-    };
-    reader.readAsArrayBuffer(file);
+    const XLSX = await import("https://esm.sh/xlsx@0.18.5");
+    const buffer = await file.arrayBuffer();
+    const wb = XLSX.read(buffer, { type: "array" });
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(ws, { defval: null });
+    onFile(rows, file.name);
   }, [onFile]);
 
   return (
