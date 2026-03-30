@@ -59,6 +59,7 @@ const mainNavItems = [
   { name: "Finance Tools", icon: DollarSign, page: "Finance" },
   { name: "Collections Report", icon: BarChart2, page: "CollectionsReport" },
   { name: "BU Visit Report", icon: BarChart2, page: "BUVisitReport" },
+  { name: "Meeting Analytics", icon: BarChart2, page: "MeetingAnalyticsDashboard" },
 
   { name: "Import CBR", icon: Upload, page: "CBRImportManager" },
   { name: "Custom Reports", icon: BarChart2, page: "CustomReports" },

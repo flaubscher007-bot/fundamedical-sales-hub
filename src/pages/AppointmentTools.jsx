@@ -31,6 +31,7 @@ import ExpertScheduleSection from "../components/appointmentTools/ExpertSchedule
 import BUMeetingRecordDialog from "../components/appointmentTools/BUMeetingRecordDialog";
 import ScheduleCalendarView from "../components/appointmentTools/ScheduleCalendarView";
 import UpcomingAppointmentsList from "../components/appointmentTools/UpcomingAppointmentsList";
+import UpcomingMeetingsPanel from "../components/appointmentTools/UpcomingMeetingsPanel";
 
 const emptyApt = {
   title: "", client_id: "", client_name: "", date: "", time: "", end_time: "",
@@ -69,6 +70,7 @@ export default function AppointmentTools() {
   const [summaryOpen, setSummaryOpen] = useState(false);
   const [meetingRecordApt, setMeetingRecordApt] = useState(null);
   const [calendarClickApt, setCalendarClickApt] = useState(null);
+  const [recordFromPanel, setRecordFromPanel] = useState(null);
   const [addProspectOpen, setAddProspectOpen] = useState(false);
   const [prospectPrefill, setProspectPrefill] = useState("");
 
@@ -155,11 +157,9 @@ export default function AppointmentTools() {
         </TabsContent>
 
         <TabsContent value="appointments" className="mt-4 space-y-4">
+          <UpcomingMeetingsPanel appointments={appointments} onStartRecording={(apt) => setRecordFromPanel(apt)} />
           {/* Calendar and upcoming appointments */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <div className="lg:col-span-2">
-              <ScheduleCalendarView appointments={appointments} month="March" year={2026} onAppointmentClick={openMeetingRecord} onAddAppointment={openNew} />
-            </div>
             <UpcomingAppointmentsList appointments={appointments} limit={15} onAppointmentClick={openMeetingRecord} />
           </div>
           {/* Appointment List with Record Meeting */}
@@ -313,6 +313,15 @@ export default function AppointmentTools() {
           appointment={calendarClickApt.apt}
           existing={calendarClickApt.existing}
           user={user}
+        />
+      )}
+      {recordFromPanel && (
+        <BUMeetingRecordDialog
+          open={!!recordFromPanel}
+          onClose={() => setRecordFromPanel(null)}
+          appointment={recordFromPanel}
+          user={user}
+          autoTab="record"
         />
       )}
       <AddProspectDialog

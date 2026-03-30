@@ -9,6 +9,7 @@ import SalesManagerDashboard from './pages/SalesManagerDashboard';
 import LawFirmDashboard from './pages/LawFirmDashboard';
 import FirmReferenceTable from './pages/FirmReferenceTable';
 import MonthlyImportHub from './pages/MonthlyImportHub';
+import MeetingAnalyticsDashboard from './pages/MeetingAnalyticsDashboard';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
@@ -67,6 +68,7 @@ const AuthenticatedApp = () => {
       <Route path="/LawFirmDashboard" element={<LayoutWrapper currentPageName="LawFirmDashboard"><LawFirmDashboard /></LayoutWrapper>} />
       <Route path="/FirmReferenceTable" element={<LayoutWrapper currentPageName="FirmReferenceTable"><FirmReferenceTable /></LayoutWrapper>} />
       <Route path="/MonthlyImportHub" element={<LayoutWrapper currentPageName="MonthlyImportHub"><MonthlyImportHub /></LayoutWrapper>} />
+      <Route path="/MeetingAnalyticsDashboard" element={<LayoutWrapper currentPageName="MeetingAnalyticsDashboard"><MeetingAnalyticsDashboard /></LayoutWrapper>} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

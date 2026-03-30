@@ -11,7 +11,7 @@ import { base44 } from "@/api/base44Client";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   Upload, Loader2, Wand2, FileAudio, Mic, MicOff,
-  MapPin, Paperclip, X, CheckSquare, Square, FileText, Download, FolderOpen
+  MapPin, Paperclip, X, CheckSquare, Square, FileText, Download, Mail
 } from "lucide-react";
 import { format } from "date-fns";
 import jsPDF from "jspdf";
@@ -67,9 +67,11 @@ async function captureGeolocation() {
   });
 }
 
-export default function BUMeetingRecordDialog({ open, onClose, appointment, existing, user }) {
+export default function BUMeetingRecordDialog({ open, onClose, appointment, existing, user, autoTab }) {
   const qc = useQueryClient();
-  const [activeTab, setActiveTab] = useState("prep");
+  const [activeTab, setActiveTab] = useState(autoTab || "prep");
+  const [sendingEmail, setSendingEmail] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
 
   const [form, setForm] = useState(() => ({
     client_name: appointment?.client_name || "",
@@ -308,13 +310,23 @@ export default function BUMeetingRecordDialog({ open, onClose, appointment, exis
     const firstName = creatorName.split(" ")[0];
     const ref = `${form.client_name} - ${firstName} - ${dateStr}`;
     const dataToSave = { ...form, meeting_reference: ref, recorded_by: creatorName };
+    let savedId;
     if (existing?.id) {
       await base44.entities.MeetingMinutes.update(existing.id, dataToSave);
+      savedId = existing.id;
     } else {
-      await base44.entities.MeetingMinutes.create(dataToSave);
+      const created = await base44.entities.MeetingMinutes.create(dataToSave);
+      savedId = created.id;
     }
     qc.invalidateQueries({ queryKey: ["meeting-minutes"] });
     setSaving(false);
+    // Auto-send email if meeting is completed and has action items
+    if (savedId && (dataToSave.meeting_status === "Completed" || dataToSave.action_items)) {
+      setSendingEmail(true);
+      await base44.functions.invoke("sendMeetingOutcomeEmail", { meeting_id: savedId, emails: [user?.email].filter(Boolean) });
+      setSendingEmail(false);
+      setEmailSent(true);
+    }
     onClose();
   };
 
@@ -547,6 +559,8 @@ export default function BUMeetingRecordDialog({ open, onClose, appointment, exis
 
           <DialogFooter className="mt-4 flex flex-wrap gap-2">
             <Button variant="outline" onClick={onClose}>Cancel</Button>
+            {emailSent && <span className="text-xs flex items-center gap-1" style={{ color: "#92F21D" }}><Mail className="w-3 h-3" /> Summary emailed</span>}
+            {sendingEmail && <span className="text-xs flex items-center gap-1" style={{ color: "#34CCD0" }}><Loader2 className="w-3 h-3 animate-spin" /> Sending email...</span>}
             <Button variant="outline" onClick={downloadPDF} className="border-[#92F21D] text-[#92F21D] flex items-center gap-2">
               <Download className="w-4 h-4" /> Export PDF
             </Button>
@@ -578,7 +592,6 @@ export default function BUMeetingRecordDialog({ open, onClose, appointment, exis
               <Button onClick={saveToCloud} variant="outline" className="flex items-center gap-2 justify-center border-[#34CCD0] text-[#34CCD0]">
                 <Upload className="w-4 h-4" /> Save to Cloud Only
               </Button>
-              <Button onClick={() => setSaveDialog(false)} variant="ghost" className="text-slate-400 text-sm">Cancel</Button>
               <Button onClick={() => setSaveDialog(false)} variant="ghost" className="text-slate-400 text-sm">Cancel</Button>
             </div>
           </DialogContent>
