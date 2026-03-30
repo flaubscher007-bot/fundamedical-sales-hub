@@ -9,6 +9,7 @@ import {
   Users,
   FileText,
   Receipt,
+  Activity,
   CreditCard,
   Stethoscope,
   Megaphone,
@@ -64,6 +65,7 @@ const mainNavItems = [
   { name: "Meeting Analytics", icon: BarChart2, page: "MeetingAnalyticsDashboard" },
   { name: "Engagement Trends", icon: TrendingUp, page: "ClientEngagementTrends" },
   { name: "Action Items", icon: FileText, page: "ActionItemsDashboard" },
+  { name: "Health Checker", icon: Activity, page: "HealthChecker" },
 
   { name: "Import CBR", icon: Upload, page: "CBRImportManager" },
   { name: "Custom Reports", icon: BarChart2, page: "CustomReports" },
