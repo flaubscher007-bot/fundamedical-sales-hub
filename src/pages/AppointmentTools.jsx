@@ -14,6 +14,7 @@ import {
   Plus, Search, Send, Calendar, Trash2, Filter
 } from "lucide-react";
 import { format, parseISO } from "date-fns";
+import SearchableSelect from "../components/ui/searchable-select";
 
 import AppointmentCard from "../components/appointmentTools/AppointmentCard";
 import SearchableClientSelect from "../components/appointmentTools/SearchableClientSelect";
@@ -184,13 +185,13 @@ export default function AppointmentTools() {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{color: '#92F21D'}} />
                 <Input placeholder="Search title or firm…" value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
               </div>
-              <Select value={filterFirm} onValueChange={setFilterFirm}>
-                <SelectTrigger className="w-48"><SelectValue placeholder="All Firms" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Firms</SelectItem>
-                  {firmOptions.map(f => <SelectItem key={f} value={f}>{f}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              <SearchableSelect
+                value={filterFirm}
+                onValueChange={setFilterFirm}
+                items={["all", ...firmOptions]}
+                placeholder="All Firms"
+                searchable={true}
+              />
               <Select value={filterMonth} onValueChange={setFilterMonth}>
                 <SelectTrigger className="w-40"><SelectValue placeholder="All Months" /></SelectTrigger>
                 <SelectContent>
