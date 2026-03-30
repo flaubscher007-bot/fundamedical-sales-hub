@@ -7,6 +7,7 @@ export const ROLE_PERMISSIONS = {
       "Analytics",
       "Clients",
       "ClientContacts",
+      "ContactImport",
       "Experts",
       "ExpertImportManager",
       "AppointmentTools",

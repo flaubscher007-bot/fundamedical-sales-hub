@@ -43,6 +43,7 @@ const dashboardItems = [
 const clientItems = [
   { name: "Law Firms", icon: Users, page: "Clients" },
   { name: "Firm Contacts", icon: Users, page: "ClientContacts" },
+  { name: "Import Contacts", icon: Upload, page: "ContactImport" },
   { name: "Prospects", icon: Users, page: "Prospects" },
   { name: "Firm Reference Table", icon: FileText, page: "FirmReferenceTable" },
 ];
