@@ -1,5 +1,4 @@
 import React, { useState, useCallback } from "react";
-import * as XLSX from "xlsx";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -113,6 +112,7 @@ export default function ContactImport() {
   });
 
   const handleFile = useCallback(async (file) => {
+    const XLSX = await import("xlsx");
     const buffer = await file.arrayBuffer();
     const wb = XLSX.read(buffer, { type: "array" });
     const ws = wb.Sheets[wb.SheetNames[0]];
