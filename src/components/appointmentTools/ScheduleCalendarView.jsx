@@ -18,9 +18,9 @@ export default function ScheduleCalendarView({ appointments, month = "March", ye
     const map = {};
     appointments?.forEach(apt => {
       if (apt.date) {
-        const date = new Date(apt.date);
-        if (date.getMonth() === currentMonth.getMonth() && date.getFullYear() === currentMonth.getFullYear()) {
-          const day = date.getDate();
+        // Parse the date string (YYYY-MM-DD) correctly
+        const [year, month, day] = apt.date.split('-').map(Number);
+        if (month === currentMonth.getMonth() + 1 && year === currentMonth.getFullYear()) {
           if (!map[day]) map[day] = [];
           map[day].push(apt);
         }
