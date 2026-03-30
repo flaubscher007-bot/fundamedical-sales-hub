@@ -9,12 +9,14 @@ import { Plus, Search, ClipboardList, Calendar, MapPin, Mic, FileText } from "lu
 import { format } from "date-fns";
 import BUMeetingRecordDialog from "./BUMeetingRecordDialog";
 import ClientMeetingHistory from "./ClientMeetingHistory";
+import PreMeetingBrief from "./PreMeetingBrief";
 
 export default function MeetingMinutesTab() {
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [historyClient, setHistoryClient] = useState(null);
+  const [briefClient, setBriefClient] = useState(null);
   const [user, setUser] = useState(null);
   const qc = useQueryClient();
 
@@ -84,13 +86,16 @@ export default function MeetingMinutesTab() {
               {m.recorded_by && (
               <p className="text-xs mt-2" style={{ color: "#92F21D" }}>by {m.recorded_by}</p>
               )}
-              <button
-              className="text-xs mt-1 underline"
-              style={{ color: "#34CCD0" }}
-              onClick={(e) => { e.stopPropagation(); setHistoryClient(m.client_name); }}
-              >
-              View client history
-              </button>
+              <div className="flex gap-3">
+                <button className="text-xs mt-1 underline" style={{ color: "#34CCD0" }}
+                  onClick={(e) => { e.stopPropagation(); setHistoryClient(m.client_name); }}>
+                  View history
+                </button>
+                <button className="text-xs mt-1 underline" style={{ color: "#92F21D" }}
+                  onClick={(e) => { e.stopPropagation(); setBriefClient(m.client_name); }}>
+                  Pre-Meeting Brief
+                </button>
+              </div>
             </CardContent>
           </Card>
         ))}
@@ -104,6 +109,14 @@ export default function MeetingMinutesTab() {
             <FileText className="w-4 h-4 mr-2" /> Record Your First Meeting
           </Button>
         </div>
+      )}
+
+      {briefClient && (
+        <PreMeetingBrief
+          clientName={briefClient}
+          minutes={minutes}
+          onClose={() => setBriefClient(null)}
+        />
       )}
 
       {historyClient && (

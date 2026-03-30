@@ -11,6 +11,8 @@ import FirmReferenceTable from './pages/FirmReferenceTable';
 import MonthlyImportHub from './pages/MonthlyImportHub';
 import MeetingAnalyticsDashboard from './pages/MeetingAnalyticsDashboard';
 import ContactImport from './pages/ContactImport';
+import ClientEngagementTrends from './pages/ClientEngagementTrends';
+import ActionItemsDashboard from './pages/ActionItemsDashboard';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
@@ -71,6 +73,8 @@ const AuthenticatedApp = () => {
       <Route path="/MonthlyImportHub" element={<LayoutWrapper currentPageName="MonthlyImportHub"><MonthlyImportHub /></LayoutWrapper>} />
       <Route path="/MeetingAnalyticsDashboard" element={<LayoutWrapper currentPageName="MeetingAnalyticsDashboard"><MeetingAnalyticsDashboard /></LayoutWrapper>} />
       <Route path="/ContactImport" element={<LayoutWrapper currentPageName="ContactImport"><ContactImport /></LayoutWrapper>} />
+      <Route path="/ClientEngagementTrends" element={<LayoutWrapper currentPageName="ClientEngagementTrends"><ClientEngagementTrends /></LayoutWrapper>} />
+      <Route path="/ActionItemsDashboard" element={<LayoutWrapper currentPageName="ActionItemsDashboard"><ActionItemsDashboard /></LayoutWrapper>} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

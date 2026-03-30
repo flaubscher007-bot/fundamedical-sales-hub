@@ -62,6 +62,8 @@ const mainNavItems = [
   { name: "Collections Report", icon: BarChart2, page: "CollectionsReport" },
   { name: "BU Visit Report", icon: BarChart2, page: "BUVisitReport" },
   { name: "Meeting Analytics", icon: BarChart2, page: "MeetingAnalyticsDashboard" },
+  { name: "Engagement Trends", icon: TrendingUp, page: "ClientEngagementTrends" },
+  { name: "Action Items", icon: FileText, page: "ActionItemsDashboard" },
 
   { name: "Import CBR", icon: Upload, page: "CBRImportManager" },
   { name: "Custom Reports", icon: BarChart2, page: "CustomReports" },
