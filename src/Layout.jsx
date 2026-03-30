@@ -27,6 +27,7 @@ import {
   Upload
 } from "lucide-react";
 import PWAInstallBanner from "@/components/PWAInstallBanner";
+import OfflineIndicator from "@/components/OfflineIndicator";
 import NotificationBell from "@/components/NotificationBell";
 import { hasPermission } from "@/lib/PageNotFound";
 
@@ -200,6 +201,7 @@ export default function Layout({ children, currentPageName }) {
   return (
     <div className="min-h-screen bg-slate-50 flex pb-safe">
       {showOnboarding && <EnhancedOnboardingTour onComplete={() => setShowOnboarding(false)} />}
+      <OfflineIndicator />
       <PWAInstallBanner />
       {sidebarOpen && (
         <div className="fixed inset-0 bg-black/40 z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />

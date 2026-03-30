@@ -1,0 +1,31 @@
+{
+  "name": "FundaMedical Sales Hub",
+  "short_name": "FundaMedical",
+  "description": "FundaMedical Sales & Relationship Management",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#081F3F",
+  "theme_color": "#081F3F",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://base44.com/logo_v2.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "productivity"],
+  "shortcuts": [
+    {
+      "name": "Record Meeting",
+      "url": "/AppointmentTools",
+      "description": "Open appointment tools to record a meeting"
+    },
+    {
+      "name": "Dashboard",
+      "url": "/",
+      "description": "Open main dashboard"
+    }
+  ]
+}
