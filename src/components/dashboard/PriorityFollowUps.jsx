@@ -1,11 +1,41 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertTriangle, Clock, TrendingDown, Phone } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { AlertTriangle, Clock, CalendarPlus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
-import { differenceInDays, parseISO } from "date-fns";
+import { differenceInDays, parseISO, format } from "date-fns";
 
 export default function PriorityFollowUps() {
+  const qc = useQueryClient();
+  const [bookingClient, setBookingClient] = useState(null);
+  const [aptForm, setAptForm] = useState({});
+
+  const openBooking = (client) => {
+    setBookingClient(client);
+    setAptForm({
+      title: `Visit – ${client.firm_name}`,
+      client_id: client.id,
+      client_name: client.firm_name,
+      date: format(new Date(), "yyyy-MM-dd"),
+      time: "",
+      type: "In-Person",
+      status: "Scheduled",
+      notes: "",
+    });
+  };
+
+  const createMutation = useMutation({
+    mutationFn: (data) => base44.entities.Appointment.create(data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["appointments-all"] });
+      setBookingClient(null);
+    },
+  });
   const { data: clients = [] } = useQuery({
     queryKey: ["clients"],
     queryFn: () => base44.entities.Client.list(),
@@ -83,7 +113,7 @@ export default function PriorityFollowUps() {
   };
 
   return (
-    <Card style={{ borderColor: "#34CCD0", backgroundColor: "#081F3F" }}>
+    <>
       <CardHeader>
         <CardTitle className="flex items-center gap-2" style={{ color: "#92F21D" }}>
           <AlertTriangle className="w-5 h-5" style={{ color: "#f97316" }} />
@@ -103,7 +133,7 @@ export default function PriorityFollowUps() {
               return (
                 <div
                   key={client.id || idx}
-                  className="rounded-lg p-3 border"
+                  className="rounded-lg p-3 border cursor-pointer hover:brightness-110 transition-all"
                   style={{ backgroundColor: urgency.bg, borderColor: urgency.border }}
                 >
                   <div className="flex items-start justify-between gap-2">
@@ -126,11 +156,19 @@ export default function PriorityFollowUps() {
                       </div>
                     </div>
                     <div className="flex flex-col items-end gap-1 shrink-0">
-                      <div className="flex items-center gap-1 text-xs" style={{ color: urgency.labelColor }}>
-                        <Clock className="w-3 h-3" />
-                        {daysSinceVisit === 999 ? "Never" : `${daysSinceVisit}d ago`}
-                      </div>
-                      <div className="text-xs font-bold" style={{ color: "#34CCD0" }}>Score: {score}</div>
+                       <div className="flex items-center gap-1 text-xs" style={{ color: urgency.labelColor }}>
+                         <Clock className="w-3 h-3" />
+                         {daysSinceVisit === 999 ? "Never" : `${daysSinceVisit}d ago`}
+                       </div>
+                       <div className="text-xs font-bold" style={{ color: "#34CCD0" }}>Score: {score}</div>
+                       <Button
+                         size="sm"
+                         className="text-xs h-7 px-2 mt-1"
+                         style={{ backgroundColor: "#34CCD0", color: "#081F3F" }}
+                         onClick={(e) => { e.stopPropagation(); openBooking(client); }}
+                       >
+                         <CalendarPlus className="w-3 h-3 mr-1" /> Book
+                       </Button>
                     </div>
                   </div>
                 </div>
@@ -140,5 +178,60 @@ export default function PriorityFollowUps() {
         )}
       </CardContent>
     </Card>
+
+    {/* Quick Book Appointment Dialog */}
+    {bookingClient && (
+      <Dialog open={!!bookingClient} onOpenChange={() => setBookingClient(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Book Appointment — {bookingClient.firm_name}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div>
+              <Label>Title</Label>
+              <Input className="mt-1" value={aptForm.title} onChange={e => setAptForm({...aptForm, title: e.target.value})} />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label>Date *</Label>
+                <Input className="mt-1" type="date" value={aptForm.date} onChange={e => setAptForm({...aptForm, date: e.target.value})} />
+              </div>
+              <div>
+                <Label>Time</Label>
+                <Input className="mt-1" type="time" value={aptForm.time} onChange={e => setAptForm({...aptForm, time: e.target.value})} />
+              </div>
+            </div>
+            <div>
+              <Label>Type</Label>
+              <Select value={aptForm.type} onValueChange={v => setAptForm({...aptForm, type: v})}>
+                <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {["In-Person","Virtual","Phone Call","Site Visit"].map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Location</Label>
+              <Input className="mt-1" value={aptForm.location || ""} onChange={e => setAptForm({...aptForm, location: e.target.value})} placeholder="Address or meeting link" />
+            </div>
+            <div>
+              <Label>Notes</Label>
+              <Input className="mt-1" value={aptForm.notes} onChange={e => setAptForm({...aptForm, notes: e.target.value})} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setBookingClient(null)}>Cancel</Button>
+            <Button
+              disabled={!aptForm.title || !aptForm.date || createMutation.isPending}
+              onClick={() => createMutation.mutate(aptForm)}
+              style={{ backgroundColor: "#92F21D", color: "#081F3F" }}
+            >
+              {createMutation.isPending ? "Booking…" : "Create Appointment"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    )}
+    </>
   );
 }
