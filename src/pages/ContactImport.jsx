@@ -112,11 +112,9 @@ export default function ContactImport() {
   });
 
   const handleFile = useCallback(async (file) => {
-    const XLSX = await import("xlsx");
-    const buffer = await file.arrayBuffer();
-    const wb = XLSX.read(buffer, { type: "array" });
-    const ws = wb.Sheets[wb.SheetNames[0]];
-    const rows = XLSX.utils.sheet_to_json(ws, { defval: "" });
+    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const response = await base44.functions.invoke('parseContactsFile', { file_url });
+    const rows = response.data?.rows || [];
     const parsed = parseRows(rows, clients);
     setFirms(parsed);
     setStep("verify");
