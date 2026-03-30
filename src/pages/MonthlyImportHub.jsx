@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Upload, CheckCircle2, AlertCircle, FileSpreadsheet, RefreshCw, Eye, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-// xlsx loaded dynamically to avoid React duplicate instance issues
+import * as XLSX from "xlsx";
 
 const MONTHS = Array.from({ length: 12 }, (_, i) => {
   const d = new Date(2026, i, 1);
@@ -59,7 +59,6 @@ function FileUploadZone({ onFile, loading }) {
 
   const handleFile = useCallback(async (file) => {
     if (!file) return;
-    const XLSX = await import("https://esm.sh/xlsx@0.18.5");
     const buffer = await file.arrayBuffer();
     const wb = XLSX.read(buffer, { type: "array" });
     const ws = wb.Sheets[wb.SheetNames[0]];
