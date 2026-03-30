@@ -8,11 +8,13 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, Search, ClipboardList, Calendar, MapPin, Mic, FileText } from "lucide-react";
 import { format } from "date-fns";
 import BUMeetingRecordDialog from "./BUMeetingRecordDialog";
+import ClientMeetingHistory from "./ClientMeetingHistory";
 
 export default function MeetingMinutesTab() {
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
+  const [historyClient, setHistoryClient] = useState(null);
   const [user, setUser] = useState(null);
   const qc = useQueryClient();
 
@@ -80,8 +82,15 @@ export default function MeetingMinutesTab() {
                 </Badge>
               </div>
               {m.recorded_by && (
-                <p className="text-xs mt-2" style={{ color: "#92F21D" }}>by {m.recorded_by}</p>
+              <p className="text-xs mt-2" style={{ color: "#92F21D" }}>by {m.recorded_by}</p>
               )}
+              <button
+              className="text-xs mt-1 underline"
+              style={{ color: "#34CCD0" }}
+              onClick={(e) => { e.stopPropagation(); setHistoryClient(m.client_name); }}
+              >
+              View client history
+              </button>
             </CardContent>
           </Card>
         ))}
@@ -95,6 +104,14 @@ export default function MeetingMinutesTab() {
             <FileText className="w-4 h-4 mr-2" /> Record Your First Meeting
           </Button>
         </div>
+      )}
+
+      {historyClient && (
+        <ClientMeetingHistory
+          clientName={historyClient}
+          minutes={minutes}
+          onClose={() => setHistoryClient(null)}
+        />
       )}
 
       <BUMeetingRecordDialog
