@@ -30,7 +30,6 @@ import FollowUpsTab from "../components/appointmentTools/FollowUpsTab.jsx";
 import ExpertScheduleSection from "../components/appointmentTools/ExpertScheduleSection";
 import BUMeetingRecordDialog from "../components/appointmentTools/BUMeetingRecordDialog";
 import ScheduleCalendarView from "../components/appointmentTools/ScheduleCalendarView";
-import UpcomingAppointmentsList from "../components/appointmentTools/UpcomingAppointmentsList";
 import UpcomingMeetingsPanel from "../components/appointmentTools/UpcomingMeetingsPanel";
 
 const emptyApt = {
@@ -61,6 +60,9 @@ export default function AppointmentTools() {
   const [filterStatus, setFilterStatus] = useState("all");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
+  const [filterFirm, setFilterFirm] = useState("all");
+  const [filterMonth, setFilterMonth] = useState("all");
+  const [filterBU, setFilterBU] = useState("all");
 
   // Sub-dialogs
   const [sendReqApt, setSendReqApt] = useState(null);
@@ -122,8 +124,15 @@ export default function AppointmentTools() {
     const matchStatus = filterStatus === "all" || a.status === filterStatus;
     const matchFrom = !dateFrom || a.date >= dateFrom;
     const matchTo = !dateTo || a.date <= dateTo;
-    return matchSearch && matchStatus && matchFrom && matchTo;
+    const matchFirm = filterFirm === "all" || a.client_name === filterFirm;
+    const matchMonth = filterMonth === "all" || (a.date && a.date.startsWith(filterMonth));
+    const matchBU = filterBU === "all" || a.assigned_bul === filterBU;
+    return matchSearch && matchStatus && matchFrom && matchTo && matchFirm && matchMonth && matchBU;
   });
+
+  const firmOptions = [...new Set(appointments.map(a => a.client_name).filter(Boolean))].sort();
+  const buOptions = [...new Set(appointments.map(a => a.assigned_bul).filter(Boolean))].sort();
+  const monthOptions = [...new Set(appointments.map(a => a.date?.slice(0,7)).filter(Boolean))].sort().reverse();
 
   return (
     <div className="space-y-6">
@@ -158,14 +167,54 @@ export default function AppointmentTools() {
 
         <TabsContent value="appointments" className="mt-4 space-y-4">
           <UpcomingMeetingsPanel appointments={appointments} onStartRecording={(apt) => setRecordFromPanel(apt)} />
-          {/* Calendar and upcoming appointments */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <UpcomingAppointmentsList appointments={appointments} limit={15} onAppointmentClick={openMeetingRecord} />
-          </div>
-          {/* Appointment List with Record Meeting */}
-          <div className="space-y-2">
+
+          {/* Calendar */}
+          <ScheduleCalendarView
+            appointments={appointments}
+            onAppointmentClick={openMeetingRecord}
+            onAddAppointment={openNew}
+          />
+
+          {/* All Law Firm Appointments with filters */}
+          <div className="space-y-3">
             <p className="text-sm font-semibold" style={{color: '#92F21D'}}>All Law Firm Appointments</p>
-            {appointments.slice(0, 50).map(apt => (
+            {/* Filters */}
+            <div className="flex flex-wrap gap-2">
+              <div className="relative flex-1 min-w-[180px] max-w-xs">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{color: '#92F21D'}} />
+                <Input placeholder="Search title or firm…" value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
+              </div>
+              <Select value={filterFirm} onValueChange={setFilterFirm}>
+                <SelectTrigger className="w-48"><SelectValue placeholder="All Firms" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Firms</SelectItem>
+                  {firmOptions.map(f => <SelectItem key={f} value={f}>{f}</SelectItem>)}
+                </SelectContent>
+              </Select>
+              <Select value={filterMonth} onValueChange={setFilterMonth}>
+                <SelectTrigger className="w-40"><SelectValue placeholder="All Months" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Months</SelectItem>
+                  {monthOptions.map(m => <SelectItem key={m} value={m}>{m}</SelectItem>)}
+                </SelectContent>
+              </Select>
+              <Select value={filterBU} onValueChange={setFilterBU}>
+                <SelectTrigger className="w-44"><SelectValue placeholder="All BUs" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All BUs</SelectItem>
+                  {buOptions.map(b => <SelectItem key={b} value={b}>{b}</SelectItem>)}
+                </SelectContent>
+              </Select>
+              <Select value={filterStatus} onValueChange={setFilterStatus}>
+                <SelectTrigger className="w-36"><SelectValue placeholder="All Statuses" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Statuses</SelectItem>
+                  {["Scheduled","Completed","Cancelled","Rescheduled"].map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            <p className="text-xs" style={{color: '#34CCD0'}}>{filtered.length} appointment{filtered.length !== 1 ? 's' : ''} found</p>
+            {filtered.slice(0, 100).map(apt => (
               <AppointmentCard
                 key={apt.id}
                 apt={apt}
