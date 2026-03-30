@@ -25,7 +25,8 @@ import {
   BarChart2,
   DollarSign,
   MessageSquare,
-  Upload
+  Upload,
+  Calendar as CalendarIcon
 } from "lucide-react";
 import PWAInstallBanner from "@/components/PWAInstallBanner";
 import OfflineIndicator from "@/components/OfflineIndicator";
@@ -73,6 +74,7 @@ const mainNavItems = [
   { name: "Follow-Up Rules", icon: FileText, page: "FollowUpRules" },
   { name: "Goals", icon: TrendingUp, page: "Goals" },
   { name: "Team Calendar", icon: LayoutDashboard, page: "TeamCalendar" },
+  { name: "Meeting Calendar", icon: CalendarIcon, page: "CalendarView" },
   { name: "BUL Management", icon: TrendingUp, page: "BULManagement" },
   { name: "User Management", icon: Users, page: "UserManagement" },
   { name: "Role Management", icon: Users, page: "RoleManagement" },

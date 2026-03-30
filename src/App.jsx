@@ -14,6 +14,7 @@ import ContactImport from './pages/ContactImport';
 import ClientEngagementTrends from './pages/ClientEngagementTrends';
 import ActionItemsDashboard from './pages/ActionItemsDashboard';
 import HealthChecker from './pages/HealthChecker';
+import CalendarView from './pages/CalendarView';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
@@ -77,6 +78,7 @@ const AuthenticatedApp = () => {
       <Route path="/ClientEngagementTrends" element={<LayoutWrapper currentPageName="ClientEngagementTrends"><ClientEngagementTrends /></LayoutWrapper>} />
       <Route path="/ActionItemsDashboard" element={<LayoutWrapper currentPageName="ActionItemsDashboard"><ActionItemsDashboard /></LayoutWrapper>} />
       <Route path="/HealthChecker" element={<LayoutWrapper currentPageName="HealthChecker"><HealthChecker /></LayoutWrapper>} />
+      <Route path="/CalendarView" element={<LayoutWrapper currentPageName="CalendarView"><CalendarView /></LayoutWrapper>} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
