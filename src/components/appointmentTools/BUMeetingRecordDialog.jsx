@@ -12,7 +12,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import {
   Upload, Loader2, Wand2, FileAudio, Mic, MicOff,
   MapPin, Paperclip, X, CheckSquare, Square, FileText, Download, Mail,
-  Sparkles, FileInput
+  Sparkles, FileUp
 } from "lucide-react";
 import { format } from "date-fns";
 import jsPDF from "jspdf";
@@ -571,7 +571,7 @@ Extract the following in JSON:
                 <p className="text-xs mb-3" style={{ color: "#ffffff" }}>Upload a .txt or .docx transcript file to skip audio transcription.</p>
                 <input ref={transcriptFileRef} type="file" accept=".txt,.docx,text/*" className="hidden" onChange={handleTranscriptFileUpload} />
                 <Button variant="outline" size="sm" onClick={() => transcriptFileRef.current.click()} className="border-[#92F21D] text-[#92F21D]">
-                  <FileInput className="w-4 h-4 mr-2" /> Upload Transcript (.txt)
+                  <FileUp className="w-4 h-4 mr-2" /> Upload Transcript (.txt)
                 </Button>
               </div>
 
