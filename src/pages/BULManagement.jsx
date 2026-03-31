@@ -406,7 +406,7 @@ export default function BULManagement() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-slate-800">BUL Management</h2>
+          <h2 className="text-2xl font-bold text-[#92F21D]">BUL Management</h2>
           <p className="text-sm text-slate-600 mt-1">Manage business unit leaders, targets, and team organization</p>
         </div>
         <Link to={createPageUrl('UserManagement')}>
