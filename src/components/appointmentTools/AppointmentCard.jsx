@@ -41,6 +41,7 @@ export default function AppointmentCard({ apt, onEdit, onSendRequest, onConfirm,
               {apt.client_name && <span className="text-xs text-slate-600 font-medium">{apt.client_name}</span>}
               {apt.location && <span className="text-xs text-slate-500 flex items-center gap-1 truncate max-w-xs"><MapPin className="w-3 h-3" />{apt.location}</span>}
               <Badge variant="outline" className="text-[10px]">{apt.type}</Badge>
+              {apt.created_by && <span className="text-xs text-slate-400">By: {apt.created_by}</span>}
             </div>
           </div>
 
