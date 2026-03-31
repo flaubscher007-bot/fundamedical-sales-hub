@@ -8,14 +8,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { base44 } from "@/api/base44Client";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
 import {
   Upload, Loader2, Wand2, FileAudio, Mic, MicOff,
   MapPin, Paperclip, X, CheckSquare, Square, FileText, Download, Mail,
-  Sparkles, FileUp
+  Sparkles, FileUp, AlertTriangle
 } from "lucide-react";
 import { format } from "date-fns";
 import jsPDF from "jspdf";
+import SearchableClientSelect from "./SearchableClientSelect";
+import AddProspectDialog from "./AddProspectDialog";
 
 const BU_SERVICES = [
   { key: "bookings", label: "Bookings" },
@@ -68,11 +70,22 @@ async function captureGeolocation() {
   });
 }
 
+const AUTOSAVE_KEY = "bu_recording_autosave";
+
 export default function BUMeetingRecordDialog({ open, onClose, appointment, existing, user, autoTab }) {
   const qc = useQueryClient();
   const [activeTab, setActiveTab] = useState(autoTab || "prep");
   const [sendingEmail, setSendingEmail] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+  const [addProspectOpen, setAddProspectOpen] = useState(false);
+  const [prospectPrefill, setProspectPrefill] = useState("");
+  const [recoveryAvailable, setRecoveryAvailable] = useState(false);
+  const [recovering, setRecovering] = useState(false);
+
+  const { data: clients = [] } = useQuery({
+    queryKey: ["clients-brief"],
+    queryFn: () => base44.entities.Client.list("-created_date", 300),
+  });
 
   const [form, setForm] = useState(() => ({
     client_name: appointment?.client_name || "",
@@ -111,6 +124,14 @@ export default function BUMeetingRecordDialog({ open, onClose, appointment, exis
     }
   }, [existing]);
 
+  // Check for autosaved recovery data on open
+  useEffect(() => {
+    if (open) {
+      const saved = localStorage.getItem(AUTOSAVE_KEY);
+      if (saved) setRecoveryAvailable(true);
+    }
+  }, [open]);
+
   const [uploading, setUploading] = useState(false);
   const [transcribing, setTranscribing] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -123,9 +144,10 @@ export default function BUMeetingRecordDialog({ open, onClose, appointment, exis
   const [analyzing, setAnalyzing] = useState(false);
   const [analyzeResult, setAnalyzeResult] = useState(null);
   const transcriptFileRef = useRef();
-
   const audioRef = useRef();
   const attachRef = useRef();
+  const chunksRef = useRef([]);
+  const autoSaveIntervalRef = useRef(null);
 
   const handleTranscriptFileUpload = async (e) => {
     const file = e.target.files[0];
@@ -180,18 +202,16 @@ Extract the following in JSON:
         : f.additional_notes,
       bu_services: { ...merged_services },
     }));
-    // Update client notes in DB if client_name is known
     if (form.client_name && analyzeResult.service_notes) {
-      const clients = await base44.entities.Client.filter({ firm_name: form.client_name }).catch(() => []);
-      if (clients[0]) {
-        const existingNotes = clients[0].notes || "";
+      const clientList = await base44.entities.Client.filter({ firm_name: form.client_name }).catch(() => []);
+      if (clientList[0]) {
+        const existingNotes = clientList[0].notes || "";
         const stamp = `\n\n[AI – ${form.date}] ${analyzeResult.service_notes}`;
-        await base44.entities.Client.update(clients[0].id, { notes: existingNotes + stamp });
+        await base44.entities.Client.update(clientList[0].id, { notes: existingNotes + stamp });
       }
     }
     setAnalyzeResult(null);
   };
-  const chunksRef = useRef([]);
 
   const toggleService = (key) => {
     setForm(f => ({ ...f, bu_services: { ...f.bu_services, [key]: !f.bu_services[key] } }));
@@ -205,23 +225,88 @@ Extract the following in JSON:
     setGeoLoading(false);
   };
 
+  // Autosave chunks to localStorage
+  const autoSaveChunks = () => {
+    if (!chunksRef.current.length) return;
+    const blob = new Blob(chunksRef.current, { type: "audio/webm" });
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      try {
+        localStorage.setItem(AUTOSAVE_KEY, JSON.stringify({
+          data: reader.result,
+          client_name: form.client_name,
+          date: form.date,
+          savedAt: new Date().toISOString()
+        }));
+      } catch (e) { /* storage full */ }
+    };
+    reader.readAsDataURL(blob);
+  };
+
+  // Autosave on tab hide or page close
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden" && recording) {
+        mediaRecorder?.requestData();
+        autoSaveChunks();
+      }
+    };
+    const handleBeforeUnload = (e) => {
+      if (recording) {
+        autoSaveChunks();
+        e.preventDefault();
+        e.returnValue = "A recording is in progress. Your recording will be autosaved.";
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [recording, mediaRecorder, form.client_name, form.date]);
+
+  const recoverRecording = async () => {
+    setRecovering(true);
+    const saved = localStorage.getItem(AUTOSAVE_KEY);
+    if (!saved) { setRecovering(false); return; }
+    const { data } = JSON.parse(saved);
+    const res = await fetch(data);
+    const blob = await res.blob();
+    setRecordingBlob(blob);
+    localStorage.removeItem(AUTOSAVE_KEY);
+    setRecoveryAvailable(false);
+    setRecovering(false);
+    setSaveDialog(true);
+  };
+
   const startRecording = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     const mr = new MediaRecorder(stream);
     chunksRef.current = [];
-    mr.ondataavailable = (e) => { if (e.data.size > 0) chunksRef.current.push(e.data); };
+    mr.ondataavailable = (e) => {
+      if (e.data.size > 0) {
+        chunksRef.current.push(e.data);
+        autoSaveChunks();
+      }
+    };
     mr.onstop = () => {
       const blob = new Blob(chunksRef.current, { type: "audio/webm" });
       setRecordingBlob(blob);
       setSaveDialog(true);
+      localStorage.removeItem(AUTOSAVE_KEY);
+      setRecoveryAvailable(false);
+      if (autoSaveIntervalRef.current) clearInterval(autoSaveIntervalRef.current);
     };
-    mr.start();
+    mr.start(5000); // timeslice every 5s
     setMediaRecorder(mr);
     setRecording(true);
+    autoSaveIntervalRef.current = setInterval(autoSaveChunks, 15000);
     if (!form.city) handleGeoTag();
   };
 
   const stopRecording = () => {
+    if (autoSaveIntervalRef.current) clearInterval(autoSaveIntervalRef.current);
     mediaRecorder?.stop();
     mediaRecorder?.stream?.getTracks().forEach(t => t.stop());
     setRecording(false);
@@ -299,23 +384,12 @@ Extract the following in JSON:
     const buName = (form.attendees || form.assigned_bul || 'BU').replace(/[/\\:*?"<>|]/g, '_');
     const firmName = (form.client_name || 'LawFirm').replace(/[/\\:*?"<>|]/g, '_');
     const folderName = `${dateStr} - ${buName} - ${firmName}`;
-
     const zip = new JSZip();
     const folder = zip.folder(folderName);
-
-    // Add recording
     folder.file(`recording-${dateStr}.webm`, recordingBlob);
-
-    // Add transcript if available
-    if (form.transcript) {
-      folder.file(`transcript-${dateStr}.txt`, form.transcript);
-    }
-
-    // Add PDF
+    if (form.transcript) folder.file(`transcript-${dateStr}.txt`, form.transcript);
     const pdfBlob = buildPDF().output('blob');
     folder.file(`meeting-form-${dateStr}.pdf`, pdfBlob);
-
-    // Download ZIP
     const zipBlob = await zip.generateAsync({ type: 'blob' });
     const url = URL.createObjectURL(zipBlob);
     const a = document.createElement('a');
@@ -323,8 +397,6 @@ Extract the following in JSON:
     a.download = `${folderName}.zip`;
     a.click();
     URL.revokeObjectURL(url);
-
-    // Also upload recording to cloud as backup
     setUploading(true);
     const file = new File([recordingBlob], `meeting-recording-${Date.now()}.webm`, { type: 'audio/webm' });
     const { file_url } = await base44.integrations.Core.UploadFile({ file });
@@ -389,7 +461,6 @@ Extract the following in JSON:
     }
     qc.invalidateQueries({ queryKey: ["meeting-minutes"] });
     setSaving(false);
-    // Auto-send email if meeting is completed and has action items
     if (savedId && (dataToSave.meeting_status === "Completed" || dataToSave.action_items)) {
       setSendingEmail(true);
       await base44.functions.invoke("sendMeetingOutcomeEmail", { meeting_id: savedId, emails: [user?.email].filter(Boolean) });
@@ -420,6 +491,26 @@ Extract the following in JSON:
             </DialogTitle>
           </DialogHeader>
 
+          {/* Recovery banner */}
+          {recoveryAvailable && (
+            <div className="flex items-center gap-3 p-3 rounded-lg border border-amber-500/50 bg-amber-500/10">
+              <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-amber-400">Unsaved recording detected</p>
+                <p className="text-xs text-amber-300/80">A previous recording was interrupted. You can recover it now.</p>
+              </div>
+              <Button size="sm" onClick={recoverRecording} disabled={recovering}
+                className="bg-amber-500 hover:bg-amber-600 text-white text-xs flex-shrink-0">
+                {recovering ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : null}
+                Recover
+              </Button>
+              <button onClick={() => { localStorage.removeItem(AUTOSAVE_KEY); setRecoveryAvailable(false); }}
+                className="text-slate-400 hover:text-red-400 flex-shrink-0">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid grid-cols-3 w-full">
               <TabsTrigger value="prep">
@@ -440,8 +531,14 @@ Extract the following in JSON:
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Law Firm</Label>
-                  <Input className="mt-1" value={form.client_name}
-                    onChange={e => setForm(f => ({ ...f, client_name: e.target.value }))} />
+                  <div className="mt-1">
+                    <SearchableClientSelect
+                      clients={clients}
+                      value={form.client_id || ""}
+                      onChange={(id, name) => setForm(f => ({ ...f, client_id: id, client_name: name }))}
+                      onAddProspect={(prefill) => { setProspectPrefill(prefill || ""); setAddProspectOpen(true); }}
+                    />
+                  </div>
                 </div>
                 <div>
                   <Label>Date</Label>
@@ -527,7 +624,7 @@ Extract the following in JSON:
             <TabsContent value="record" className="space-y-4 pt-4">
               <div className="border border-[#34CCD0]/30 rounded-xl p-5">
                 <p className="text-sm font-bold mb-4" style={{ color: "#92F21D" }}>Live Recording</p>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 flex-wrap">
                   {!recording ? (
                     <Button onClick={startRecording} className="bg-red-600 hover:bg-red-700 flex items-center gap-2">
                       <Mic className="w-4 h-4" /> Start Recording
@@ -540,7 +637,7 @@ Extract the following in JSON:
                   {uploading && <span className="text-sm flex items-center gap-1" style={{ color: "#34CCD0" }}><Loader2 className="w-4 h-4 animate-spin" /> Uploading...</span>}
                   {recording && <span className="text-sm text-red-400 flex items-center gap-1"><span className="w-2 h-2 bg-red-500 rounded-full animate-pulse inline-block" /> Recording in progress</span>}
                 </div>
-                <p className="text-xs mt-2 text-slate-400">When you stop recording, you'll be asked where to save it.</p>
+                <p className="text-xs mt-2 text-slate-400">Recording autosaves every 5 seconds locally. If interrupted, you'll be prompted to recover it on next open.</p>
               </div>
 
               <div className="border border-[#34CCD0]/30 rounded-xl p-5">
@@ -691,7 +788,7 @@ Extract the following in JSON:
         </DialogContent>
       </Dialog>
 
-      {/* Save Recording: choose where to save */}
+      {/* Save Recording Dialog */}
       {saveDialog && (
         <Dialog open={saveDialog} onOpenChange={() => setSaveDialog(false)}>
           <DialogContent className="max-w-md">
@@ -716,6 +813,16 @@ Extract the following in JSON:
           </DialogContent>
         </Dialog>
       )}
+
+      <AddProspectDialog
+        open={addProspectOpen}
+        onClose={() => setAddProspectOpen(false)}
+        prefillName={prospectPrefill}
+        onCreated={(newClient) => {
+          qc.invalidateQueries({ queryKey: ["clients-brief"] });
+          setForm(f => ({ ...f, client_id: newClient.id, client_name: newClient.firm_name }));
+        }}
+      />
     </>
   );
 }
