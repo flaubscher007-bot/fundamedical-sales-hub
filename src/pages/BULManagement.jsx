@@ -570,8 +570,8 @@ export default function BULManagement() {
                               </thead>
                               <tbody className="divide-y divide-slate-100">
                                 {sorted.map((target) => (
-                                  <tr key={target.id} className="hover:bg-slate-50 transition-colors">
-                                    <td className="px-4 py-3 font-medium text-slate-700">
+                                  <tr key={target.id} className="hover:bg-white transition-colors">
+                                    <td className="px-4 py-3 font-medium text-white">
                                       {new Date(target.month).toLocaleDateString('en-ZA', { year: 'numeric', month: 'long' })}
                                     </td>
                                     <td className="px-4 py-3 text-right font-semibold text-green-700">{target.bookings_target || 0}</td>
