@@ -44,6 +44,42 @@
     "contact_phone": {
       "type": "string"
     },
+    "website": {
+      "type": "string",
+      "description": "Firm website URL"
+    },
+    "address": {
+      "type": "string"
+    },
+    "city": {
+      "type": "string"
+    },
+    "province": {
+      "type": "string",
+      "enum": [
+        "Western Cape",
+        "KwaZulu-Natal",
+        "Gauteng",
+        "Eastern Cape",
+        "Free State",
+        "Limpopo",
+        "Mpumalanga",
+        "North West",
+        "Northern Cape"
+      ]
+    },
+    "latitude": {
+      "type": "number",
+      "description": "GPS latitude (auto-geocoded)"
+    },
+    "longitude": {
+      "type": "number",
+      "description": "GPS longitude (auto-geocoded)"
+    },
+    "geo_source": {
+      "type": "string",
+      "description": "How the coordinates were obtained (manual/geocoded/website)"
+    },
     "directors": {
       "type": "array",
       "items": {
@@ -151,26 +187,6 @@
         }
       },
       "description": "Finance person contacts (multiple allowed)"
-    },
-    "address": {
-      "type": "string"
-    },
-    "city": {
-      "type": "string"
-    },
-    "province": {
-      "type": "string",
-      "enum": [
-        "Western Cape",
-        "KwaZulu-Natal",
-        "Gauteng",
-        "Eastern Cape",
-        "Free State",
-        "Limpopo",
-        "Mpumalanga",
-        "North West",
-        "Northern Cape"
-      ]
     },
     "category": {
       "type": "string",

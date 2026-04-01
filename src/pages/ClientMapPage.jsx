@@ -1,11 +1,13 @@
 import React, { useState, useMemo } from "react";
+import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { MapContainer, TileLayer, CircleMarker, Popup, Tooltip } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { MapPin, Filter, Users, Building2 } from "lucide-react";
+import { MapPin, Filter, Users, Building2, RefreshCw, Globe } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const SERVICE_LABELS = {
   bookings: "Bookings",
@@ -40,12 +42,35 @@ export default function ClientMapPage() {
   const [filterBUL, setFilterBUL] = useState("all");
   const [filterService, setFilterService] = useState("all");
 
-  const { data: meetings = [], isLoading } = useQuery({
+  const [geocoding, setGeocoding] = useState(false);
+
+  const { data: meetings = [], isLoading: loadingMeetings } = useQuery({
     queryKey: ["meeting-map-data"],
     queryFn: () => base44.entities.MeetingMinutes.list("-date", 1000),
   });
 
-  // Only records with geo
+  const { data: clients = [], isLoading: loadingClients, refetch: refetchClients } = useQuery({
+    queryKey: ["clients-map"],
+    queryFn: () => base44.entities.Client.list("firm_name", 1000),
+  });
+
+  const isLoading = loadingMeetings || loadingClients;
+
+  const handleGeocode = async (mode = 'geocode') => {
+    setGeocoding(true);
+    try {
+      const res = await base44.functions.invoke('geocodeClients', { mode });
+      toast.success(`Geocoded ${res.data.updated} firms`);
+      refetchClients();
+    } catch (e) {
+      toast.error('Geocoding failed: ' + e.message);
+    }
+    setGeocoding(false);
+  };
+
+  const missingGeoCount = clients.filter(c => !c.latitude && !c.longitude).length;
+
+  // Only meeting records with geo
   const geoRecords = useMemo(() =>
     meetings.filter(r => r.latitude && r.longitude),
     [meetings]
@@ -57,7 +82,7 @@ export default function ClientMapPage() {
     return Array.from(set).sort();
   }, [geoRecords]);
 
-  // Filtered records
+  // Filtered meeting records
   const filtered = useMemo(() => {
     return geoRecords.filter(r => {
       if (filterBUL !== "all" && r.assigned_bul !== filterBUL) return false;
@@ -65,6 +90,14 @@ export default function ClientMapPage() {
       return true;
     });
   }, [geoRecords, filterBUL, filterService]);
+
+  // Filtered client firms
+  const filteredClients = useMemo(() => {
+    return geoClients.filter(c => {
+      if (filterBUL !== "all" && c.assigned_bul !== filterBUL && c.business_unit_leader !== filterBUL) return false;
+      return true;
+    });
+  }, [geoClients, filterBUL]);
 
   // Cluster: group nearby points (within ~10km) to show counts
   const clustered = useMemo(() => {
@@ -107,7 +140,7 @@ export default function ClientMapPage() {
             <MapPin className="w-6 h-6" /> Interactive Client Map
           </h1>
           <p className="text-sm mt-0.5" style={{ color: "#34CCD0" }}>
-            {geoRecords.length} geotagged meetings · {filtered.length} shown
+            {geoClients.length} firms plotted · {geoRecords.length} meeting pins
           </p>
         </div>
 
@@ -140,14 +173,30 @@ export default function ClientMapPage() {
         </div>
       </div>
 
+      {/* Geocode bar */}
+      {missingGeoCount > 0 && (
+      <div className="flex flex-wrap items-center gap-3 px-4 py-3 rounded-lg" style={{ backgroundColor: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.3)" }}>
+        <MapPin className="w-4 h-4 text-amber-400" />
+        <span className="text-sm text-amber-300">{missingGeoCount} firms have no map coordinates</span>
+        <Button size="sm" variant="outline" onClick={() => handleGeocode('geocode')} disabled={geocoding} className="border-amber-500/40 text-amber-300 ml-auto">
+          {geocoding ? <RefreshCw className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : <MapPin className="w-3.5 h-3.5 mr-1.5" />}
+          Auto-Geocode Missing Firms
+        </Button>
+        <Button size="sm" variant="outline" onClick={() => handleGeocode('enrich')} disabled={geocoding} className="border-[#34CCD0]/40" style={{ color: "#34CCD0" }}>
+          <Globe className="w-3.5 h-3.5 mr-1.5" />
+          Lookup Addresses from Websites
+        </Button>
+      </div>
+      )}
+
       {/* Stats row */}
       <div className="flex flex-wrap gap-3">
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[#34CCD0]/30" style={{ backgroundColor: "rgba(52,204,208,0.08)" }}>
-          <Building2 className="w-4 h-4 text-[#34CCD0]" />
-          <span className="text-sm" style={{ color: "#34CCD0" }}>
-            <strong>{new Set(filtered.map(r => r.client_name)).size}</strong> unique firms
-          </span>
-        </div>
+      <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[#92F21D]/30" style={{ backgroundColor: "rgba(146,242,29,0.08)" }}>
+        <Building2 className="w-4 h-4 text-[#92F21D]" />
+        <span className="text-sm" style={{ color: "#92F21D" }}>
+          <strong>{filteredClients.length}</strong> firms on map
+        </span>
+      </div>
         <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[#92F21D]/30" style={{ backgroundColor: "rgba(146,242,29,0.08)" }}>
           <Users className="w-4 h-4 text-[#92F21D]" />
           <span className="text-sm" style={{ color: "#92F21D" }}>
@@ -167,11 +216,11 @@ export default function ClientMapPage() {
         <div className="flex items-center justify-center flex-1 py-20">
           <div className="w-8 h-8 border-4 border-[#34CCD0]/30 border-t-[#34CCD0] rounded-full animate-spin" />
         </div>
-      ) : geoRecords.length === 0 ? (
+      ) : geoRecords.length === 0 && geoClients.length === 0 ? (
         <div className="flex flex-col items-center justify-center flex-1 py-20">
           <MapPin className="w-12 h-12 text-slate-600 mb-3" />
-          <p style={{ color: "#92F21D" }}>No geotagged meetings yet</p>
-          <p className="text-sm mt-1" style={{ color: "#34CCD0" }}>Enable location in meeting records to see firms on the map</p>
+          <p style={{ color: "#92F21D" }}>No location data yet</p>
+          <p className="text-sm mt-1" style={{ color: "#34CCD0" }}>Click "Auto-Geocode" above to plot your firms on the map</p>
         </div>
       ) : (
         <div className="flex-1 rounded-xl overflow-hidden border border-[#34CCD0]/30" style={{ minHeight: 500 }}>
@@ -186,23 +235,46 @@ export default function ClientMapPage() {
               url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
             />
 
+            {/* Law firm markers — green */}
+            {filteredClients.map((firm) => (
+              <CircleMarker
+                key={`firm-${firm.id}`}
+                center={[firm.latitude, firm.longitude]}
+                radius={7}
+                pathOptions={{ fillColor: "#92F21D", fillOpacity: 0.85, color: "#fff", weight: 1.5 }}
+              >
+                <Tooltip direction="top" offset={[0, -8]}>
+                  <div style={{ color: "#081F3F", fontWeight: 600, minWidth: 140 }}>
+                    🏢 {firm.firm_name}
+                    {firm.city && <><br /><span style={{ fontWeight: 400 }}>{firm.city}{firm.province ? `, ${firm.province}` : ""}</span></>}
+                  </div>
+                </Tooltip>
+                <Popup>
+                  <div style={{ color: "#081F3F", minWidth: 200 }}>
+                    <p style={{ fontWeight: 700, marginBottom: 4 }}>🏢 {firm.firm_name}</p>
+                    <p style={{ fontSize: 12, color: "#555", marginBottom: 4 }}>{firm.address || [firm.city, firm.province].filter(Boolean).join(", ")}</p>
+                    {(firm.assigned_bul || firm.business_unit_leader) && <p style={{ fontSize: 12, color: "#0a2d52", fontWeight: 600 }}>BUL: {firm.assigned_bul || firm.business_unit_leader}</p>}
+                    {firm.contact_person && <p style={{ fontSize: 12, marginTop: 4 }}>Contact: {firm.contact_person}</p>}
+                    {firm.contact_phone && <p style={{ fontSize: 11, color: "#555" }}>{firm.contact_phone}</p>}
+                    {firm.activity_status && <p style={{ fontSize: 11, marginTop: 4, fontWeight: 600, color: firm.activity_status === 'ACTIVE' ? '#16a34a' : '#888' }}>{firm.activity_status}</p>}
+                    {firm.geo_source && <p style={{ fontSize: 10, color: "#aaa", marginTop: 4 }}>📍 {firm.geo_source}</p>}
+                  </div>
+                </Popup>
+              </CircleMarker>
+            ))}
+
+            {/* Meeting clusters — cyan */}
             {clustered.map((cluster, idx) => {
               const count = cluster.records.length;
               const color = getBUColor(cluster.bul);
               const radius = Math.min(8 + count * 3, 30);
               const firms = [...new Set(cluster.records.map(r => r.client_name))];
-
               return (
                 <CircleMarker
                   key={idx}
                   center={[cluster.lat, cluster.lng]}
                   radius={radius}
-                  pathOptions={{
-                    fillColor: color,
-                    fillOpacity: 0.75,
-                    color: "#ffffff",
-                    weight: 1.5,
-                  }}
+                  pathOptions={{ fillColor: color, fillOpacity: 0.75, color: "#ffffff", weight: 1.5 }}
                 >
                   <Tooltip direction="top" offset={[0, -radius]}>
                     <div style={{ color: "#081F3F", fontWeight: 600, minWidth: 120 }}>
@@ -213,25 +285,12 @@ export default function ClientMapPage() {
                   </Tooltip>
                   <Popup>
                     <div style={{ color: "#081F3F", minWidth: 200 }}>
-                      <p style={{ fontWeight: 700, marginBottom: 4, color: "#081F3F" }}>
-                        📍 {cluster.records[0]?.city || "Location"}
-                      </p>
-                      <p style={{ fontSize: 12, color: "#555", marginBottom: 6 }}>
-                        BUL: {cluster.bul || "Unassigned"}
-                      </p>
+                      <p style={{ fontWeight: 700, marginBottom: 4, color: "#081F3F" }}>📍 {cluster.records[0]?.city || "Location"}</p>
+                      <p style={{ fontSize: 12, color: "#555", marginBottom: 6 }}>BUL: {cluster.bul || "Unassigned"}</p>
                       {firms.slice(0, 6).map(f => (
-                        <div key={f} style={{ fontSize: 12, padding: "2px 0", borderBottom: "1px solid #eee", color: "#081F3F" }}>
-                          {f}
-                        </div>
+                        <div key={f} style={{ fontSize: 12, padding: "2px 0", borderBottom: "1px solid #eee", color: "#081F3F" }}>{f}</div>
                       ))}
-                      {firms.length > 6 && (
-                        <p style={{ fontSize: 11, color: "#888", marginTop: 4 }}>+{firms.length - 6} more firms</p>
-                      )}
-                      {filterService !== "all" && (
-                        <p style={{ fontSize: 11, marginTop: 6, color: "#34CCD0", fontWeight: 600 }}>
-                          Service: {SERVICE_LABELS[filterService]}
-                        </p>
-                      )}
+                      {firms.length > 6 && <p style={{ fontSize: 11, color: "#888", marginTop: 4 }}>+{firms.length - 6} more firms</p>}
                     </div>
                   </Popup>
                 </CircleMarker>
