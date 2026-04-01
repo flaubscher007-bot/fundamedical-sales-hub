@@ -282,7 +282,12 @@ Extract the following in JSON:
 
   const startRecording = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const mr = new MediaRecorder(stream);
+    const mimeType = MediaRecorder.isTypeSupported('audio/mp4')
+      ? 'audio/mp4'
+      : MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+      ? 'audio/webm;codecs=opus'
+      : 'audio/webm';
+    const mr = new MediaRecorder(stream, { mimeType });
     chunksRef.current = [];
     mr.ondataavailable = (e) => {
       if (e.data.size > 0) {
@@ -291,14 +296,14 @@ Extract the following in JSON:
       }
     };
     mr.onstop = () => {
-      const blob = new Blob(chunksRef.current, { type: "audio/webm" });
+      const blob = new Blob(chunksRef.current, { type: mimeType });
       setRecordingBlob(blob);
       setSaveDialog(true);
       localStorage.removeItem(AUTOSAVE_KEY);
       setRecoveryAvailable(false);
       if (autoSaveIntervalRef.current) clearInterval(autoSaveIntervalRef.current);
     };
-    mr.start(5000); // timeslice every 5s
+    mr.start(5000);
     setMediaRecorder(mr);
     setRecording(true);
     autoSaveIntervalRef.current = setInterval(autoSaveChunks, 15000);
@@ -316,7 +321,8 @@ Extract the following in JSON:
     if (!recordingBlob) return;
     setSaveDialog(false);
     setUploading(true);
-    const file = new File([recordingBlob], `meeting-recording-${Date.now()}.webm`, { type: "audio/webm" });
+    const ext = recordingBlob.type.includes('mp4') ? 'mp4' : 'm4a';
+    const file = new File([recordingBlob], `meeting-recording-${Date.now()}.${ext}`, { type: recordingBlob.type });
     const { file_url } = await base44.integrations.Core.UploadFile({ file });
     setForm(f => ({ ...f, recording_url: file_url }));
     setUploading(false);
@@ -386,7 +392,8 @@ Extract the following in JSON:
     const folderName = `${dateStr} - ${buName} - ${firmName}`;
     const zip = new JSZip();
     const folder = zip.folder(folderName);
-    folder.file(`recording-${dateStr}.webm`, recordingBlob);
+    const ext = recordingBlob.type.includes('mp4') ? 'mp4' : 'm4a';
+    folder.file(`recording-${dateStr}.${ext}`, recordingBlob);
     if (form.transcript) folder.file(`transcript-${dateStr}.txt`, form.transcript);
     const pdfBlob = buildPDF().output('blob');
     folder.file(`meeting-form-${dateStr}.pdf`, pdfBlob);
@@ -398,7 +405,7 @@ Extract the following in JSON:
     a.click();
     URL.revokeObjectURL(url);
     setUploading(true);
-    const file = new File([recordingBlob], `meeting-recording-${Date.now()}.webm`, { type: 'audio/webm' });
+    const file = new File([recordingBlob], `meeting-recording-${Date.now()}.${ext}`, { type: recordingBlob.type });
     const { file_url } = await base44.integrations.Core.UploadFile({ file });
     setForm(f => ({ ...f, recording_url: file_url }));
     setUploading(false);
@@ -643,9 +650,15 @@ Extract the following in JSON:
               <div className="border border-[#34CCD0]/30 rounded-xl p-5">
                 <p className="text-sm font-bold mb-3" style={{ color: "#92F21D" }}>Upload Recording File</p>
                 {form.recording_url && (
-                  <div className="flex items-center gap-3 mb-2">
-                    <FileAudio className="w-6 h-6 text-[#00bcd4]" />
-                    <a href={form.recording_url} target="_blank" rel="noreferrer" className="text-sm underline" style={{ color: "#34CCD0" }}>View recording file</a>
+                  <div className="mb-3 space-y-2">
+                    <div className="flex items-center gap-3">
+                      <FileAudio className="w-6 h-6 text-[#00bcd4] flex-shrink-0" />
+                      <a href={form.recording_url} target="_blank" rel="noreferrer" className="text-sm underline" style={{ color: "#34CCD0" }}>Open / Download recording</a>
+                    </div>
+                    <audio controls src={form.recording_url} className="w-full mt-1" style={{ accentColor: '#34CCD0' }}>
+                      Your browser does not support audio playback.
+                    </audio>
+                    <p className="text-xs" style={{ color: '#92F21D' }}>💡 To share via WhatsApp: tap "Open / Download recording" → download the file → share it in WhatsApp as a voice/audio attachment.</p>
                   </div>
                 )}
                 <input ref={audioRef} type="file" accept="audio/*,video/*" className="hidden" onChange={handleAudioUpload} />
