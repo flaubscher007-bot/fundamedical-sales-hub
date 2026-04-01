@@ -262,12 +262,6 @@ export default function ClientMapPage() {
         <div className="flex items-center justify-center flex-1 py-20">
           <div className="w-8 h-8 border-4 border-[#34CCD0]/30 border-t-[#34CCD0] rounded-full animate-spin" />
         </div>
-      ) : geoRecords.length === 0 && geoClients.length === 0 ? (
-        <div className="flex flex-col items-center justify-center flex-1 py-20">
-          <MapPin className="w-12 h-12 text-slate-600 mb-3" />
-          <p style={{ color: "#92F21D" }}>No location data yet</p>
-          <p className="text-sm mt-1" style={{ color: "#34CCD0" }}>Click "Auto-Geocode" above to plot your firms on the map</p>
-        </div>
       ) : (
         <div className="flex-1 rounded-xl overflow-hidden border border-[#34CCD0]/30" style={{ minHeight: 500 }}>
           <MapContainer
@@ -284,7 +278,7 @@ export default function ClientMapPage() {
             {/* Province territory overlays */}
             {showTerritories && provinceGeo && (
               <GeoJSON
-                key={"territories"}
+                key={showTerritories ? "territories-on" : "territories-off"}
                 data={provinceGeo}
                 style={(feature) => {
                   const name = feature?.properties?.name || feature?.properties?.PROVINCE || feature?.properties?.NAME_1 || "";
