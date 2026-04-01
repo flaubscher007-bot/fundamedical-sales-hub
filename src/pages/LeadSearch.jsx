@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
+import OutreachModule from "@/components/leadSearch/OutreachModule";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -34,6 +35,16 @@ export default function LeadSearch() {
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
   const [existingClients, setExistingClients] = useState([]);
+  const [selectedFirms, setSelectedFirms] = useState([]);
+  const [showOutreach, setShowOutreach] = useState(false);
+
+  const toggleFirmSelection = (firm) => {
+    setSelectedFirms(prev =>
+      prev.find(f => f.firm_name === firm.firm_name)
+        ? prev.filter(f => f.firm_name !== firm.firm_name)
+        : [...prev, firm]
+    );
+  };
 
   const normalizeName = (name) => {
     return (name || "")
@@ -92,6 +103,10 @@ For each firm found, provide:
 - coida_matter_count: estimated number of COIDA / workmen's compensation matters (use "Unknown" if not available)
 - med_neg_matter_count: estimated number of medical negligence matters (use "Unknown" if not available)
 - total_active_matters: estimated total active litigation matters if known
+- is_correspondent_firm: true or false — whether this firm acts as a correspondent firm for other law firms
+- works_through_correspondent: true or false — whether this firm uses correspondent firms for certain matters
+- correspondent_firms: array of names of correspondent firms they use or are associated with (empty array if none known)
+- correspondent_notes: any notes on their correspondent relationships
 
 Return between 5 and 15 firms. Only include real, verifiable law firms.`;
 
@@ -123,6 +138,10 @@ Return between 5 and 15 firms. Only include real, verifiable law firms.`;
                 coida_matter_count: { type: "string" },
                 med_neg_matter_count: { type: "string" },
                 total_active_matters: { type: "string" },
+                is_correspondent_firm: { type: "boolean" },
+                works_through_correspondent: { type: "boolean" },
+                correspondent_firms: { type: "array", items: { type: "string" } },
+                correspondent_notes: { type: "string" },
               },
             },
           },
@@ -242,11 +261,23 @@ Return between 5 and 15 firms. Only include real, verifiable law firms.`;
             </div>
           )}
 
-          <div className="flex items-center gap-2">
-            <Building2 className="w-4 h-4" style={{ color: "#34CCD0" }} />
-            <h2 className="text-lg font-bold" style={{ color: "#92F21D" }}>
-              {results.firms?.length || 0} firms found
-            </h2>
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <div className="flex items-center gap-2">
+              <Building2 className="w-4 h-4" style={{ color: "#34CCD0" }} />
+              <h2 className="text-lg font-bold" style={{ color: "#92F21D" }}>
+                {results.firms?.length || 0} firms found
+              </h2>
+            </div>
+            {selectedFirms.length > 0 && (
+              <Button
+                onClick={() => setShowOutreach(true)}
+                style={{ backgroundColor: "#34CCD0", color: "#081F3F", fontWeight: 700 }}
+                size="sm"
+              >
+                <Mail className="w-3.5 h-3.5 mr-1.5" />
+                Draft Outreach for {selectedFirms.length} firm{selectedFirms.length !== 1 ? "s" : ""}
+              </Button>
+            )}
           </div>
 
           {results.firms?.length === 0 && (
@@ -264,6 +295,23 @@ Return between 5 and 15 firms. Only include real, verifiable law firms.`;
                 className="rounded-xl border p-4 space-y-3 hover:border-[#34CCD0]/60 transition-colors"
                 style={{ borderColor: "rgba(52,204,208,0.25)", backgroundColor: "rgba(8,31,63,0.6)" }}
               >
+                {/* Select for outreach */}
+                <div
+                  className="flex items-center gap-2 cursor-pointer select-none mb-1"
+                  onClick={() => toggleFirmSelection(firm)}
+                >
+                  <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors ${
+                    selectedFirms.find(f => f.firm_name === firm.firm_name)
+                      ? "border-[#34CCD0] bg-[#34CCD0]"
+                      : "border-slate-600"
+                  }`}>
+                    {selectedFirms.find(f => f.firm_name === firm.firm_name) && (
+                      <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 12 12"><path d="M2 6l3 3 5-5" stroke="#081F3F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                    )}
+                  </div>
+                  <span className="text-xs" style={{ color: "#94a3b8" }}>Select for outreach</span>
+                </div>
+
                 {/* Existing client badge */}
                 {(() => {
                   const match = fuzzyMatch(firm.firm_name, existingClients);
@@ -314,6 +362,22 @@ Return between 5 and 15 firms. Only include real, verifiable law firms.`;
                         {s}
                       </span>
                     ))}
+                  </div>
+                )}
+
+                {/* Correspondent firm info */}
+                {(firm.is_correspondent_firm || firm.works_through_correspondent || firm.correspondent_firms?.length > 0) && (
+                  <div className="rounded-lg px-3 py-2 space-y-1" style={{ backgroundColor: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.2)" }}>
+                    <p className="text-xs font-semibold" style={{ color: "#f59e0b" }}>🔗 Correspondent Relationships</p>
+                    {firm.is_correspondent_firm && (
+                      <p className="text-xs" style={{ color: "#fcd34d" }}>Acts as a correspondent firm for other firms</p>
+                    )}
+                    {firm.works_through_correspondent && firm.correspondent_firms?.length > 0 && (
+                      <p className="text-xs" style={{ color: "#cbd5e1" }}>Uses correspondents: {firm.correspondent_firms.join(", ")}</p>
+                    )}
+                    {firm.correspondent_notes && (
+                      <p className="text-xs" style={{ color: "#94a3b8" }}>{firm.correspondent_notes}</p>
+                    )}
                   </div>
                 )}
 
@@ -396,6 +460,14 @@ Return between 5 and 15 firms. Only include real, verifiable law firms.`;
             ))}
           </div>
         </div>
+      )}
+
+      {/* Outreach Module */}
+      {showOutreach && selectedFirms.length > 0 && (
+        <OutreachModule
+          selectedFirms={selectedFirms}
+          onClose={() => setShowOutreach(false)}
+        />
       )}
 
       {!loading && !searched && (
