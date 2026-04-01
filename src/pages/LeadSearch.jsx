@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import OutreachModule from "@/components/leadSearch/OutreachModule";
+import ProposalGenerator from "@/components/leadSearch/ProposalGenerator";
+import { jsPDF } from "jspdf";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, MapPin, Phone, Mail, Globe, Building2, Loader2, ExternalLink, Star } from "lucide-react";
+import { Search, MapPin, Phone, Mail, Globe, Building2, Loader2, ExternalLink, Star, Download, FileText } from "lucide-react";
 
 const PROVINCES = [
   "Western Cape",
@@ -37,6 +39,86 @@ export default function LeadSearch() {
   const [existingClients, setExistingClients] = useState([]);
   const [selectedFirms, setSelectedFirms] = useState([]);
   const [showOutreach, setShowOutreach] = useState(false);
+  const [showProposal, setShowProposal] = useState(false);
+
+  const printLeadsToPDF = () => {
+    if (!results?.firms?.length) return;
+    const doc = new jsPDF({ unit: "mm", format: "a4" });
+    const pageW = doc.internal.pageSize.getWidth();
+    const margin = 15;
+    const usableW = pageW - margin * 2;
+    let y = 0;
+
+    const checkPage = (needed = 10) => { if (y + needed > 275) { doc.addPage(); y = 15; } };
+
+    // Header
+    doc.setFillColor(8, 31, 63);
+    doc.rect(0, 0, 210, 297, "F");
+    doc.setFillColor(146, 242, 29);
+    doc.rect(0, 0, 210, 35, "F");
+    doc.setFontSize(18); doc.setFont("helvetica", "bold"); doc.setTextColor(8, 31, 63);
+    doc.text("FUNDA", margin, 15);
+    doc.setTextColor(52, 204, 208);
+    doc.text("MEDICAL", margin + 32, 15);
+    doc.setFontSize(9); doc.setFont("helvetica", "normal"); doc.setTextColor(8, 31, 63);
+    doc.text("Lead Search Results", margin, 22);
+    doc.setFontSize(9); doc.setTextColor(8, 31, 63);
+    doc.text(new Date().toLocaleDateString("en-ZA"), pageW - margin, 22, { align: "right" });
+    const filterStr = [location.trim(), province !== "all" ? province : ""].filter(Boolean).join(", ");
+    doc.setFontSize(8); doc.text(`Search: ${filterStr}`, margin, 29);
+    doc.text(`${results.firms.length} firms found`, pageW - margin, 29, { align: "right" });
+    y = 44;
+
+    results.firms.forEach((firm, idx) => {
+      checkPage(38);
+      const boxH = 35;
+      doc.setFillColor(idx % 2 === 0 ? 10 : 14, idx % 2 === 0 ? 38 : 48, idx % 2 === 0 ? 70 : 88);
+      doc.roundedRect(margin, y, usableW, boxH, 2, 2, "F");
+
+      // Quality dot
+      const qColor = firm.lead_quality === "High" ? [52, 204, 80] : firm.lead_quality === "Medium" ? [245, 158, 11] : [148, 163, 184];
+      doc.setFillColor(...qColor); doc.circle(margin + 4, y + 5, 2, "F");
+
+      doc.setFontSize(11); doc.setFont("helvetica", "bold"); doc.setTextColor(146, 242, 29);
+      doc.text(firm.firm_name || "", margin + 9, y + 6);
+
+      doc.setFontSize(8); doc.setFont("helvetica", "normal"); doc.setTextColor(52, 204, 208);
+      if (firm.city || firm.province) doc.text([firm.city, firm.province].filter(Boolean).join(", "), margin + 9, y + 11);
+
+      // Specialties
+      if (firm.specialties?.length) {
+        doc.setTextColor(200, 200, 200); doc.setFontSize(7.5);
+        doc.text(firm.specialties.slice(0, 4).join(" | "), margin + 4, y + 17);
+      }
+
+      // Matters row
+      doc.setFontSize(7.5);
+      const pi = firm.pi_matter_count || "—";
+      const coida = firm.coida_matter_count || "—";
+      const medNeg = firm.med_neg_matter_count || "—";
+      doc.setTextColor(52, 204, 208); doc.text(`PI: ${pi}`, margin + 4, y + 23);
+      doc.setTextColor(245, 158, 11); doc.text(`COIDA: ${coida}`, margin + 35, y + 23);
+      doc.setTextColor(244, 63, 94); doc.text(`Med Neg: ${medNeg}`, margin + 75, y + 23);
+      if (firm.has_court_roll_matters) { doc.setTextColor(146, 242, 29); doc.text("● Court Roll Active", margin + 120, y + 23); }
+
+      // Contact
+      doc.setTextColor(180, 180, 180); doc.setFontSize(7.5);
+      const contacts = [firm.phone, firm.email].filter(Boolean).join("  |  ");
+      if (contacts) doc.text(contacts, margin + 4, y + 29);
+      if (firm.website) doc.text(firm.website, pageW - margin - 2, y + 29, { align: "right" });
+
+      y += boxH + 3;
+    });
+
+    // Footer pages
+    const totalPages = doc.getNumberOfPages();
+    for (let p = 1; p <= totalPages; p++) {
+      doc.setPage(p); doc.setFontSize(7); doc.setTextColor(80, 80, 80);
+      doc.text(`Page ${p} of ${totalPages} | FundaMedical Lead Search | Confidential`, pageW / 2, 292, { align: "center" });
+    }
+
+    doc.save(`FundaMedical_Leads_${new Date().toISOString().slice(0,10)}.pdf`);
+  };
 
   const toggleFirmSelection = (firm) => {
     setSelectedFirms(prev =>
@@ -268,16 +350,40 @@ Return between 5 and 15 firms. Only include real, verifiable law firms.`;
                 {results.firms?.length || 0} firms found
               </h2>
             </div>
-            {selectedFirms.length > 0 && (
-              <Button
-                onClick={() => setShowOutreach(true)}
-                style={{ backgroundColor: "#34CCD0", color: "#081F3F", fontWeight: 700 }}
-                size="sm"
-              >
-                <Mail className="w-3.5 h-3.5 mr-1.5" />
-                Draft Outreach for {selectedFirms.length} firm{selectedFirms.length !== 1 ? "s" : ""}
-              </Button>
-            )}
+            <div className="flex items-center gap-2 flex-wrap">
+              {results?.firms?.length > 0 && (
+                <Button
+                  onClick={printLeadsToPDF}
+                  variant="outline"
+                  size="sm"
+                  className="border-[#34CCD0]/40"
+                  style={{ color: "#34CCD0" }}
+                >
+                  <Download className="w-3.5 h-3.5 mr-1.5" />
+                  Print to PDF
+                </Button>
+              )}
+              {selectedFirms.length > 0 && (
+                <>
+                  <Button
+                    onClick={() => setShowOutreach(true)}
+                    style={{ backgroundColor: "#34CCD0", color: "#081F3F", fontWeight: 700 }}
+                    size="sm"
+                  >
+                    <Mail className="w-3.5 h-3.5 mr-1.5" />
+                    Outreach ({selectedFirms.length})
+                  </Button>
+                  <Button
+                    onClick={() => setShowProposal(true)}
+                    style={{ backgroundColor: "#92F21D", color: "#081F3F", fontWeight: 700 }}
+                    size="sm"
+                  >
+                    <FileText className="w-3.5 h-3.5 mr-1.5" />
+                    Create Proposal ({selectedFirms.length})
+                  </Button>
+                </>
+              )}
+            </div>
           </div>
 
           {results.firms?.length === 0 && (
@@ -460,6 +566,14 @@ Return between 5 and 15 firms. Only include real, verifiable law firms.`;
             ))}
           </div>
         </div>
+      )}
+
+      {/* Proposal Generator */}
+      {showProposal && selectedFirms.length > 0 && (
+        <ProposalGenerator
+          selectedFirms={selectedFirms}
+          onClose={() => setShowProposal(false)}
+        />
       )}
 
       {/* Outreach Module */}
