@@ -28,6 +28,7 @@ Extract all action items, tasks, or follow-ups mentioned in the recording. For e
 
 Return a structured JSON response with both the transcript and extracted action items.`,
       file_urls: [file_url],
+      model: 'gemini_3_flash',
       response_json_schema: {
         type: "object",
         properties: {
