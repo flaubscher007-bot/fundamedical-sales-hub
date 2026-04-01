@@ -809,17 +809,17 @@ Extract the following in JSON:
                 )}
               </div>
             </TabsContent>
-          </Tabs>
 
-          {/* MATTER FEEDBACK TAB */}
-          <TabsContent value="matters">
-            <MatterFeedbackTab
-              clientName={form.client_name}
-              clientId={form.client_id}
-              matters={matterRows}
-              onChange={setMatterRows}
-            />
-          </TabsContent>
+            {/* MATTER FEEDBACK TAB */}
+            <TabsContent value="matters">
+              <MatterFeedbackTab
+                clientName={form.client_name}
+                clientId={form.client_id}
+                matters={matterRows}
+                onChange={setMatterRows}
+              />
+            </TabsContent>
+          </Tabs>
 
           <DialogFooter className="mt-4 flex flex-wrap gap-2">
             <Button variant="outline" onClick={onClose}>Cancel</Button>
