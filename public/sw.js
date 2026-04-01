@@ -1,15 +1,17 @@
-const CACHE_NAME = 'fundamedical-v1';
-const OFFLINE_QUEUE_STORE = 'offline-sync-queue';
+// FundaMedical Service Worker
+// Handles offline caching and background sync for meeting records
 
-const STATIC_ASSETS = [
+const CACHE_NAME = 'fundamedical-v1';
+const APP_SHELL = [
   '/',
   '/index.html',
+  '/manifest.json',
 ];
 
-// Install: cache static assets
+// Install: cache app shell
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL))
   );
   self.skipWaiting();
 });
@@ -28,91 +30,56 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // Let API calls pass through; don't cache them
+  // Always go network for API calls
   if (url.pathname.startsWith('/api/') || url.hostname !== self.location.hostname) {
+    event.respondWith(
+      fetch(event.request).catch(() => {
+        // Return offline fallback JSON for API calls
+        if (event.request.headers.get('accept')?.includes('application/json')) {
+          return new Response(JSON.stringify({ error: 'offline', offline: true }), {
+            headers: { 'Content-Type': 'application/json' },
+            status: 503,
+          });
+        }
+        return new Response('Offline', { status: 503 });
+      })
+    );
+    return;
+  }
+
+  // For navigation requests, serve index.html from cache
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request).catch(() =>
+        caches.match('/index.html') || caches.match('/')
+      )
+    );
     return;
   }
 
   // Cache-first for static assets
   event.respondWith(
     caches.match(event.request).then((cached) => {
-      return (
-        cached ||
-        fetch(event.request)
-          .then((resp) => {
-            const clone = resp.clone();
-            caches.open(CACHE_NAME).then((c) => c.put(event.request, clone));
-            return resp;
-          })
-          .catch(() => caches.match('/index.html'))
-      );
+      if (cached) return cached;
+      return fetch(event.request).then((response) => {
+        if (response && response.status === 200 && response.type === 'basic') {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+        }
+        return response;
+      }).catch(() => cached || new Response('Offline', { status: 503 }));
     })
   );
 });
 
-// Background Sync: flush queued offline writes
+// Background sync: flush offline queue when connection restored
 self.addEventListener('sync', (event) => {
   if (event.tag === 'offline-sync') {
-    event.waitUntil(flushOfflineQueue());
+    event.waitUntil(notifyClientsToSync());
   }
 });
 
-async function flushOfflineQueue() {
-  const db = await openDB();
-  const tx = db.transaction(OFFLINE_QUEUE_STORE, 'readwrite');
-  const store = tx.objectStore(OFFLINE_QUEUE_STORE);
-  const items = await getAllItems(store);
-
-  for (const item of items) {
-    try {
-      const resp = await fetch(item.url, {
-        method: item.method,
-        headers: { 'Content-Type': 'application/json', ...item.headers },
-        body: item.body ? JSON.stringify(item.body) : undefined,
-      });
-      if (resp.ok) {
-        const delTx = db.transaction(OFFLINE_QUEUE_STORE, 'readwrite');
-        delTx.objectStore(OFFLINE_QUEUE_STORE).delete(item.id);
-        await delTx.done;
-      }
-    } catch (e) {
-      // Will retry next sync
-    }
-  }
+async function notifyClientsToSync() {
+  const clients = await self.clients.matchAll({ type: 'window' });
+  clients.forEach((client) => client.postMessage({ type: 'BACKGROUND_SYNC' }));
 }
-
-function openDB() {
-  return new Promise((resolve, reject) => {
-    const req = indexedDB.open('FundaMedicalOffline', 1);
-    req.onupgradeneeded = (e) => {
-      const db = e.target.result;
-      if (!db.objectStoreNames.contains(OFFLINE_QUEUE_STORE)) {
-        db.createObjectStore(OFFLINE_QUEUE_STORE, { keyPath: 'id', autoIncrement: true });
-      }
-      if (!db.objectStoreNames.contains('offline-notes')) {
-        db.createObjectStore('offline-notes', { keyPath: 'id' });
-      }
-      if (!db.objectStoreNames.contains('offline-recordings')) {
-        db.createObjectStore('offline-recordings', { keyPath: 'id' });
-      }
-    };
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
-  });
-}
-
-function getAllItems(store) {
-  return new Promise((resolve, reject) => {
-    const req = store.getAll();
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
-  });
-}
-
-// Listen for messages from the app
-self.addEventListener('message', (event) => {
-  if (event.data?.type === 'SKIP_WAITING') self.skipWaiting();
-  if (event.data?.type === 'TRIGGER_SYNC') {
-    self.registration.sync?.register('offline-sync');
-  }
-});

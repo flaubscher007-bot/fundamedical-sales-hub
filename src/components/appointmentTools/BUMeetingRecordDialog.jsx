@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { base44 } from "@/api/base44Client";
+import { queueForSync, saveNoteOffline } from "@/lib/offlineSync";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import {
   Upload, Loader2, Wand2, FileAudio, Mic, MicOff,
@@ -50,9 +51,14 @@ const emptyServices = {
 };
 
 async function reverseGeocode(lat, lng) {
-  const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
-  const data = await res.json();
-  return data.address?.city || data.address?.town || data.address?.suburb || data.address?.municipality || data.address?.state || "Unknown location";
+  try {
+    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`, { signal: AbortSignal.timeout(6000) });
+    const data = await res.json();
+    return data.address?.city || data.address?.town || data.address?.suburb || data.address?.municipality || data.address?.state || `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+  } catch {
+    // Offline – return coordinate string, will be resolved when back online
+    return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+  }
 }
 
 async function captureGeolocation() {
@@ -458,6 +464,22 @@ Extract the following in JSON:
     const firstName = creatorName.split(" ")[0];
     const ref = `${form.client_name} - ${firstName} - ${dateStr}`;
     const dataToSave = { ...form, meeting_reference: ref, recorded_by: creatorName };
+
+    // Offline mode: queue operation for background sync
+    if (!navigator.onLine) {
+      const offlineEntry = await saveNoteOffline({ ...dataToSave, _pendingAction: existing?.id ? 'update' : 'create', _entityId: existing?.id });
+      await queueForSync({
+        type: existing?.id ? 'update' : 'create',
+        entity: 'MeetingMinutes',
+        id: existing?.id,
+        data: dataToSave,
+        _offlineId: offlineEntry.id,
+      });
+      setSaving(false);
+      onClose();
+      return;
+    }
+
     let savedId;
     if (existing?.id) {
       await base44.entities.MeetingMinutes.update(existing.id, dataToSave);
@@ -795,7 +817,7 @@ Extract the following in JSON:
             </Button>
             <Button onClick={save} disabled={saving} className="bg-[#00bcd4] hover:bg-[#0097a7]">
               {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-              {saving ? "Saving..." : existing ? "Update Record" : "Save Meeting Record"}
+              {saving ? (navigator.onLine ? "Saving..." : "Saving offline...") : existing ? "Update Record" : "Save Meeting Record"}
             </Button>
           </DialogFooter>
         </DialogContent>
