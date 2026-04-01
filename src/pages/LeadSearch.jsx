@@ -43,7 +43,7 @@ export default function LeadSearch() {
     const locationStr = [location.trim(), province !== "all" ? province : ""].filter(Boolean).join(", ");
     const specialtyLabel = SPECIALTIES.find(s => s.value === specialty)?.label || "Personal Injury and Medical Negligence";
 
-    const prompt = `Find law firms in ${locationStr}, South Africa that specialise in ${specialtyLabel} law. 
+    const prompt = `Find law firms in ${locationStr}, South Africa that specialise in ${specialtyLabel} law.
 These firms would typically handle cases involving medical experts, medical-legal reports, and expert witnesses.
 Focus on firms that would benefit from medical expert services including orthopaedic surgeons, neurologists, and other specialist doctors for medico-legal reports.
 
@@ -53,11 +53,17 @@ For each firm found, provide:
 - city: city/town
 - province: province
 - phone: phone number if available
-- email: email address if available  
+- email: email address if available
 - website: website URL if available
 - specialties: list of their practice areas (e.g. ["Personal Injury", "Medical Negligence", "RAF Claims"])
 - notes: any relevant notes about the firm (e.g. size, reputation, notable cases)
 - lead_quality: rate as "High", "Medium", or "Low" based on relevance to medical-legal work
+- has_court_roll_matters: true or false — whether this firm is known to have active matters on the court roll
+- court_roll_summary: brief description of their court roll activity (e.g. "Regularly appears in High Court for PI matters")
+- pi_matter_count: estimated number of personal injury matters (use "Unknown" if not available, or a range like "50-100+")
+- coida_matter_count: estimated number of COIDA / workmen's compensation matters (use "Unknown" if not available)
+- med_neg_matter_count: estimated number of medical negligence matters (use "Unknown" if not available)
+- total_active_matters: estimated total active litigation matters if known
 
 Return between 5 and 15 firms. Only include real, verifiable law firms.`;
 
@@ -83,6 +89,12 @@ Return between 5 and 15 firms. Only include real, verifiable law firms.`;
                 specialties: { type: "array", items: { type: "string" } },
                 notes: { type: "string" },
                 lead_quality: { type: "string" },
+                has_court_roll_matters: { type: "boolean" },
+                court_roll_summary: { type: "string" },
+                pi_matter_count: { type: "string" },
+                coida_matter_count: { type: "string" },
+                med_neg_matter_count: { type: "string" },
+                total_active_matters: { type: "string" },
               },
             },
           },
@@ -262,6 +274,40 @@ Return between 5 and 15 firms. Only include real, verifiable law firms.`;
                         {s}
                       </span>
                     ))}
+                  </div>
+                )}
+
+                {/* Court Roll & Matters */}
+                {(firm.has_court_roll_matters !== undefined || firm.pi_matter_count || firm.coida_matter_count || firm.med_neg_matter_count) && (
+                  <div className="rounded-lg p-3 space-y-2" style={{ backgroundColor: "rgba(146,242,29,0.06)", border: "1px solid rgba(146,242,29,0.15)" }}>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-xs font-semibold" style={{ color: "#92F21D" }}>⚖️ Court Roll</span>
+                      {firm.has_court_roll_matters ? (
+                        <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: "rgba(52,204,208,0.2)", color: "#34CCD0" }}>Active on court roll</span>
+                      ) : (
+                        <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: "rgba(148,163,184,0.1)", color: "#94a3b8" }}>Not confirmed</span>
+                      )}
+                    </div>
+                    {firm.court_roll_summary && (
+                      <p className="text-xs" style={{ color: "#cbd5e1" }}>{firm.court_roll_summary}</p>
+                    )}
+                    <div className="grid grid-cols-3 gap-2 pt-1">
+                      <div className="text-center rounded p-1.5" style={{ backgroundColor: "rgba(52,204,208,0.1)" }}>
+                        <p className="text-xs font-bold" style={{ color: "#34CCD0" }}>{firm.pi_matter_count || "—"}</p>
+                        <p className="text-xs" style={{ color: "#94a3b8" }}>Pers. Injury</p>
+                      </div>
+                      <div className="text-center rounded p-1.5" style={{ backgroundColor: "rgba(245,158,11,0.1)" }}>
+                        <p className="text-xs font-bold" style={{ color: "#f59e0b" }}>{firm.coida_matter_count || "—"}</p>
+                        <p className="text-xs" style={{ color: "#94a3b8" }}>COIDA</p>
+                      </div>
+                      <div className="text-center rounded p-1.5" style={{ backgroundColor: "rgba(244,63,94,0.1)" }}>
+                        <p className="text-xs font-bold" style={{ color: "#f43f5e" }}>{firm.med_neg_matter_count || "—"}</p>
+                        <p className="text-xs" style={{ color: "#94a3b8" }}>Med Neg</p>
+                      </div>
+                    </div>
+                    {firm.total_active_matters && firm.total_active_matters !== "Unknown" && (
+                      <p className="text-xs" style={{ color: "#94a3b8" }}>~{firm.total_active_matters} total active matters</p>
+                    )}
                   </div>
                 )}
 
