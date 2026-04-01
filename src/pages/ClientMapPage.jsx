@@ -76,9 +76,14 @@ function ProvinceOverlay({ geoData, show }) {
 }
 
 function getBUColor(bul) {
-  const territory = BUL_TERRITORIES.find(t => t.name === bul);
-  if (territory) return territory.color;
   if (!bul) return "#34CCD0";
+  // Match by full name OR first-name prefix (e.g. "Dylan Ferreira" matches territory "Dylan")
+  const territory = BUL_TERRITORIES.find(t =>
+    bul === t.name ||
+    bul.toLowerCase().startsWith(t.name.toLowerCase() + " ") ||
+    bul.toLowerCase() === t.name.toLowerCase()
+  );
+  if (territory) return territory.color;
   const hash = [...bul].reduce((a, c) => a + c.charCodeAt(0), 0);
   const colors = ["#34CCD0", "#92F21D", "#f59e0b", "#f43f5e", "#a78bfa", "#38bdf8", "#fb923c"];
   return colors[hash % colors.length];
@@ -88,6 +93,8 @@ export default function ClientMapPage() {
   const [filterBUL, setFilterBUL] = useState("all");
   const [provinceGeo, setProvinceGeo] = useState(null);
   const [showTerritories, setShowTerritories] = useState(true);
+  const [filterService, setFilterService] = useState("all");
+  const [geocoding, setGeocoding] = useState(false);
 
   useEffect(() => {
     fetch("https://raw.githubusercontent.com/codeforgermany/click_that_hood/main/public/data/south-africa-provinces.geojson")
@@ -95,9 +102,11 @@ export default function ClientMapPage() {
       .then(setProvinceGeo)
       .catch(() => null);
   }, []);
-  const [filterService, setFilterService] = useState("all");
 
-  const [geocoding, setGeocoding] = useState(false);
+  const { data: bulMappings = [] } = useQuery({
+    queryKey: ["bul-name-mappings"],
+    queryFn: () => base44.entities.BULNameMapping.list(),
+  });
 
   const { data: meetings = [], isLoading: loadingMeetings } = useQuery({
     queryKey: ["meeting-map-data"],
@@ -152,13 +161,32 @@ export default function ClientMapPage() {
     });
   }, [geoRecords, filterBUL, filterService]);
 
+  // Helper: resolve first name → full BUL name from mappings
+  const resolveBULFullName = (firstName) => {
+    const m = bulMappings.find(b => b.first_name?.toLowerCase() === firstName.toLowerCase());
+    return m?.full_name || firstName;
+  };
+
+  // Helper: check if a stored BUL name matches a territory first name
+  const bulMatchesTerritory = (storedBUL, territoryFirstName) => {
+    if (!storedBUL) return false;
+    const s = storedBUL.toLowerCase();
+    const t = territoryFirstName.toLowerCase();
+    return s === t || s.startsWith(t + " ") || s.startsWith(t);
+  };
+
   // Filtered client firms
   const filteredClients = useMemo(() => {
     return geoClients.filter(c => {
-      if (filterBUL !== "all" && c.assigned_bul !== filterBUL && c.business_unit_leader !== filterBUL) return false;
-      return true;
+      if (filterBUL === "all") return true;
+      const bul = c.assigned_bul || c.business_unit_leader || "";
+      // Match by exact OR first-name prefix
+      if (bul === filterBUL) return true;
+      const territory = BUL_TERRITORIES.find(t => t.name === filterBUL);
+      if (territory && bulMatchesTerritory(bul, territory.name)) return true;
+      return false;
     });
-  }, [geoClients, filterBUL]);
+  }, [geoClients, filterBUL, bulMappings]);
 
   // Cluster: group nearby points (within ~10km) to show counts
   const clustered = useMemo(() => {
@@ -377,15 +405,18 @@ export default function ClientMapPage() {
       <div className="rounded-xl border border-[#34CCD0]/20 p-4" style={{ backgroundColor: "rgba(8,31,63,0.6)" }}>
         <p className="text-xs font-bold mb-3" style={{ color: "#34CCD0" }}>📍 BUL Territory Allocation</p>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-          {BUL_TERRITORIES.map(t => (
-            <div key={t.name} className="flex items-start gap-2 p-2 rounded-lg" style={{ backgroundColor: `${t.color}15`, border: `1px solid ${t.color}30` }}>
-              <span className="w-3 h-3 rounded-full mt-0.5 flex-shrink-0" style={{ backgroundColor: t.color }} />
-              <div>
-                <p className="text-xs font-bold" style={{ color: t.color }}>{t.name}</p>
-                <p className="text-xs" style={{ color: "#94a3b8" }}>{t.provinces.join(" · ")}</p>
+          {BUL_TERRITORIES.map(t => {
+            const fullName = resolveBULFullName(t.name);
+            return (
+              <div key={t.name} className="flex items-start gap-2 p-2 rounded-lg" style={{ backgroundColor: `${t.color}15`, border: `1px solid ${t.color}30` }}>
+                <span className="w-3 h-3 rounded-full mt-0.5 flex-shrink-0" style={{ backgroundColor: t.color }} />
+                <div>
+                  <p className="text-xs font-bold" style={{ color: t.color }}>{fullName}</p>
+                  <p className="text-xs" style={{ color: "#94a3b8" }}>{t.provinces.join(" · ")}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
