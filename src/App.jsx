@@ -18,6 +18,7 @@ import CalendarView from './pages/CalendarView';
 import MeetingRecordings from './pages/MeetingRecordings';
 import ClientMapPage from './pages/ClientMapPage';
 import LeadSearch from './pages/LeadSearch';
+import PricingModels from './pages/PricingModels';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
@@ -85,6 +86,7 @@ const AuthenticatedApp = () => {
       <Route path="/MeetingRecordings" element={<LayoutWrapper currentPageName="MeetingRecordings"><MeetingRecordings /></LayoutWrapper>} />
       <Route path="/ClientMapPage" element={<LayoutWrapper currentPageName="ClientMapPage"><ClientMapPage /></LayoutWrapper>} />
       <Route path="/LeadSearch" element={<LayoutWrapper currentPageName="LeadSearch"><LeadSearch /></LayoutWrapper>} />
+      <Route path="/PricingModels" element={<LayoutWrapper currentPageName="PricingModels"><PricingModels /></LayoutWrapper>} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

@@ -63,6 +63,7 @@ const mainNavItems = [
   { name: "Appointment Tools", icon: Wrench, page: "AppointmentTools" },
   { name: "Lead Search", icon: Search, page: "LeadSearch" },
   { name: "Contract Tools", icon: FileBadge, page: "Contracts" },
+  { name: "Pricing Models", icon: DollarSign, page: "PricingModels" },
   { name: "Expense Tools", icon: Receipt, page: "ExpensesHub" },
   { name: "Finance Tools", icon: DollarSign, page: "Finance" },
   { name: "Collections Report", icon: BarChart2, page: "CollectionsReport" },
