@@ -155,7 +155,7 @@ const models = [
 ];
 
 function ModelCard({ model }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
   return (
     <div
