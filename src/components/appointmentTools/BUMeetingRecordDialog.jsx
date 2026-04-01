@@ -19,6 +19,7 @@ import { format } from "date-fns";
 import jsPDF from "jspdf";
 import SearchableClientSelect from "./SearchableClientSelect";
 import AddProspectDialog from "./AddProspectDialog";
+import MatterFeedbackTab from "./MatterFeedbackTab";
 
 const BU_SERVICES = [
   { key: "bookings", label: "Bookings" },
@@ -147,6 +148,7 @@ export default function BUMeetingRecordDialog({ open, onClose, appointment, exis
   const [recordingBlob, setRecordingBlob] = useState(null);
   const [attachUploading, setAttachUploading] = useState(false);
   const [saveDialog, setSaveDialog] = useState(false);
+  const [matterRows, setMatterRows] = useState([]);
   const [analyzing, setAnalyzing] = useState(false);
   const [analyzeResult, setAnalyzeResult] = useState(null);
   const transcriptFileRef = useRef();
@@ -541,7 +543,7 @@ Extract the following in JSON:
           )}
 
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid grid-cols-3 w-full">
+            <TabsList className="grid grid-cols-4 w-full">
               <TabsTrigger value="prep">
                 Meeting Prep
                 {serviceCount > 0 && (
@@ -553,6 +555,7 @@ Extract the following in JSON:
                 {form.recording_url && <span className="ml-1.5 w-2 h-2 bg-[#00bcd4] rounded-full inline-block" />}
               </TabsTrigger>
               <TabsTrigger value="notes">Notes & Files</TabsTrigger>
+              <TabsTrigger value="matters">Matter Feedback</TabsTrigger>
             </TabsList>
 
             {/* PREP TAB */}
@@ -807,6 +810,16 @@ Extract the following in JSON:
               </div>
             </TabsContent>
           </Tabs>
+
+          {/* MATTER FEEDBACK TAB */}
+          <TabsContent value="matters">
+            <MatterFeedbackTab
+              clientName={form.client_name}
+              clientId={form.client_id}
+              matters={matterRows}
+              onChange={setMatterRows}
+            />
+          </TabsContent>
 
           <DialogFooter className="mt-4 flex flex-wrap gap-2">
             <Button variant="outline" onClick={onClose}>Cancel</Button>

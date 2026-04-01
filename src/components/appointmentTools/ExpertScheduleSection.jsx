@@ -7,6 +7,7 @@ import { Upload, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
 import SyncStatusPanel from "./SyncStatusPanel";
 import ScheduleCalendarView from "./ScheduleCalendarView";
 import UpcomingAppointmentsList from "./UpcomingAppointmentsList";
+import DuplicateAppointmentManager from "./DuplicateAppointmentManager";
 
 export default function ExpertScheduleSection() {
   const [file, setFile] = useState(null);
@@ -16,6 +17,8 @@ export default function ExpertScheduleSection() {
   const [selectedMonth, setSelectedMonth] = useState("March");
   const [syncBatchId, setSyncBatchId] = useState(null);
   const [appointments, setAppointments] = useState([]);
+  const [editingApt, setEditingApt] = useState(null);
+  const [editForm, setEditForm] = useState(null);
   const [bulMappings, setBulMappings] = useState({});
 
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -169,6 +172,52 @@ export default function ExpertScheduleSection() {
           Showing {appointments.length} expert appointments only
         </span>
       </div>
+
+      <DuplicateAppointmentManager
+        appointments={appointments}
+        queryKey={["expert-appointments"]}
+        onEdit={(apt) => { setEditingApt(apt); setEditForm(apt); }}
+      />
+
+      {editingApt && (
+        <div className="p-4 rounded-xl border space-y-3" style={{ borderColor: "rgba(52,204,208,0.4)", backgroundColor: "rgba(8,31,63,0.7)" }}>
+          <p className="text-sm font-bold" style={{ color: "#92F21D" }}>Edit: {editingApt.title}</p>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-xs" style={{ color: "#ffffff" }}>Title</label>
+              <input className="w-full mt-1 p-2 rounded border text-sm" style={{ borderColor: "#34CCD0", backgroundColor: "#0a1e3a", color: "#ffffff" }}
+                value={editForm?.title || ""} onChange={e => setEditForm(f => ({ ...f, title: e.target.value }))} />
+            </div>
+            <div>
+              <label className="text-xs" style={{ color: "#ffffff" }}>Date</label>
+              <input type="date" className="w-full mt-1 p-2 rounded border text-sm" style={{ borderColor: "#34CCD0", backgroundColor: "#0a1e3a", color: "#ffffff" }}
+                value={editForm?.date || ""} onChange={e => setEditForm(f => ({ ...f, date: e.target.value }))} />
+            </div>
+            <div>
+              <label className="text-xs" style={{ color: "#ffffff" }}>Status</label>
+              <select className="w-full mt-1 p-2 rounded border text-sm" style={{ borderColor: "#34CCD0", backgroundColor: "#0a1e3a", color: "#ffffff" }}
+                value={editForm?.status || "Scheduled"} onChange={e => setEditForm(f => ({ ...f, status: e.target.value }))}>
+                {["Scheduled","Completed","Cancelled","Rescheduled"].map(s => <option key={s}>{s}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="text-xs" style={{ color: "#ffffff" }}>Notes</label>
+              <input className="w-full mt-1 p-2 rounded border text-sm" style={{ borderColor: "#34CCD0", backgroundColor: "#0a1e3a", color: "#ffffff" }}
+                value={editForm?.notes || ""} onChange={e => setEditForm(f => ({ ...f, notes: e.target.value }))} />
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <button onClick={async () => {
+              await base44.entities.Appointment.update(editingApt.id, editForm);
+              setEditingApt(null); setEditForm(null);
+              const apts = await base44.entities.Appointment.list();
+              setAppointments((apts || []).filter(a => !a.client_id || a.title?.toLowerCase().includes('expert')));
+            }} className="px-4 py-2 rounded text-sm font-semibold" style={{ backgroundColor: "#92F21D", color: "#081F3F" }}>Save</button>
+            <button onClick={() => { setEditingApt(null); setEditForm(null); }}
+              className="px-4 py-2 rounded border text-sm" style={{ borderColor: "#34CCD0", color: "#34CCD0" }}>Cancel</button>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="lg:col-span-2">

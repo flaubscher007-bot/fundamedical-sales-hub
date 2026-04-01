@@ -32,6 +32,8 @@ import ExpertScheduleSection from "../components/appointmentTools/ExpertSchedule
 import BUMeetingRecordDialog from "../components/appointmentTools/BUMeetingRecordDialog";
 import ScheduleCalendarView from "../components/appointmentTools/ScheduleCalendarView";
 import UpcomingMeetingsPanel from "../components/appointmentTools/UpcomingMeetingsPanel";
+import DuplicateAppointmentManager from "../components/appointmentTools/DuplicateAppointmentManager";
+import WhatsAppTeamPanel from "../components/appointmentTools/WhatsAppTeamPanel";
 
 const emptyApt = {
   title: "", client_id: "", client_name: "", date: "", time: "", end_time: "",
@@ -160,6 +162,7 @@ export default function AppointmentTools() {
           <TabsTrigger value="follow-ups">Follow-Ups</TabsTrigger>
           <TabsTrigger value="action-points">Action Points</TabsTrigger>
           <TabsTrigger value="feedback">Feedback</TabsTrigger>
+          <TabsTrigger value="whatsapp">💬 WhatsApp</TabsTrigger>
         </TabsList>
 
         <TabsContent value="expert-schedule" className="mt-4">
@@ -167,6 +170,11 @@ export default function AppointmentTools() {
         </TabsContent>
 
         <TabsContent value="appointments" className="mt-4 space-y-4">
+          <DuplicateAppointmentManager
+            appointments={appointments}
+            queryKey={["appointments-tools"]}
+            onEdit={openEdit}
+          />
           <UpcomingMeetingsPanel appointments={appointments} onStartRecording={(apt) => setRecordFromPanel(apt)} />
 
           {/* Calendar */}
@@ -244,6 +252,10 @@ export default function AppointmentTools() {
 
         <TabsContent value="feedback" className="mt-4">
           <FeedbackPanel />
+        </TabsContent>
+
+        <TabsContent value="whatsapp" className="mt-4">
+          <WhatsAppTeamPanel />
         </TabsContent>
       </Tabs>
 
