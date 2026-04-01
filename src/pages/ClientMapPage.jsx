@@ -2,7 +2,8 @@ import React, { useState, useMemo, useEffect } from "react";
 import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
-import { MapContainer, TileLayer, CircleMarker, Popup, Tooltip, GeoJSON } from "react-leaflet";
+import { MapContainer, TileLayer, CircleMarker, Popup, Tooltip, useMap } from "react-leaflet";
+import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -43,6 +44,35 @@ function getBULForProvince(provinceName) {
   return BUL_TERRITORIES.find(t =>
     t.provinces.some(p => norm.includes(p.toLowerCase()) || p.toLowerCase().includes(norm))
   ) || null;
+}
+
+function ProvinceOverlay({ geoData, show }) {
+  const map = useMap();
+  useEffect(() => {
+    if (!geoData || !show) return;
+    const layer = L.geoJSON(geoData, {
+      style: (feature) => {
+        const name = feature?.properties?.name || feature?.properties?.PROVINCE || feature?.properties?.NAME_1 || "";
+        const territory = getBULForProvince(name);
+        return {
+          fillColor: territory ? territory.color : "#ffffff",
+          fillOpacity: territory ? 0.18 : 0.04,
+          color: territory ? territory.color : "#ffffff",
+          weight: 1.5,
+          opacity: territory ? 0.6 : 0.2,
+        };
+      },
+      onEachFeature: (feature, lyr) => {
+        const name = feature?.properties?.name || feature?.properties?.PROVINCE || feature?.properties?.NAME_1 || "";
+        const territory = getBULForProvince(name);
+        if (territory) {
+          lyr.bindTooltip(`<b>${name}</b><br/>BUL: ${territory.name}`, { sticky: true });
+        }
+      },
+    }).addTo(map);
+    return () => { map.removeLayer(layer); };
+  }, [map, geoData, show]);
+  return null;
 }
 
 function getBUColor(bul) {
@@ -276,33 +306,7 @@ export default function ClientMapPage() {
             />
 
             {/* Province territory overlays */}
-            {showTerritories && provinceGeo && (
-              <GeoJSON
-                key={showTerritories ? "territories-on" : "territories-off"}
-                data={provinceGeo}
-                style={(feature) => {
-                  const name = feature?.properties?.name || feature?.properties?.PROVINCE || feature?.properties?.NAME_1 || "";
-                  const territory = getBULForProvince(name);
-                  return {
-                    fillColor: territory ? territory.color : "#ffffff",
-                    fillOpacity: territory ? 0.18 : 0.04,
-                    color: territory ? territory.color : "#ffffff",
-                    weight: 1.5,
-                    opacity: territory ? 0.6 : 0.2,
-                  };
-                }}
-                onEachFeature={(feature, layer) => {
-                  const name = feature?.properties?.name || feature?.properties?.PROVINCE || feature?.properties?.NAME_1 || "";
-                  const territory = getBULForProvince(name);
-                  if (territory) {
-                    layer.bindTooltip(
-                      `<div style="color:#081F3F;font-weight:700">${name}</div><div style="color:#081F3F;font-size:12px">BUL: ${territory.name}</div>`,
-                      { sticky: true }
-                    );
-                  }
-                }}
-              />
-            )}
+            <ProvinceOverlay geoData={provinceGeo} show={showTerritories} />
 
             {/* Law firm markers — green */}
             {filteredClients.map((firm) => (
