@@ -92,43 +92,26 @@ Deno.serve(async (req) => {
       </div>
     `;
 
-    // NOTE: Base44 SendEmail can only send to registered app users.
-    // We send to the BU (logged-in user) with full finance person details so they can forward,
-    // OR if a RESEND_API_KEY secret is set, we send directly to the finance person.
-    const resendKey = Deno.env.get('RESEND_API_KEY');
-
-    if (resendKey) {
-      // Send directly via Resend
-      const payload = {
-        from: 'FundaMedical Sales Hub <noreply@fundamedical.co.za>',
-        to: [financeEmail],
-        cc: ['frank@fundamedical.co.za'],
-        subject: `Matter Feedback — ${client_name} — ${dateStr}`,
-        html: htmlBody,
-      };
-      const resendRes = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      const resendData = await resendRes.json();
-      if (!resendRes.ok) throw new Error('Resend error: ' + JSON.stringify(resendData));
-      return Response.json({ success: true, sent_to: financeEmail, method: 'resend' });
-    } else {
-      // Fallback: send to the logged-in BU user (they are an app user)
-      const notifyBody = `
-        <p>Hi ${bulName},</p>
-        <p>Your matter feedback for <strong>${client_name}</strong> has been saved. Please forward this email to <strong>${financePersonName} (${financeEmail})</strong> and CC frank@fundamedical.co.za.</p>
+    // Send to the logged-in BU user via Base44 built-in email.
+    // They can forward to the finance person. Once a domain is verified in Resend,
+    // this can be switched to send directly to financeEmail.
+    const notifyBody = `
+      <div style="font-family:Arial,sans-serif;max-width:800px;margin:0 auto;padding:20px;">
+        <div style="background:#fff3cd;border:1px solid #ffc107;padding:12px 16px;border-radius:6px;margin-bottom:16px;">
+          <strong>⚠️ Action Required:</strong> Please forward this email to 
+          <strong>${financePersonName}</strong> at <a href="mailto:${financeEmail}">${financeEmail}</a>
+          and CC <a href="mailto:frank@fundamedical.co.za">frank@fundamedical.co.za</a>.
+        </div>
         ${htmlBody}
-      `;
-      await base44.asServiceRole.integrations.Core.SendEmail({
-        to: user.email,
-        subject: `[Action Required] Forward to Finance — Matter Feedback: ${client_name}`,
-        body: notifyBody,
-        from_name: 'FundaMedical Sales Hub',
-      });
-      return Response.json({ success: true, sent_to: user.email, method: 'forwarded_to_bu', finance_email: financeEmail });
-    }
+      </div>
+    `;
+    await base44.asServiceRole.integrations.Core.SendEmail({
+      to: user.email,
+      subject: `[Forward to Finance] Matter Feedback: ${client_name} — ${dateStr}`,
+      body: notifyBody,
+      from_name: 'FundaMedical Sales Hub',
+    });
+    return Response.json({ success: true, sent_to: user.email, method: 'forwarded_to_bu', finance_email: financeEmail, finance_person: financePersonName });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }
