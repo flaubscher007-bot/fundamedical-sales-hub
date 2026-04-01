@@ -49,6 +49,7 @@ const clientItems = [
   { name: "Law Firms", icon: Users, page: "Clients" },
   { name: "Firm Contacts", icon: Users, page: "ClientContacts" },
   { name: "Import Contacts", icon: Upload, page: "ContactImport" },
+  { name: "Bulk Import Clients", icon: Upload, page: "ClientImportManager" },
   { name: "Prospects", icon: Users, page: "Prospects" },
   { name: "Firm Reference Table", icon: FileText, page: "FirmReferenceTable" },
 ];
