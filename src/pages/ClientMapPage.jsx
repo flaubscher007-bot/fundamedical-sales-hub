@@ -1,8 +1,8 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
-import { MapContainer, TileLayer, CircleMarker, Popup, Tooltip } from "react-leaflet";
+import { MapContainer, TileLayer, CircleMarker, Popup, Tooltip, GeoJSON } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -27,11 +27,27 @@ const SERVICE_LABELS = {
   funding: "Funding",
 };
 
-const BU_COLORS = {
-  default: "#34CCD0",
-};
+// BUL territory definitions
+const BUL_TERRITORIES = [
+  { name: "Dylan", provinces: ["Western Cape", "KwaZulu-Natal"], color: "#34CCD0" },
+  { name: "Jacques", provinces: ["Eastern Cape"], color: "#f59e0b" },
+  { name: "George", provinces: ["Free State", "Northern Cape"], color: "#a78bfa" },
+  { name: "Duran", provinces: ["Mpumalanga"], color: "#fb923c" },
+  { name: "Nthabiseng", provinces: ["Limpopo", "North West"], color: "#f43f5e" },
+  { name: "Shared (All)", provinces: ["Gauteng"], color: "#92F21D" },
+];
+
+function getBULForProvince(provinceName) {
+  if (!provinceName) return null;
+  const norm = provinceName.toLowerCase();
+  return BUL_TERRITORIES.find(t =>
+    t.provinces.some(p => norm.includes(p.toLowerCase()) || p.toLowerCase().includes(norm))
+  ) || null;
+}
 
 function getBUColor(bul) {
+  const territory = BUL_TERRITORIES.find(t => t.name === bul);
+  if (territory) return territory.color;
   if (!bul) return "#34CCD0";
   const hash = [...bul].reduce((a, c) => a + c.charCodeAt(0), 0);
   const colors = ["#34CCD0", "#92F21D", "#f59e0b", "#f43f5e", "#a78bfa", "#38bdf8", "#fb923c"];
@@ -40,6 +56,15 @@ function getBUColor(bul) {
 
 export default function ClientMapPage() {
   const [filterBUL, setFilterBUL] = useState("all");
+  const [provinceGeo, setProvinceGeo] = useState(null);
+  const [showTerritories, setShowTerritories] = useState(true);
+
+  useEffect(() => {
+    fetch("https://raw.githubusercontent.com/codeforgermany/click_that_hood/main/public/data/south-africa-provinces.geojson")
+      .then(r => r.json())
+      .then(setProvinceGeo)
+      .catch(() => null);
+  }, []);
   const [filterService, setFilterService] = useState("all");
 
   const [geocoding, setGeocoding] = useState(false);
@@ -69,6 +94,12 @@ export default function ClientMapPage() {
   };
 
   const missingGeoCount = clients.filter(c => !c.latitude && !c.longitude).length;
+
+  // Geo-tagged clients
+  const geoClients = useMemo(() =>
+    clients.filter(c => c.latitude && c.longitude),
+    [clients]
+  );
 
   // Only meeting records with geo
   const geoRecords = useMemo(() =>
@@ -211,6 +242,21 @@ export default function ClientMapPage() {
         </div>
       </div>
 
+      {/* Territory toggle */}
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => setShowTerritories(v => !v)}
+          className="flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-medium transition-all"
+          style={{
+            borderColor: showTerritories ? "rgba(52,204,208,0.5)" : "rgba(52,204,208,0.2)",
+            backgroundColor: showTerritories ? "rgba(52,204,208,0.1)" : "transparent",
+            color: showTerritories ? "#34CCD0" : "#64748b",
+          }}
+        >
+          🗺️ {showTerritories ? "Hide" : "Show"} BUL Territories
+        </button>
+      </div>
+
       {/* Map */}
       {isLoading ? (
         <div className="flex items-center justify-center flex-1 py-20">
@@ -234,6 +280,35 @@ export default function ClientMapPage() {
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
               url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
             />
+
+            {/* Province territory overlays */}
+            {showTerritories && provinceGeo && (
+              <GeoJSON
+                key={"territories"}
+                data={provinceGeo}
+                style={(feature) => {
+                  const name = feature?.properties?.name || feature?.properties?.PROVINCE || feature?.properties?.NAME_1 || "";
+                  const territory = getBULForProvince(name);
+                  return {
+                    fillColor: territory ? territory.color : "#ffffff",
+                    fillOpacity: territory ? 0.18 : 0.04,
+                    color: territory ? territory.color : "#ffffff",
+                    weight: 1.5,
+                    opacity: territory ? 0.6 : 0.2,
+                  };
+                }}
+                onEachFeature={(feature, layer) => {
+                  const name = feature?.properties?.name || feature?.properties?.PROVINCE || feature?.properties?.NAME_1 || "";
+                  const territory = getBULForProvince(name);
+                  if (territory) {
+                    layer.bindTooltip(
+                      `<div style="color:#081F3F;font-weight:700">${name}</div><div style="color:#081F3F;font-size:12px">BUL: ${territory.name}</div>`,
+                      { sticky: true }
+                    );
+                  }
+                }}
+              />
+            )}
 
             {/* Law firm markers — green */}
             {filteredClients.map((firm) => (
@@ -300,29 +375,21 @@ export default function ClientMapPage() {
         </div>
       )}
 
-      {/* BUL legend */}
-      {buls.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {buls.slice(0, 10).map(b => (
-            <button
-              key={b}
-              onClick={() => setFilterBUL(filterBUL === b ? "all" : b)}
-              className="flex items-center gap-1.5 px-2 py-1 rounded-full border text-xs transition-all"
-              style={{
-                borderColor: getBUColor(b),
-                backgroundColor: filterBUL === b ? getBUColor(b) + "33" : "transparent",
-                color: filterBUL === b ? getBUColor(b) : "#94a3b8",
-              }}
-            >
-              <span
-                className="w-2.5 h-2.5 rounded-full inline-block"
-                style={{ backgroundColor: getBUColor(b) }}
-              />
-              {b}
-            </button>
+      {/* BUL Territory Legend */}
+      <div className="rounded-xl border border-[#34CCD0]/20 p-4" style={{ backgroundColor: "rgba(8,31,63,0.6)" }}>
+        <p className="text-xs font-bold mb-3" style={{ color: "#34CCD0" }}>📍 BUL Territory Allocation</p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          {BUL_TERRITORIES.map(t => (
+            <div key={t.name} className="flex items-start gap-2 p-2 rounded-lg" style={{ backgroundColor: `${t.color}15`, border: `1px solid ${t.color}30` }}>
+              <span className="w-3 h-3 rounded-full mt-0.5 flex-shrink-0" style={{ backgroundColor: t.color }} />
+              <div>
+                <p className="text-xs font-bold" style={{ color: t.color }}>{t.name}</p>
+                <p className="text-xs" style={{ color: "#94a3b8" }}>{t.provinces.join(" · ")}</p>
+              </div>
+            </div>
           ))}
         </div>
-      )}
+      </div>
     </div>
   );
 }

@@ -9,6 +9,42 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, MapPin, Phone, Mail, Globe, Building2, Loader2, ExternalLink, Star, Download, FileText } from "lucide-react";
 
+// BUL territory map for allocation suggestions
+const BUL_TERRITORY_MAP = [
+  { name: "Dylan", provinces: ["Western Cape", "KwaZulu-Natal"] },
+  { name: "Jacques", provinces: ["Eastern Cape"] },
+  { name: "George", provinces: ["Free State", "Northern Cape"] },
+  { name: "Duran", provinces: ["Mpumalanga"] },
+  { name: "Nthabiseng", provinces: ["Limpopo", "North West"] },
+  { name: "All BULs (Shared)", provinces: ["Gauteng"] },
+];
+
+function getBULSuggestion(firms) {
+  if (!firms?.length) return null;
+  const provinceCounts = {};
+  firms.forEach(f => {
+    if (f.province) {
+      provinceCounts[f.province] = (provinceCounts[f.province] || 0) + 1;
+    }
+  });
+  const sorted = Object.entries(provinceCounts).sort((a, b) => b[1] - a[1]);
+  if (!sorted.length) return null;
+  const topProvince = sorted[0][0];
+  const territory = BUL_TERRITORY_MAP.find(t =>
+    t.provinces.some(p => topProvince.toLowerCase().includes(p.toLowerCase()) || p.toLowerCase().includes(topProvince.toLowerCase()))
+  );
+  return { bul: territory?.name || null, topProvince, sorted };
+}
+
+const BUL_COLORS = {
+  Dylan: "#34CCD0",
+  Jacques: "#f59e0b",
+  George: "#a78bfa",
+  Duran: "#fb923c",
+  Nthabiseng: "#f43f5e",
+  "All BULs (Shared)": "#92F21D",
+};
+
 const PROVINCES = [
   "Western Cape",
   "KwaZulu-Natal",
@@ -337,6 +373,35 @@ Return between 5 and 15 firms. Only include real, verifiable law firms.`;
       {/* Results */}
       {!loading && results && (
         <div className="space-y-4">
+          {/* BUL Allocation Suggestion */}
+          {(() => {
+            const suggestion = getBULSuggestion(results.firms);
+            if (!suggestion || !suggestion.bul) return null;
+            const color = BUL_COLORS[suggestion.bul] || "#34CCD0";
+            return (
+              <div className="rounded-xl border p-4" style={{ backgroundColor: `${color}10`, borderColor: `${color}40` }}>
+                <p className="text-sm font-bold mb-2" style={{ color }}>🎯 BUL Allocation Suggestion</p>
+                <p className="text-sm" style={{ color: "#ffffff" }}>
+                  Based on the majority of firms being in <strong style={{ color }}>{suggestion.topProvince}</strong>,
+                  this territory falls under <strong style={{ color }}>{suggestion.bul}</strong>'s area.
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {suggestion.sorted.map(([prov, count]) => {
+                    const t = BUL_TERRITORY_MAP.find(t => t.provinces.some(p => prov.toLowerCase().includes(p.toLowerCase())));
+                    const c = t ? BUL_COLORS[t.name] : "#64748b";
+                    return (
+                      <div key={prov} className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs" style={{ borderColor: `${c}50`, backgroundColor: `${c}15`, color: c }}>
+                        <span className="font-semibold">{prov}</span>
+                        <span className="opacity-70">({count} firm{count !== 1 ? "s" : ""})</span>
+                        {t && <span className="opacity-80">→ {t.name}</span>}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })()}
+
           {results.search_summary && (
             <div className="rounded-lg border border-[#92F21D]/20 px-4 py-3" style={{ backgroundColor: "rgba(146,242,29,0.06)" }}>
               <p className="text-sm" style={{ color: "#92F21D" }}>{results.search_summary}</p>
