@@ -12,6 +12,11 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
-    dedupe: ['react', 'react-dom', 'react-leaflet'],
+    // Force a single copy of React across ALL packages (prevents "Invalid hook call" errors)
+    dedupe: ['react', 'react-dom', 'react-router-dom', 'react-leaflet', 'leaflet'],
+  },
+  optimizeDeps: {
+    // Pre-bundle and deduplicate React so no package can sneak in its own copy
+    include: ['react', 'react-dom'],
   },
 })
