@@ -17,6 +17,7 @@ export default defineConfig({
   },
   optimizeDeps: {
     // Pre-bundle and deduplicate React so no package can sneak in its own copy
-    include: ['react', 'react-dom'],
+    include: ['react', 'react-dom', 'react-router-dom'],
+    force: true,
   },
 })
