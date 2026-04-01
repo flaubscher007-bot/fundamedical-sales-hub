@@ -19,6 +19,7 @@ import {
   TrendingUp,
   FileAudio,
   MapPin,
+  Search,
   ChevronDown,
   Menu,
   X,
@@ -60,6 +61,7 @@ const expertItems = [
 const mainNavItems = [
   { name: "Monthly Import Hub", icon: Upload, page: "MonthlyImportHub" },
   { name: "Appointment Tools", icon: Wrench, page: "AppointmentTools" },
+  { name: "Lead Search", icon: Search, page: "LeadSearch" },
   { name: "Contract Tools", icon: FileBadge, page: "Contracts" },
   { name: "Expense Tools", icon: Receipt, page: "ExpensesHub" },
   { name: "Finance Tools", icon: DollarSign, page: "Finance" },
