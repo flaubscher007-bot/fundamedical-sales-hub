@@ -77,7 +77,10 @@ async function captureGeolocation() {
   });
 }
 
-const AUTOSAVE_KEY = "bu_recording_autosave";
+const getAutosaveKey = (appointmentId, clientId, date) => {
+  const id = appointmentId || `${clientId || 'noid'}_${date || 'nodate'}`;
+  return `bu_recording_autosave_${id}`;
+};
 
 export default function BUMeetingRecordDialog({ open, onClose, appointment, existing, user, autoTab }) {
   const qc = useQueryClient();
@@ -131,13 +134,20 @@ export default function BUMeetingRecordDialog({ open, onClose, appointment, exis
     }
   }, [existing]);
 
+  const autosaveKey = getAutosaveKey(appointment?.id, appointment?.client_id, appointment?.date);
+
   // Check for autosaved recovery data on open
   useEffect(() => {
     if (open) {
-      const saved = localStorage.getItem(AUTOSAVE_KEY);
-      if (saved) setRecoveryAvailable(true);
+      const saved = localStorage.getItem(autosaveKey);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          setRecoveryAvailable(parsed);
+        } catch { setRecoveryAvailable(true); }
+      }
     }
-  }, [open]);
+  }, [open, autosaveKey]);
 
   const [uploading, setUploading] = useState(false);
   const [transcribing, setTranscribing] = useState(false);
@@ -240,7 +250,7 @@ Extract the following in JSON:
     const reader = new FileReader();
     reader.onloadend = () => {
       try {
-        localStorage.setItem(AUTOSAVE_KEY, JSON.stringify({
+        localStorage.setItem(autosaveKey, JSON.stringify({
           data: reader.result,
           client_name: form.client_name,
           date: form.date,
@@ -276,13 +286,13 @@ Extract the following in JSON:
 
   const recoverRecording = async () => {
     setRecovering(true);
-    const saved = localStorage.getItem(AUTOSAVE_KEY);
+    const saved = localStorage.getItem(autosaveKey);
     if (!saved) { setRecovering(false); return; }
     const { data } = JSON.parse(saved);
     const res = await fetch(data);
     const blob = await res.blob();
     setRecordingBlob(blob);
-    localStorage.removeItem(AUTOSAVE_KEY);
+    localStorage.removeItem(autosaveKey);
     setRecoveryAvailable(false);
     setRecovering(false);
     setSaveDialog(true);
@@ -307,7 +317,7 @@ Extract the following in JSON:
       const blob = new Blob(chunksRef.current, { type: mimeType });
       setRecordingBlob(blob);
       setSaveDialog(true);
-      localStorage.removeItem(AUTOSAVE_KEY);
+      localStorage.removeItem(autosaveKey);
       setRecoveryAvailable(false);
       if (autoSaveIntervalRef.current) clearInterval(autoSaveIntervalRef.current);
     };
@@ -528,14 +538,19 @@ Extract the following in JSON:
               <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0" />
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-amber-400">Unsaved recording detected</p>
-                <p className="text-xs text-amber-300/80">A previous recording was interrupted. You can recover it now.</p>
+                <p className="text-xs text-amber-300/80">
+                  {typeof recoveryAvailable === 'object' && recoveryAvailable.client_name
+                    ? `Recording for ${recoveryAvailable.client_name} on ${recoveryAvailable.date} was interrupted.`
+                    : 'A previous recording for this appointment was interrupted.'}
+                  {' '}You can recover it now.
+                </p>
               </div>
               <Button size="sm" onClick={recoverRecording} disabled={recovering}
                 className="bg-amber-500 hover:bg-amber-600 text-white text-xs flex-shrink-0">
                 {recovering ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : null}
                 Recover
               </Button>
-              <button onClick={() => { localStorage.removeItem(AUTOSAVE_KEY); setRecoveryAvailable(false); }}
+              <button onClick={() => { localStorage.removeItem(autosaveKey); setRecoveryAvailable(false); }}
                 className="text-slate-400 hover:text-red-400 flex-shrink-0">
                 <X className="w-4 h-4" />
               </button>
