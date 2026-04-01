@@ -33,12 +33,40 @@ export default function LeadSearch() {
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
+  const [existingClients, setExistingClients] = useState([]);
+
+  const normalizeName = (name) => {
+    return (name || "")
+      .toLowerCase()
+      .replace(/\b(attorneys|attorney|inc|incorporated|law|firm|and|&|the|of|cc|pty|ltd|legal|advocates|advocate|consultants|consultant)\b/g, "")
+      .replace(/[^a-z0-9\s]/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  };
+
+  const fuzzyMatch = (firmName, clients) => {
+    const normFirm = normalizeName(firmName);
+    const firmWords = normFirm.split(" ").filter(w => w.length > 2);
+    for (const client of clients) {
+      const normClient = normalizeName(client.firm_name);
+      const clientWords = normClient.split(" ").filter(w => w.length > 2);
+      if (normFirm === normClient) return client;
+      if (normFirm.includes(normClient) || normClient.includes(normFirm)) return client;
+      const overlap = firmWords.filter(w => clientWords.includes(w));
+      const minLen = Math.min(firmWords.length, clientWords.length);
+      if (minLen > 0 && overlap.length / minLen >= 0.7) return client;
+    }
+    return null;
+  };
 
   const handleSearch = async () => {
     if (!location.trim() && province === "all") return;
     setLoading(true);
     setSearched(true);
     setResults(null);
+
+    const clients = await base44.entities.Client.list();
+    setExistingClients(clients);
 
     const locationStr = [location.trim(), province !== "all" ? province : ""].filter(Boolean).join(", ");
     const specialtyLabel = SPECIALTIES.find(s => s.value === specialty)?.label || "Personal Injury and Medical Negligence";
@@ -236,6 +264,18 @@ Return between 5 and 15 firms. Only include real, verifiable law firms.`;
                 className="rounded-xl border p-4 space-y-3 hover:border-[#34CCD0]/60 transition-colors"
                 style={{ borderColor: "rgba(52,204,208,0.25)", backgroundColor: "rgba(8,31,63,0.6)" }}
               >
+                {/* Existing client badge */}
+                {(() => {
+                  const match = fuzzyMatch(firm.firm_name, existingClients);
+                  return match ? (
+                    <div className="flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full" style={{ backgroundColor: "rgba(146,242,29,0.15)", border: "1px solid rgba(146,242,29,0.4)", color: "#92F21D" }}>
+                      <span>✓</span>
+                      <span className="font-semibold">Existing FundaMedical client</span>
+                      <span className="text-xs opacity-70">({match.activity_status || "Active"})</span>
+                    </div>
+                  ) : null;
+                })()}
+
                 {/* Firm header */}
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
