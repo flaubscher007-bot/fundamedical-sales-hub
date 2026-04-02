@@ -8,6 +8,16 @@ Deno.serve(async (req) => {
 
     const { file_url, context } = await req.json();
 
+    // Check for unsupported file types
+    const unsupportedExts = ['.mp4', '.m4a', '.mov', '.avi', '.mkv', '.webm'];
+    const lowerUrl = (file_url || '').toLowerCase();
+    const isUnsupported = unsupportedExts.some(ext => lowerUrl.includes(ext));
+    if (isUnsupported) {
+      return Response.json({
+        error: "This file format is not supported for AI transcription. Please convert to .mp3 or .wav, or upload a transcript (.txt) manually."
+      }, { status: 400 });
+    }
+
     const result = await base44.asServiceRole.integrations.Core.InvokeLLM({
       prompt: `You are a professional meeting transcriber and analyst for Funda Medical, a South African medico-legal company.
 

@@ -442,12 +442,21 @@ Extract the following in JSON:
   const transcribe = async () => {
     if (!form.recording_url) return;
     setTranscribing(true);
-    const res = await base44.functions.invoke("transcribeRecording", {
-      file_url: form.recording_url,
-      context: `Meeting with ${form.client_name} on ${form.date}`
-    });
-    const data = res.data || {};
-    if (data.transcript) setForm(f => ({ ...f, transcript: data.transcript }));
+    try {
+      const res = await base44.functions.invoke("transcribeRecording", {
+        file_url: form.recording_url,
+        context: `Meeting with ${form.client_name} on ${form.date}`
+      });
+      const data = res.data || {};
+      if (data.error) {
+        alert("Transcription failed: " + data.error);
+      } else if (data.transcript) {
+        setForm(f => ({ ...f, transcript: data.transcript }));
+      }
+    } catch (err) {
+      const msg = err?.response?.data?.error || err.message || "Unknown error";
+      alert("Transcription failed: " + msg + "\n\nTip: Try uploading a .mp3 or .wav file instead, or upload a transcript (.txt) manually.");
+    }
     setTranscribing(false);
   };
 
