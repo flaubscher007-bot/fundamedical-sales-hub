@@ -588,10 +588,16 @@ Extract the following in JSON:
     qc.invalidateQueries({ queryKey: ["meeting-minutes"] });
     setSaving(false);
     if (savedId && (dataToSave.meeting_status === "Completed" || dataToSave.action_items)) {
-      setSendingEmail(true);
-      await base44.functions.invoke("sendMeetingOutcomeEmail", { meeting_id: savedId, emails: [user?.email].filter(Boolean) });
-      setSendingEmail(false);
-      setEmailSent(true);
+      try {
+        setSendingEmail(true);
+        await new Promise(r => setTimeout(r, 1000)); // brief delay for replication
+        await base44.functions.invoke("sendMeetingOutcomeEmail", { meeting_id: savedId, emails: [user?.email].filter(Boolean) });
+        setSendingEmail(false);
+        setEmailSent(true);
+      } catch (emailErr) {
+        setSendingEmail(false);
+        console.warn("Email notification failed:", emailErr.message);
+      }
     }
     onClose();
   };
