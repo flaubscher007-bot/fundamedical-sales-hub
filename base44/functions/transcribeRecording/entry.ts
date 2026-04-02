@@ -15,7 +15,7 @@ Deno.serve(async (req) => {
     if (isUnsupported) {
       return Response.json({
         error: "This file format is not supported for AI transcription. Please convert to .mp3 or .wav, or upload a transcript (.txt) manually."
-      }, { status: 400 });
+      }, { status: 200 });
     }
 
     const result = await base44.asServiceRole.integrations.Core.InvokeLLM({
