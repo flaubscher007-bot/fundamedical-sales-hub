@@ -9,7 +9,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Search, Building2, MapPin, Pencil, Trash2, UserCog, Briefcase, AlertCircle, DollarSign, UserPlus } from "lucide-react";
+import { Plus, Search, Building2, MapPin, Pencil, Trash2, UserCog, Briefcase, AlertCircle, DollarSign, UserPlus, CheckSquare, Square } from "lucide-react";
+import BulkExportPanel from "@/components/BulkExportPanel";
 import InviteContactDialog from "@/components/InviteContactDialog";
 import { Link, useNavigate } from "react-router-dom";
 import ClientOnboardingWizard from "@/components/clients/ClientOnboardingWizard";
@@ -51,6 +52,7 @@ const emptyClient = {
 export default function Clients() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
+  const [selectedIds, setSelectedIds] = useState(new Set());
   const [activityFilter, setActivityFilter] = useState("all");
   const [bulFilter, setBulFilter] = useState("all");
   const [caFilter, setCaFilter] = useState("all");
@@ -108,6 +110,20 @@ export default function Clients() {
     const matchProvince = provinceFilter === "all" || c.province === provinceFilter;
     return matchSearch && matchActivity && matchBul && matchCa && matchProvince;
   });
+
+  const toggleSelect = (id, e) => {
+    e.stopPropagation();
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
+
+  const toggleAll = () => {
+    if (selectedIds.size === filtered.length) setSelectedIds(new Set());
+    else setSelectedIds(new Set(filtered.map(c => c.id)));
+  };
 
   return (
     <div className="space-y-6">
@@ -176,18 +192,36 @@ export default function Clients() {
         </div>
       </div>
 
-      <p className="text-xs" style={{ color: "#92F21D" }}>Showing {filtered.length} of {clients.length} firms</p>
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <p className="text-xs" style={{ color: "#92F21D" }}>Showing {filtered.length} of {clients.length} firms</p>
+        <div className="flex items-center gap-3">
+          {filtered.length > 0 && (
+            <button onClick={toggleAll} className="flex items-center gap-1.5 text-xs" style={{ color: selectedIds.size === filtered.length ? "#92F21D" : "#ffffff" }}>
+              {selectedIds.size === filtered.length
+                ? <CheckSquare className="w-4 h-4" style={{ color: "#92F21D" }} />
+                : <Square className="w-4 h-4" />}
+              {selectedIds.size === filtered.length ? "Deselect All" : "Select All"}
+            </button>
+          )}
+          <BulkExportPanel selectedIds={selectedIds} records={filtered} type="clients" onClear={() => setSelectedIds(new Set())} />
+        </div>
+      </div>
 
       {/* List */}
       <div className="space-y-2">
         {filtered.map(c => (
           <Card
             key={c.id}
-            className="cursor-pointer hover:shadow-md transition-shadow"
+            className={`cursor-pointer hover:shadow-md transition-shadow ${selectedIds.has(c.id) ? "ring-1 ring-[#92F21D]" : ""}`}
             onClick={() => navigate(`/LawFirmDashboard?id=${c.id}`)}
           >
             <CardContent className="p-4">
               <div className="flex flex-wrap items-center gap-3">
+                <button onClick={e => toggleSelect(c.id, e)} className="flex-shrink-0 p-1">
+                  {selectedIds.has(c.id)
+                    ? <CheckSquare className="w-4 h-4" style={{ color: "#92F21D" }} />
+                    : <Square className="w-4 h-4 text-slate-500" />}
+                </button>
                 <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(52,204,208,0.15)" }}>
                   <Building2 className="w-4 h-4" style={{ color: "#34CCD0" }} />
                 </div>

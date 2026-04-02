@@ -8,7 +8,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Search, ClipboardList, Trash2, Calendar } from "lucide-react";
+import { Plus, Search, ClipboardList, Trash2, Calendar, CheckSquare, Square } from "lucide-react";
+import BulkExportPanel from "@/components/BulkExportPanel";
 import { format } from "date-fns";
 
 const empty = {
@@ -18,6 +19,7 @@ const empty = {
 
 export default function MeetingMinutes() {
   const [search, setSearch] = useState("");
+  const [selectedIds, setSelectedIds] = useState(new Set());
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(empty);
@@ -57,6 +59,20 @@ export default function MeetingMinutes() {
     m.agenda?.toLowerCase().includes(search.toLowerCase())
   );
 
+  const toggleSelect = (id, e) => {
+    e.stopPropagation();
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
+
+  const toggleAll = () => {
+    if (selectedIds.size === filtered.length) setSelectedIds(new Set());
+    else setSelectedIds(new Set(filtered.map(m => m.id)));
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -69,11 +85,31 @@ export default function MeetingMinutes() {
         </Button>
       </div>
 
+      <div className="flex items-center justify-between flex-wrap gap-2 mb-2">
+        <p className="text-xs" style={{ color: "#92F21D" }}>{filtered.length} records</p>
+        <div className="flex items-center gap-3">
+          {filtered.length > 0 && (
+            <button onClick={toggleAll} className="flex items-center gap-1.5 text-xs" style={{ color: selectedIds.size === filtered.length ? "#92F21D" : "#ffffff" }}>
+              {selectedIds.size === filtered.length
+                ? <CheckSquare className="w-4 h-4" style={{ color: "#92F21D" }} />
+                : <Square className="w-4 h-4" />}
+              {selectedIds.size === filtered.length ? "Deselect All" : "Select All"}
+            </button>
+          )}
+          <BulkExportPanel selectedIds={selectedIds} records={filtered} type="meetings" onClear={() => setSelectedIds(new Set())} />
+        </div>
+      </div>
+
       <div className="space-y-3">
         {filtered.map((m) => (
-          <Card key={m.id} className="border-0 shadow-sm hover:shadow-md transition-shadow cursor-pointer" onClick={() => openEdit(m)}>
+          <Card key={m.id} className={`border-0 shadow-sm hover:shadow-md transition-shadow cursor-pointer ${selectedIds.has(m.id) ? "ring-1 ring-[#92F21D]" : ""}`} onClick={() => openEdit(m)}>
             <CardContent className="p-5">
               <div className="flex items-start justify-between">
+                <button onClick={e => toggleSelect(m.id, e)} className="flex-shrink-0 p-1 mr-2 mt-0.5">
+                  {selectedIds.has(m.id)
+                    ? <CheckSquare className="w-4 h-4" style={{ color: "#92F21D" }} />
+                    : <Square className="w-4 h-4 text-slate-500" />}
+                </button>
                 <div>
                   <p className="font-semibold text-slate-800">{m.client_name}</p>
                   <p className="text-xs text-slate-500 mt-1 flex items-center gap-1">
