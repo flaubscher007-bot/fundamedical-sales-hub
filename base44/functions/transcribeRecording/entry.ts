@@ -9,7 +9,7 @@ Deno.serve(async (req) => {
     const { file_url, context } = await req.json();
 
     // Check for unsupported file types
-    const unsupportedExts = ['.mp4', '.m4a', '.mov', '.avi', '.mkv', '.webm'];
+    const unsupportedExts = ['.mp4', '.m4a', '.mov', '.avi', '.mkv'];
     const lowerUrl = (file_url || '').toLowerCase();
     const isUnsupported = unsupportedExts.some(ext => lowerUrl.includes(ext));
     if (isUnsupported) {
