@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Download, FileText, Sheet, X, Loader2 } from "lucide-react";
-import jsPDF from "jspdf";
+import { jsPDF } from "jspdf";
 
 // ---- CSV helpers ----
 function toCSV(rows, columns) {
