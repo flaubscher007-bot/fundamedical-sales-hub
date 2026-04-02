@@ -216,6 +216,7 @@ export const ROLE_PERMISSIONS = {
       "Expenses",
       "Mileage",
       "IntakeForms",
+      "ClientMapPage",
       "LeadSearch",
       "Help",
     ],
