@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Download, FileText, FileSpreadsheet, X } from "lucide-react";
-import { jsPDF } from "jspdf";
 
 // ---- CSV helpers ----
 function toCSV(rows, columns) {
@@ -27,7 +26,7 @@ function downloadCSV(csv, filename) {
 }
 
 // ---- PDF helpers ----
-function buildClientsPDF(records) {
+function buildClientsPDF(jsPDF, records) {
   const doc = new jsPDF();
   doc.setFontSize(16);
   doc.setTextColor(0, 188, 212);
@@ -62,7 +61,7 @@ function buildClientsPDF(records) {
   return doc;
 }
 
-function buildMeetingsPDF(records) {
+function buildMeetingsPDF(jsPDF, records) {
   const doc = new jsPDF();
   doc.setFontSize(16);
   doc.setTextColor(0, 188, 212);
@@ -137,16 +136,19 @@ const MEETING_COLUMNS = [
 export default function BulkExportPanel({ selectedIds, records, type, onClear }) {
   const [open, setOpen] = useState(false);
   const [exporting, setExporting] = useState(false);
-  const count = selectedIds.size;
-  if (count === 0) return null;
 
+  // hooks must be called before any early return
+  const count = selectedIds.size;
   const selected = records.filter(r => selectedIds.has(r.id));
   const isClients = type === "clients";
   const dateTag = new Date().toISOString().slice(0, 10);
 
-  const exportPDF = () => {
+  if (count === 0) return null;
+
+  const exportPDF = async () => {
     setExporting(true);
-    const doc = isClients ? buildClientsPDF(selected) : buildMeetingsPDF(selected);
+    const { jsPDF } = await import("jspdf");
+    const doc = isClients ? buildClientsPDF(jsPDF, selected) : buildMeetingsPDF(jsPDF, selected);
     doc.save(`${isClients ? "clients" : "meetings"}-report-${dateTag}.pdf`);
     setExporting(false);
     setOpen(false);
@@ -180,7 +182,7 @@ export default function BulkExportPanel({ selectedIds, records, type, onClear })
           <div className="flex flex-col gap-3">
             <Button onClick={exportPDF} disabled={exporting} className="flex items-center gap-2 justify-start" style={{ backgroundColor: "#34CCD0", color: "#081F3F" }}>
               <FileText className="w-4 h-4" />
-              <span>Download as PDF Report</span>
+              <span>{exporting ? "Generating..." : "Download as PDF Report"}</span>
             </Button>
             <Button onClick={exportCSV} disabled={exporting} variant="outline" className="flex items-center gap-2 justify-start border-[#92F21D] text-[#92F21D]">
               <FileSpreadsheet className="w-4 h-4" />
