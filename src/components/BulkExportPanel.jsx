@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Download, FileText, Sheet, X, Loader2 } from "lucide-react";
+import { Download, FileText, FileSpreadsheet, X } from "lucide-react";
 import { jsPDF } from "jspdf";
 
 // ---- CSV helpers ----
@@ -183,7 +183,7 @@ export default function BulkExportPanel({ selectedIds, records, type, onClear })
               <span>Download as PDF Report</span>
             </Button>
             <Button onClick={exportCSV} disabled={exporting} variant="outline" className="flex items-center gap-2 justify-start border-[#92F21D] text-[#92F21D]">
-              <Sheet className="w-4 h-4" />
+              <FileSpreadsheet className="w-4 h-4" />
               <span>Download as CSV Spreadsheet</span>
             </Button>
             <Button variant="ghost" onClick={() => setOpen(false)} className="text-slate-400 text-sm">Cancel</Button>
