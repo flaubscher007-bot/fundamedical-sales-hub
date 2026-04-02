@@ -161,11 +161,15 @@ export default function BUMeetingRecordDialog({ open, onClose, appointment, exis
   const [matterRows, setMatterRows] = useState([]);
   const [analyzing, setAnalyzing] = useState(false);
   const [analyzeResult, setAnalyzeResult] = useState(null);
+  const [liveTranscript, setLiveTranscript] = useState("");
+  const [liveActionPoints, setLiveActionPoints] = useState([]);
   const transcriptFileRef = useRef();
   const audioRef = useRef();
   const attachRef = useRef();
   const chunksRef = useRef([]);
   const autoSaveIntervalRef = useRef(null);
+  const speechRecognitionRef = useRef(null);
+  const liveTranscriptRef = useRef("");
 
   const handleTranscriptFileUpload = async (e) => {
     const file = e.target.files[0];
@@ -298,8 +302,72 @@ Extract the following in JSON:
     setSaveDialog(true);
   };
 
+  const ACTION_POINT_TRIGGERS = [
+    /action point[s]?[:\s]/i,
+    /action item[s]?[:\s]/i,
+    /to[- ]do[:\s]/i,
+    /follow[- ]up[:\s]/i,
+    /make a note/i,
+    /note to/i,
+    /we need to/i,
+    /you need to/i,
+    /please (ensure|send|check|follow|confirm|arrange|do)/i,
+  ];
+
+  const startLiveSpeechRecognition = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) return;
+    const sr = new SpeechRecognition();
+    sr.continuous = true;
+    sr.interimResults = true;
+    sr.lang = 'en-ZA';
+    let finalTranscript = liveTranscriptRef.current;
+    sr.onresult = (event) => {
+      let interim = '';
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const t = event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+          finalTranscript += t + ' ';
+          liveTranscriptRef.current = finalTranscript;
+          // Detect action point mentions in final segments
+          const sentences = t.split(/[.!?]/).filter(s => s.trim().length > 5);
+          sentences.forEach(sentence => {
+            if (ACTION_POINT_TRIGGERS.some(rx => rx.test(sentence))) {
+              const clean = sentence.trim();
+              setLiveActionPoints(prev => {
+                if (!prev.includes(clean)) return [...prev, clean];
+                return prev;
+              });
+            }
+          });
+        } else {
+          interim += t;
+        }
+      }
+      setLiveTranscript(finalTranscript + interim);
+    };
+    sr.onerror = () => {};
+    sr.start();
+    speechRecognitionRef.current = sr;
+  };
+
+  const stopLiveSpeechRecognition = () => {
+    if (speechRecognitionRef.current) {
+      speechRecognitionRef.current.stop();
+      speechRecognitionRef.current = null;
+      // Save live transcript to form
+      if (liveTranscriptRef.current.trim()) {
+        setForm(f => ({ ...f, transcript: liveTranscriptRef.current.trim() }));
+      }
+    }
+  };
+
   const startRecording = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    setLiveTranscript("");
+    setLiveActionPoints([]);
+    liveTranscriptRef.current = "";
+    startLiveSpeechRecognition();
     const mimeType = MediaRecorder.isTypeSupported('audio/mp4')
       ? 'audio/mp4'
       : MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
@@ -332,7 +400,15 @@ Extract the following in JSON:
     if (autoSaveIntervalRef.current) clearInterval(autoSaveIntervalRef.current);
     mediaRecorder?.stop();
     mediaRecorder?.stream?.getTracks().forEach(t => t.stop());
+    stopLiveSpeechRecognition();
     setRecording(false);
+    // Append detected action points to form
+    if (liveActionPoints.length > 0) {
+      setForm(f => {
+        const existing = f.action_items ? f.action_items + "\n" : "";
+        return { ...f, action_items: existing + liveActionPoints.join("\n") };
+      });
+    }
   };
 
   const saveToCloud = async () => {
@@ -694,6 +770,35 @@ Extract the following in JSON:
                   {recording && <span className="text-sm text-red-400 flex items-center gap-1"><span className="w-2 h-2 bg-red-500 rounded-full animate-pulse inline-block" /> Recording in progress</span>}
                 </div>
                 <p className="text-xs mt-2 text-slate-400">Recording autosaves every 5 seconds locally. If interrupted, you'll be prompted to recover it on next open.</p>
+
+                {/* Live Transcription Display */}
+                {recording && (
+                  <div className="mt-4 space-y-3">
+                    <div className="rounded-lg p-3" style={{ backgroundColor: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.3)' }}>
+                      <p className="text-xs font-bold mb-2 flex items-center gap-1" style={{ color: '#f87171' }}>
+                        <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse inline-block" /> Live Transcription
+                      </p>
+                      <div className="text-xs font-mono leading-relaxed max-h-32 overflow-y-auto" style={{ color: '#ffffff', whiteSpace: 'pre-wrap' }}>
+                        {liveTranscript || <span style={{ color: '#6b7280', fontStyle: 'italic' }}>Listening... start speaking</span>}
+                      </div>
+                    </div>
+
+                    {liveActionPoints.length > 0 && (
+                      <div className="rounded-lg p-3" style={{ backgroundColor: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.4)' }}>
+                        <p className="text-xs font-bold mb-2" style={{ color: '#f97316' }}>⚡ Action Points Detected ({liveActionPoints.length})</p>
+                        <ul className="space-y-1">
+                          {liveActionPoints.map((ap, i) => (
+                            <li key={i} className="text-xs flex items-start gap-2" style={{ color: '#ffffff' }}>
+                              <span style={{ color: '#f97316', flexShrink: 0 }}>•</span>
+                              {ap}
+                            </li>
+                          ))}
+                        </ul>
+                        <p className="text-xs mt-2" style={{ color: '#f97316', opacity: 0.8 }}>These will be saved to Action Items when you stop recording.</p>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div className="border border-[#34CCD0]/30 rounded-xl p-5">
