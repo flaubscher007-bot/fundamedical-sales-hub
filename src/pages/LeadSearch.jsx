@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Search, MapPin, Phone, Mail, Globe, Building2, Loader2, ExternalLink, Star, Download, FileText, Stethoscope, ChevronDown, Scale, Database, CheckCircle2, Shield, Save, Users } from "lucide-react";
 import SaveLeadButton from "@/components/leadSearch/SaveLeadButton";
 import CompetitorBadge from "@/components/leadSearch/CompetitorBadge";
+import SavedLeadDetailModal from "@/components/leadSearch/SavedLeadDetailModal";
 import * as XLSX from "xlsx";
 import { 
   BUL_TERRITORY_MAP, BUL_COLORS, PROVINCES, SPECIALTIES, OUTCOME_COLORS, VISIBLE_COUNT,
@@ -37,6 +38,8 @@ export default function LeadSearch() {
   const [savingAll, setSavingAll] = useState(false);
   const [saveAllDone, setSaveAllDone] = useState(false);
   const [error, setError] = useState(null);
+  const [selectedLead, setSelectedLead] = useState(null);
+  const [detailModalOpen, setDetailModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchSaved = async () => {
@@ -392,7 +395,9 @@ Return between 10 and 15 firms. Only include real, verifiable law firms.`;
               {savedLeads.filter(l => l.lead_type === savedLeadsTab).map(lead => {
                 const color = savedLeadsTab === "Law Firm" ? "#92F21D" : savedLeadsTab === "PI Expert Witness" ? "#34CCD0" : "#f43f5e";
                 return (
-                  <div key={lead.id} className="rounded-xl border p-4 space-y-2.5 transition-colors"
+                  <div key={lead.id} 
+                    onClick={() => { setSelectedLead(lead); setDetailModalOpen(true); }}
+                    className="rounded-xl border p-4 space-y-2.5 transition-colors cursor-pointer hover:border-[#34CCD0]/60"
                     style={{ borderColor: `${color}30`, backgroundColor: "rgba(8,31,63,0.7)" }}>
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0 flex-1">
@@ -857,6 +862,9 @@ Return between 10 and 15 firms. Only include real, verifiable law firms.`;
          <p style={{ color: "#ef4444" }}>{error}</p>
        </div>
       )}
+
+      {/* Saved Lead Detail Modal */}
+      <SavedLeadDetailModal lead={selectedLead} open={detailModalOpen} onOpenChange={setDetailModalOpen} />
 
       {!loading && !searched && (
        <div className="text-center py-16">
