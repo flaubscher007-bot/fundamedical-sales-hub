@@ -12,73 +12,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Search, MapPin, Phone, Mail, Globe, Building2, Loader2, ExternalLink, Star, Download, FileText, Stethoscope, ChevronDown, Scale, Database, CheckCircle2, Shield, Save, Users } from "lucide-react";
 import SaveLeadButton from "@/components/leadSearch/SaveLeadButton";
 import * as XLSX from "xlsx";
-
-// BUL territory map for allocation suggestions
-const BUL_TERRITORY_MAP = [
-  { name: "Dylan", provinces: ["Western Cape", "KwaZulu-Natal"] },
-  { name: "Jacques", provinces: ["Eastern Cape"] },
-  { name: "George", provinces: ["Free State", "Northern Cape"] },
-  { name: "Duran", provinces: ["Mpumalanga"] },
-  { name: "Nthabiseng", provinces: ["Limpopo", "North West"] },
-  { name: "All BULs (Shared)", provinces: ["Gauteng"] },
-];
-
-function getBULSuggestion(firms) {
-  if (!firms?.length) return null;
-  const provinceCounts = {};
-  firms.forEach(f => {
-    if (f.province) {
-      provinceCounts[f.province] = (provinceCounts[f.province] || 0) + 1;
-    }
-  });
-  const sorted = Object.entries(provinceCounts).sort((a, b) => b[1] - a[1]);
-  if (!sorted.length) return null;
-  const topProvince = sorted[0][0];
-  const territory = BUL_TERRITORY_MAP.find(t =>
-    t.provinces.some(p => topProvince.toLowerCase().includes(p.toLowerCase()) || p.toLowerCase().includes(topProvince.toLowerCase()))
-  );
-  return { bul: territory?.name || null, topProvince, sorted };
-}
-
-const BUL_COLORS = {
-  Dylan: "#34CCD0",
-  Jacques: "#f59e0b",
-  George: "#a78bfa",
-  Duran: "#fb923c",
-  Nthabiseng: "#f43f5e",
-  "All BULs (Shared)": "#92F21D",
-};
-
-const PROVINCES = [
-  "Western Cape",
-  "KwaZulu-Natal",
-  "Gauteng",
-  "Eastern Cape",
-  "Free State",
-  "Limpopo",
-  "Mpumalanga",
-  "North West",
-  "Northern Cape",
-];
-
-const SPECIALTIES = [
-  { value: "personal_injury", label: "Personal Injury" },
-  { value: "medical_negligence", label: "Medical Negligence" },
-  { value: "both", label: "Both (PI & Med Neg)" },
-  { value: "raf_mva", label: "Road Accident Fund / MVA" },
-  { value: "coida", label: "COIDA / Workmen's Compensation" },
-];
-
-const VISIBLE_COUNT = 10;
-
-const OUTCOME_COLORS = {
-  "Pending": "bg-slate-700 text-slate-300 border-slate-600",
-  "Interested": "bg-green-900/50 text-green-400 border-green-700",
-  "Not Interested": "bg-red-900/50 text-red-400 border-red-700",
-  "No Response": "bg-yellow-900/50 text-yellow-400 border-yellow-700",
-  "Follow-Up Required": "bg-orange-900/50 text-orange-400 border-orange-700",
-  "Converted": "bg-cyan-900/50 text-cyan-400 border-cyan-700",
-};
+import { 
+  BUL_TERRITORY_MAP, BUL_COLORS, PROVINCES, SPECIALTIES, OUTCOME_COLORS, VISIBLE_COUNT,
+  getBULSuggestion, isSavedLead, fuzzyMatch, normalizeName, QUALITY_COLORS
+} from "@/lib/leadSearchUtils";
 
 export default function LeadSearch() {
   const [mode, setMode] = useState("law_firms"); // "law_firms" | "experts" | "med_neg" | "partners" | "saved"
@@ -98,6 +35,7 @@ export default function LeadSearch() {
   const [savedLeadsLoading, setSavedLeadsLoading] = useState(false);
   const [savingAll, setSavingAll] = useState(false);
   const [saveAllDone, setSaveAllDone] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchSaved = async () => {
@@ -199,38 +137,16 @@ export default function LeadSearch() {
     );
   };
 
-  const normalizeName = (name) => {
-    return (name || "")
-      .toLowerCase()
-      .replace(/\b(attorneys|attorney|inc|incorporated|law|firm|and|&|the|of|cc|pty|ltd|legal|advocates|advocate|consultants|consultant)\b/g, "")
-      .replace(/[^a-z0-9\s]/g, "")
-      .replace(/\s+/g, " ")
-      .trim();
-  };
-
-  const fuzzyMatch = (firmName, clients) => {
-    const normFirm = normalizeName(firmName);
-    const firmWords = normFirm.split(" ").filter(w => w.length > 2);
-    for (const client of clients) {
-      const normClient = normalizeName(client.firm_name);
-      const clientWords = normClient.split(" ").filter(w => w.length > 2);
-      if (normFirm === normClient) return client;
-      if (normFirm.includes(normClient) || normClient.includes(normFirm)) return client;
-      const overlap = firmWords.filter(w => clientWords.includes(w));
-      const minLen = Math.min(firmWords.length, clientWords.length);
-      if (minLen > 0 && overlap.length / minLen >= 0.7) return client;
-    }
-    return null;
-  };
-
   const handleSearch = async () => {
     if (!location.trim() && province === "all") return;
     setLoading(true);
     setSearched(true);
     setResults(null);
+    setError(null);
 
-    const clients = await base44.entities.Client.list();
-    setExistingClients(clients);
+    try {
+      const clients = await base44.entities.Client.list();
+      setExistingClients(clients);
 
     const locationStr = [location.trim(), province !== "all" ? province : ""].filter(Boolean).join(", ");
     const specialtyLabel = SPECIALTIES.find(s => s.value === specialty)?.label || "Personal Injury and Medical Negligence";
@@ -303,45 +219,53 @@ Return between 10 and 15 firms. Only include real, verifiable law firms.`;
       },
     });
 
-    setResults(result);
-    setSaveAllDone(false);
-    setLoading(false);
+      setResults(result);
+      setSaveAllDone(false);
+    } catch (err) {
+      setError("Failed to search for law firms. Please try again.");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const saveAllLeads = async () => {
     if (!results?.firms?.length) return;
     setSavingAll(true);
-    const unsaved = results.firms.filter(f => !isSavedLead(f.firm_name));
-    for (const firm of unsaved) {
-      await base44.entities.LeadRecord.create({
-        lead_type: "Law Firm",
-        name: firm.firm_name,
-        address: firm.address,
-        city: firm.city,
-        province: firm.province,
-        phone: firm.phone,
-        email: firm.email,
-        website: firm.website,
-        specialties: firm.specialties || [],
-        lead_quality: firm.lead_quality,
-        notes: firm.notes,
-        source_search: location.trim() || province,
-        contact_outcome: "Pending",
-        contacted: false,
-      });
+    setError(null);
+    try {
+      const unsaved = results.firms.filter(f => !isSavedLead(f.firm_name, savedLeads));
+      for (const firm of unsaved) {
+        await base44.entities.LeadRecord.create({
+          lead_type: "Law Firm",
+          name: firm.firm_name,
+          address: firm.address,
+          city: firm.city,
+          province: firm.province,
+          phone: firm.phone,
+          email: firm.email,
+          website: firm.website,
+          specialties: firm.specialties || [],
+          lead_quality: firm.lead_quality,
+          notes: firm.notes,
+          source_search: location.trim() || province,
+          contact_outcome: "Pending",
+          contacted: false,
+        });
+      }
+      // Refresh saved leads list
+      const updated = await base44.entities.LeadRecord.list("-created_date", 500);
+      setSavedLeads(updated);
+      setSaveAllDone(true);
+    } catch (err) {
+      setError("Failed to save leads. Please try again.");
+      console.error(err);
+    } finally {
+      setSavingAll(false);
     }
-    // Refresh saved leads list
-    const updated = await base44.entities.LeadRecord.list("-created_date", 500);
-    setSavedLeads(updated);
-    setSavingAll(false);
-    setSaveAllDone(true);
   };
 
-  const qualityColor = (q) => {
-    if (q === "High") return "bg-green-900/50 text-green-400 border-green-700";
-    if (q === "Medium") return "bg-yellow-900/50 text-yellow-400 border-yellow-700";
-    return "bg-slate-700 text-slate-300 border-slate-600";
-  };
+  const qualityColor = (q) => QUALITY_COLORS[q] || QUALITY_COLORS["Low"];
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
@@ -926,15 +850,21 @@ Return between 10 and 15 firms. Only include real, verifiable law firms.`;
         />
       )}
 
+      {error && (
+       <div className="p-4 rounded-lg border border-red-700/50 bg-red-900/20">
+         <p style={{ color: "#ef4444" }}>{error}</p>
+       </div>
+      )}
+
       {!loading && !searched && (
-        <div className="text-center py-16">
-          <Search className="w-12 h-12 mx-auto mb-4 text-slate-600" />
-          <p className="font-medium" style={{ color: "#92F21D" }}>Search for potential leads in your visit area</p>
-          <p className="text-sm mt-2" style={{ color: "#34CCD0" }}>
-            Enter the city or province your BU is visiting to discover personal injury<br />
-            and medical negligence firms that could benefit from FundaMedical's expert services
-          </p>
-        </div>
+       <div className="text-center py-16">
+         <Search className="w-12 h-12 mx-auto mb-4 text-slate-600" />
+         <p className="font-medium" style={{ color: "#92F21D" }}>Search for potential leads in your visit area</p>
+         <p className="text-sm mt-2" style={{ color: "#34CCD0" }}>
+           Enter the city or province your BU is visiting to discover personal injury<br />
+           and medical negligence firms that could benefit from FundaMedical's expert services
+         </p>
+       </div>
       )}
       </> }
     </div>

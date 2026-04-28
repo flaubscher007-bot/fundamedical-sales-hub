@@ -39,6 +39,11 @@ export default function CompetitorAnalytics() {
 
     setLoading(true);
     try {
+      if (selectedCompetitors.length > 5) {
+        alert('Please select 5 or fewer competitors for better performance');
+        setLoading(false);
+        return;
+      }
       const selectedData = competitors.filter(c => selectedCompetitors.includes(c.id));
       
       // Fetch activity logs for selected competitors
@@ -64,14 +69,21 @@ export default function CompetitorAnalytics() {
         });
       }
 
+      // Pre-build activity map for efficiency
+      const activityMap = {};
       selectedData.forEach((competitor, idx) => {
-        const activities = activityResults[idx] || [];
-        last90Days.forEach(day => {
-          const activitiesOnDay = activities.filter(a =>
-            new Date(a.activity_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) === day.date
-          ).length;
-          day[`${competitor.name}`] = (day[`${competitor.name}`] || 0) + activitiesOnDay;
-        });
+       const activities = activityResults[idx] || [];
+       activities.forEach(a => {
+         const dateKey = new Date(a.activity_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+         if (!activityMap[dateKey]) activityMap[dateKey] = {};
+         activityMap[dateKey][competitor.name] = (activityMap[dateKey][competitor.name] || 0) + 1;
+       });
+      });
+
+      last90Days.forEach(day => {
+       if (activityMap[day.date]) {
+         Object.assign(day, activityMap[day.date]);
+       }
       });
 
       const growthTrends = last90Days.filter((_, i) => i % 7 === 0); // Weekly snapshots
@@ -110,6 +122,7 @@ export default function CompetitorAnalytics() {
       });
     } catch (error) {
       console.error('Error generating analytics:', error);
+      alert('Failed to generate analytics. Please try again.');
     } finally {
       setLoading(false);
     }

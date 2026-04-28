@@ -1,0 +1,101 @@
+{
+  "name": "FollowUp",
+  "type": "object",
+  "properties": {
+    "lead_id": {
+      "type": "string",
+      "description": "ID of the related lead"
+    },
+    "lead_name": {
+      "type": "string",
+      "description": "Name of the lead (denormalized)"
+    },
+    "interaction_type": {
+      "type": "string",
+      "enum": [
+        "call",
+        "email",
+        "meeting",
+        "follow_up",
+        "proposal",
+        "other"
+      ],
+      "description": "Type of interaction"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Details about the interaction"
+    },
+    "interaction_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the interaction occurred"
+    },
+    "follow_up_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When the next follow-up is scheduled"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Pending",
+        "Completed",
+        "Cancelled"
+      ],
+      "default": "Pending",
+      "description": "Status of the follow-up"
+    },
+    "assigned_bul": {
+      "type": "string",
+      "description": "Business unit leader assigned"
+    },
+    "email_logged": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether email was sent via Resend"
+    },
+    "email_id": {
+      "type": "string",
+      "description": "Resend email ID for tracking"
+    }
+  },
+  "required": [
+    "lead_id",
+    "interaction_type",
+    "interaction_date"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": {
+          "$ne": ""
+        }
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": {
+          "$ne": ""
+        }
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": {
+          "$ne": ""
+        }
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "admin",
+            "senior_management"
+          ]
+        }
+      }
+    }
+  }
+}

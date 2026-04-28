@@ -70,6 +70,7 @@ export default function LeadCRM() {
     return true;
   });
 
+  const selectedLeadData = selectedLead ? leads.find(l => l.id === selectedLead) : null;
   const leadInteractions = selectedLead ? interactions.filter(i => i.lead_id === selectedLead) : [];
 
   const statusColors = {
@@ -160,25 +161,25 @@ export default function LeadCRM() {
         </div>
 
         {/* Interaction Panel */}
-        {selectedLead && (
+        {selectedLeadData && (
           <Card style={{ backgroundColor: '#0a1e3a', borderColor: '#34CCD0' }}>
             <CardHeader>
               <CardTitle style={{ color: '#92F21D' }} className="text-lg">
-                {leads.find(l => l.id === selectedLead)?.name}
+                {selectedLeadData.name}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Lead Info */}
               <div className="space-y-2">
                 <p className="text-xs font-semibold" style={{ color: '#34CCD0' }}>Contact Details</p>
-                {leads.find(l => l.id === selectedLead)?.phone && (
-                  <a href={`tel:${leads.find(l => l.id === selectedLead)?.phone}`} className="flex items-center gap-2 text-xs hover:underline" style={{ color: '#92F21D' }}>
-                    <Phone className="w-3 h-3" /> {leads.find(l => l.id === selectedLead)?.phone}
+                {selectedLeadData.phone && (
+                  <a href={`tel:${selectedLeadData.phone}`} className="flex items-center gap-2 text-xs hover:underline" style={{ color: '#92F21D' }}>
+                    <Phone className="w-3 h-3" /> {selectedLeadData.phone}
                   </a>
                 )}
-                {leads.find(l => l.id === selectedLead)?.email && (
-                  <a href={`mailto:${leads.find(l => l.id === selectedLead)?.email}`} className="flex items-center gap-2 text-xs hover:underline" style={{ color: '#92F21D' }}>
-                    <Mail className="w-3 h-3" /> {leads.find(l => l.id === selectedLead)?.email}
+                {selectedLeadData.email && (
+                  <a href={`mailto:${selectedLeadData.email}`} className="flex items-center gap-2 text-xs hover:underline" style={{ color: '#92F21D' }}>
+                    <Mail className="w-3 h-3" /> {selectedLeadData.email}
                   </a>
                 )}
               </div>
