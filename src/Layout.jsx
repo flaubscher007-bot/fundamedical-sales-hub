@@ -56,6 +56,7 @@ const clientItems = [
 
 const expertItems = [
   { name: "All Experts", icon: Stethoscope, page: "Experts" },
+  { name: "Expert Manager", icon: TrendingUp, page: "ExpertManagerDashboard" },
   { name: "Import Experts", icon: Upload, page: "ExpertImportManager" },
 ];
 
