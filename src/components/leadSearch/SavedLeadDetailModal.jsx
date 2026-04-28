@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { Phone, Mail, Globe, ExternalLink, Star, Shield, MapPin, Building2, Stethoscope, Scale } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Phone, Mail, Globe, ExternalLink, Star, Shield, MapPin, Building2, Stethoscope, Scale, Download } from 'lucide-react';
 import CompetitorBadge from '@/components/leadSearch/CompetitorBadge';
+import LeadExportOptions from '@/components/leadSearch/LeadExportOptions';
 
 export default function SavedLeadDetailModal({ lead, open, onOpenChange }) {
+  const [exportModalOpen, setExportModalOpen] = useState(false);
+
   if (!lead) return null;
 
   const getTabColor = () => {
@@ -27,13 +31,23 @@ export default function SavedLeadDetailModal({ lead, open, onOpenChange }) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto" style={{ backgroundColor: '#0a1e3a', borderColor: `${color}40` }}>
         <DialogHeader>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 flex-1 min-w-0">
             <div style={{ color }}>{getIcon()}</div>
-            <div className="flex-1 min-w-0">
-              <DialogTitle style={{ color: '#92F21D' }} className="text-lg truncate">{lead.name}</DialogTitle>
-              {lead.discipline && <p className="text-xs mt-1" style={{ color: '#34CCD0' }}>{lead.discipline}</p>}
-              {lead.practice_name && <p className="text-xs" style={{ color: '#94a3b8' }}>{lead.practice_name}</p>}
+              <div className="flex-1 min-w-0">
+                <DialogTitle style={{ color: '#92F21D' }} className="text-lg truncate">{lead.name}</DialogTitle>
+                {lead.discipline && <p className="text-xs mt-1" style={{ color: '#34CCD0' }}>{lead.discipline}</p>}
+                {lead.practice_name && <p className="text-xs" style={{ color: '#94a3b8' }}>{lead.practice_name}</p>}
+              </div>
             </div>
+            <Button 
+              onClick={() => setExportModalOpen(true)}
+              size="sm"
+              style={{ backgroundColor: '#34CCD0', color: '#081F3F', fontWeight: 600 }}
+              className="flex-shrink-0"
+            >
+              <Download className="w-4 h-4" />
+            </Button>
           </div>
         </DialogHeader>
 
@@ -157,6 +171,9 @@ export default function SavedLeadDetailModal({ lead, open, onOpenChange }) {
           </div>
         </div>
       </DialogContent>
+
+      {/* Export Modal */}
+      <LeadExportOptions lead={lead} open={exportModalOpen} onOpenChange={setExportModalOpen} />
     </Dialog>
   );
 }
