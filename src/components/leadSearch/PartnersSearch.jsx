@@ -11,6 +11,9 @@ const PARTNER_TYPES = [
   { value: 'funding', label: 'Funding Partners' },
   { value: 'trust_admin', label: 'Trust Administrators' },
   { value: 'insurance', label: 'Insurance Companies' },
+  { value: 'loss_adjusters', label: 'Loss Adjusters & Assessors' },
+  { value: 'medical_reports', label: 'Medical Report Agencies' },
+  { value: 'rehabilitation', label: 'Rehabilitation Services' },
   { value: 'all', label: 'All Types' }
 ];
 
@@ -39,19 +42,23 @@ export default function PartnersSearch() {
       funding: 'Funding Partners (medical-legal funding, case funding, litigation finance)',
       trust_admin: 'Trust Administrators (fiduciary services, trust administration for medical negligence claims)',
       insurance: 'Insurance Companies (medical professional indemnity, malpractice insurance)',
-      all: 'Funding Partners, Trust Administrators, and Insurance Companies'
+      loss_adjusters: 'Loss Adjusters & Assessors (claims adjusters, loss assessors, damage assessors for insurance claims)',
+      medical_reports: 'Medical Report Agencies (medical report providers, medico-legal report services)',
+      rehabilitation: 'Rehabilitation Services (occupational therapy, physiotherapy, rehabilitation providers)',
+      all: 'Funding Partners, Trust Administrators, Insurance Companies, Loss Adjusters, Medical Report Agencies, and Rehabilitation Services'
     }[partnerType];
 
     const prompt = `Find ${typeLabel} based in or serving the ${location}, South Africa area that would be potential strategic partners for FundaMedical.
 
 These partners should:
-- Have experience with medical-legal matters
-- Serve law firms handling personal injury and medical negligence cases
+- Have experience with medical-legal matters, personal injury, or medical negligence cases
+- Serve law firms, insurance companies, or other entities in the medico-legal space
 - Be established and reputable in their field
+- Offer services that complement FundaMedical's expert panel services
 
 For each partner found, provide:
 - organization_name: the company name
-- partner_type: 'Funding Partner', 'Trust Administrator', or 'Insurance Company'
+- partner_type: 'Funding Partner', 'Trust Administrator', 'Insurance Company', 'Loss Adjuster', 'Medical Report Agency', or 'Rehabilitation Service Provider'
 - address: physical address if available
 - city: city/town
 - province: province
@@ -59,9 +66,9 @@ For each partner found, provide:
 - email: email address if available
 - website: website URL if available
 - services: list of key services they offer
-- experience_areas: areas of expertise (e.g. ["Medical Negligence", "Personal Injury", "Claims Management"])
+- experience_areas: areas of expertise (e.g. ["Medical Negligence", "Personal Injury", "Claims Management", "Loss Assessment"])
 - established_year: when the company was founded if known
-- notes: relevant information about their partnership potential
+- notes: relevant information about their partnership potential and how they could utilize FundaMedical's expert panel
 - lead_quality: rate as "High", "Medium", or "Low" based on relevance to FundaMedical
 
 Return between 8 and 12 potential partners. Only include real, verifiable organizations.`;
@@ -142,6 +149,9 @@ Return between 8 and 12 potential partners. Only include real, verifiable organi
     if (type.includes('Funding')) return '#92F21D';
     if (type.includes('Trust')) return '#34CCD0';
     if (type.includes('Insurance')) return '#f59e0b';
+    if (type.includes('Loss')) return '#06b6d4';
+    if (type.includes('Medical Report') || type.includes('Report')) return '#ec4899';
+    if (type.includes('Rehabilitation')) return '#8b5cf6';
     return '#94a3b8';
   };
 
@@ -161,7 +171,7 @@ Return between 8 and 12 potential partners. Only include real, verifiable organi
       <div>
         <h2 className="text-lg font-semibold mb-4" style={{ color: '#92F21D' }}>Find Strategic Partners</h2>
         <p className="text-sm" style={{ color: '#34CCD0' }}>
-          Discover potential funding partners, trust administrators, and insurance companies to expand FundaMedical's network.
+          Discover potential partners including funding partners, trust administrators, insurance companies, loss adjusters, medical report agencies, and rehabilitation services to expand FundaMedical's network.
         </p>
       </div>
 
@@ -407,8 +417,9 @@ Return between 8 and 12 potential partners. Only include real, verifiable organi
           <Users className="w-12 h-12 mx-auto mb-4 text-slate-600" />
           <p className="font-medium" style={{ color: '#92F21D' }}>Search for strategic partners in your area</p>
           <p className="text-sm mt-2" style={{ color: '#34CCD0' }}>
-            Find funding partners, trust administrators, and insurance companies<br />
-            that could strengthen FundaMedical's service offering
+            Find funding partners, trust administrators, insurance companies, loss adjusters,<br />
+            medical report agencies, and rehabilitation services that could strengthen<br />
+            FundaMedical's service offering and network
           </p>
         </div>
       )}
