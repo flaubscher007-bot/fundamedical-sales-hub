@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import OutreachModule from "@/components/leadSearch/OutreachModule";
 import ProposalGenerator from "@/components/leadSearch/ProposalGenerator";
@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, MapPin, Phone, Mail, Globe, Building2, Loader2, ExternalLink, Star, Download, FileText, Stethoscope, ChevronDown, Scale } from "lucide-react";
+import { Search, MapPin, Phone, Mail, Globe, Building2, Loader2, ExternalLink, Star, Download, FileText, Stethoscope, ChevronDown, Scale, Database, CheckCircle2, ShieldCheck } from "lucide-react";
 import SaveLeadButton from "@/components/leadSearch/SaveLeadButton";
 import * as XLSX from "xlsx";
 
@@ -70,8 +70,18 @@ const SPECIALTIES = [
 
 const VISIBLE_COUNT = 10;
 
+const OUTCOME_COLORS = {
+  "Pending": "bg-slate-700 text-slate-300 border-slate-600",
+  "Interested": "bg-green-900/50 text-green-400 border-green-700",
+  "Not Interested": "bg-red-900/50 text-red-400 border-red-700",
+  "No Response": "bg-yellow-900/50 text-yellow-400 border-yellow-700",
+  "Follow-Up Required": "bg-orange-900/50 text-orange-400 border-orange-700",
+  "Converted": "bg-cyan-900/50 text-cyan-400 border-cyan-700",
+};
+
 export default function LeadSearch() {
-  const [mode, setMode] = useState("law_firms"); // "law_firms" | "experts" | "med_neg"
+  const [mode, setMode] = useState("law_firms"); // "law_firms" | "experts" | "med_neg" | "saved"
+  const [savedLeadsTab, setSavedLeadsTab] = useState("Law Firm");
   const [location, setLocation] = useState("");
   const [province, setProvince] = useState("all");
   const [specialty, setSpecialty] = useState("both");
@@ -83,6 +93,58 @@ export default function LeadSearch() {
   const [showOutreach, setShowOutreach] = useState(false);
   const [showProposal, setShowProposal] = useState(false);
   const [showAll, setShowAll] = useState(false);
+  const [savedLeads, setSavedLeads] = useState([]);
+  const [savedLeadsLoading, setSavedLeadsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchSaved = async () => {
+      setSavedLeadsLoading(true);
+      try {
+        const data = await base44.entities.LeadRecord.list("-created_date", 500);
+        setSavedLeads(data);
+      } catch(e) { /* ignore */ }
+      setSavedLeadsLoading(false);
+    };
+    fetchSaved();
+  }, []);
+
+  const normName = (s) => (s || "").toLowerCase().replace(/[^a-z\s]/g, "").replace(/\b(attorneys|attorney|inc|incorporated|law|firm|and|the|of|cc|pty|ltd|legal|advocates|advocate)\b/g, "").replace(/\s+/g, " ").trim();
+  const isSavedLead = (name) => {
+    if (!name) return false;
+    const n = normName(name);
+    return savedLeads.some(l => { const ln = normName(l.name); return ln === n || ln.includes(n) || n.includes(ln); });
+  };
+
+  const exportSavedLeadsToExcel = (type) => {
+    const rows = savedLeads.filter(l => l.lead_type === type).map((l, i) => ({
+      "No.": i + 1,
+      "Name": l.name || "",
+      "Discipline": l.discipline || "",
+      "Specialties": (l.specialties || []).join(", "),
+      "Practice/Firm": l.practice_name || "",
+      "City": l.city || "",
+      "Province": l.province || "",
+      "Phone": l.phone || "",
+      "Email": l.email || "",
+      "Website": l.website || "",
+      "HPCSA No.": l.hpcsa_number || "",
+      "HPCSA Status": l.hpcsa_status || "",
+      "SAMLA Registered": l.is_samla_registered ? "YES" : "NO",
+      "Lead Quality": l.lead_quality || "",
+      "On FM Panel": l.on_funda_panel ? "YES" : "NO",
+      "Contacted": l.contacted ? "YES" : "NO",
+      "Contact Date": l.contact_date || "",
+      "Outcome": l.contact_outcome || "Pending",
+      "Assigned BUL": l.assigned_bul || "",
+      "Notes": l.notes || "",
+    }));
+    if (!rows.length) return;
+    const ws = XLSX.utils.json_to_sheet(rows);
+    ws["!cols"] = Array(20).fill({ wch: 20 });
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, type.replace(/ /g, "_"));
+    XLSX.writeFile(wb, `FundaMedical_${type.replace(/ /g, "_")}_${new Date().toISOString().slice(0,10)}.xlsx`);
+  };
 
   const exportFirmsToExcel = () => {
     if (!results?.firms?.length) return;
@@ -260,41 +322,46 @@ Return between 10 and 15 firms. Only include real, verifiable law firms.`;
             ? "Discover personal injury & medical negligence law firms — potential leads for FundaMedical expert services"
             : mode === "experts"
             ? "Find HPCSA-registered medical experts and expert witnesses — potential panel additions for FundaMedical"
-            : "Find HPCSA-registered practitioners who testified as expert witnesses in medical negligence cases (2020–2025)"}
+            : mode === "med_neg"
+            ? "Find HPCSA-registered practitioners who testified as expert witnesses in medical negligence cases (2020–2025)"
+            : `All saved leads across all categories — ${savedLeads.length} total`}
         </p>
       </div>
 
       {/* Mode Toggle */}
-      <div className="flex gap-1 p-1 rounded-xl w-fit" style={{ backgroundColor: "rgba(52,204,208,0.08)", border: "1px solid rgba(52,204,208,0.2)" }}>
+      <div className="flex flex-wrap gap-1 p-1 rounded-xl w-fit" style={{ backgroundColor: "rgba(52,204,208,0.08)", border: "1px solid rgba(52,204,208,0.2)" }}>
         <button
           onClick={() => setMode("law_firms")}
           className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all"
-          style={{
-            backgroundColor: mode === "law_firms" ? "#92F21D" : "transparent",
-            color: mode === "law_firms" ? "#081F3F" : "#94a3b8",
-          }}
+          style={{ backgroundColor: mode === "law_firms" ? "#92F21D" : "transparent", color: mode === "law_firms" ? "#081F3F" : "#94a3b8" }}
         >
           <Building2 className="w-4 h-4" /> Law Firms
         </button>
         <button
           onClick={() => setMode("experts")}
           className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all"
-          style={{
-            backgroundColor: mode === "experts" ? "#34CCD0" : "transparent",
-            color: mode === "experts" ? "#081F3F" : "#94a3b8",
-          }}
+          style={{ backgroundColor: mode === "experts" ? "#34CCD0" : "transparent", color: mode === "experts" ? "#081F3F" : "#94a3b8" }}
         >
           <Stethoscope className="w-4 h-4" /> Medical Experts
         </button>
         <button
           onClick={() => setMode("med_neg")}
           className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all"
-          style={{
-            backgroundColor: mode === "med_neg" ? "#f43f5e" : "transparent",
-            color: mode === "med_neg" ? "#ffffff" : "#94a3b8",
-          }}
+          style={{ backgroundColor: mode === "med_neg" ? "#f43f5e" : "transparent", color: mode === "med_neg" ? "#ffffff" : "#94a3b8" }}
         >
           <Scale className="w-4 h-4" /> Med Neg Witnesses
+        </button>
+        <button
+          onClick={() => setMode("saved")}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all"
+          style={{ backgroundColor: mode === "saved" ? "#a78bfa" : "transparent", color: mode === "saved" ? "#fff" : "#94a3b8" }}
+        >
+          <Database className="w-4 h-4" /> Saved Leads
+          {savedLeads.length > 0 && (
+            <span className="text-xs px-1.5 py-0.5 rounded-full font-bold" style={{ backgroundColor: "rgba(167,139,250,0.3)", color: "#a78bfa" }}>
+              {savedLeads.length}
+            </span>
+          )}
         </button>
       </div>
 
@@ -303,6 +370,110 @@ Return between 10 and 15 firms. Only include real, verifiable law firms.`;
 
       {/* Med Neg Witness mode */}
       {mode === "med_neg" && <MedNegWitnessSearch />}
+
+      {/* Saved Leads mode */}
+      {mode === "saved" && (
+        <div className="space-y-4">
+          {/* Sub-tabs */}
+          <div className="flex gap-1 p-1 rounded-xl w-fit" style={{ backgroundColor: "rgba(167,139,250,0.08)", border: "1px solid rgba(167,139,250,0.2)" }}>
+            {[
+              { key: "Law Firm", label: "Law Firms", icon: Building2, color: "#92F21D" },
+              { key: "PI Expert Witness", label: "PI Experts", icon: Stethoscope, color: "#34CCD0" },
+              { key: "Med Neg Expert Witness", label: "Med Neg Experts", icon: Scale, color: "#f43f5e" },
+            ].map(tab => {
+              const count = savedLeads.filter(l => l.lead_type === tab.key).length;
+              const isActive = savedLeadsTab === tab.key;
+              return (
+                <button key={tab.key} onClick={() => setSavedLeadsTab(tab.key)}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold transition-all"
+                  style={{ backgroundColor: isActive ? tab.color : "transparent", color: isActive ? (tab.key === "Law Firm" ? "#081F3F" : "#fff") : "#94a3b8" }}>
+                  <tab.icon className="w-3.5 h-3.5" /> {tab.label}
+                  <span className="text-xs px-1.5 py-0.5 rounded-full font-bold" style={{ backgroundColor: isActive ? "rgba(0,0,0,0.2)" : "rgba(148,163,184,0.15)", color: isActive ? "inherit" : "#94a3b8" }}>{count}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Export button */}
+          {savedLeads.filter(l => l.lead_type === savedLeadsTab).length > 0 && (
+            <div className="flex justify-end">
+              <Button onClick={() => exportSavedLeadsToExcel(savedLeadsTab)}
+                style={{ backgroundColor: "#1d6f42", color: "#fff", fontWeight: 600 }} size="sm">
+                <Download className="w-3.5 h-3.5 mr-1.5" />
+                Export to Excel ({savedLeads.filter(l => l.lead_type === savedLeadsTab).length})
+              </Button>
+            </div>
+          )}
+
+          {/* Leads list */}
+          {savedLeadsLoading ? (
+            <div className="flex items-center justify-center py-12 gap-3">
+              <Loader2 className="w-7 h-7 animate-spin" style={{ color: "#a78bfa" }} />
+              <p style={{ color: "#a78bfa" }}>Loading saved leads...</p>
+            </div>
+          ) : savedLeads.filter(l => l.lead_type === savedLeadsTab).length === 0 ? (
+            <div className="text-center py-12">
+              <Database className="w-10 h-10 mx-auto mb-3 text-slate-600" />
+              <p style={{ color: "#92F21D" }}>No saved leads yet for this category</p>
+              <p className="text-sm mt-1" style={{ color: "#34CCD0" }}>Use the search tabs above to find and save leads</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {savedLeads.filter(l => l.lead_type === savedLeadsTab).map(lead => {
+                const color = savedLeadsTab === "Law Firm" ? "#92F21D" : savedLeadsTab === "PI Expert Witness" ? "#34CCD0" : "#f43f5e";
+                return (
+                  <div key={lead.id} className="rounded-xl border p-4 space-y-2.5 transition-colors"
+                    style={{ borderColor: `${color}30`, backgroundColor: "rgba(8,31,63,0.7)" }}>
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0 flex-1">
+                        <h3 className="font-bold text-sm truncate" style={{ color: "#92F21D" }}>{lead.name}</h3>
+                        {lead.discipline && <p className="text-xs" style={{ color: "#34CCD0" }}>{lead.discipline}</p>}
+                        {lead.practice_name && <p className="text-xs" style={{ color: "#94a3b8" }}>{lead.practice_name}</p>}
+                      </div>
+                      <div className="flex flex-wrap gap-1 flex-shrink-0 justify-end">
+                        {lead.lead_quality && (
+                          <Badge className={`text-xs border ${lead.lead_quality === "High" ? "bg-green-900/50 text-green-400 border-green-700" : lead.lead_quality === "Medium" ? "bg-yellow-900/50 text-yellow-400 border-yellow-700" : "bg-slate-700 text-slate-300 border-slate-600"}`}>
+                            <Star className="w-2.5 h-2.5 mr-1" />{lead.lead_quality}
+                          </Badge>
+                        )}
+                        <Badge className={`text-xs border ${(OUTCOME_COLORS)[lead.contact_outcome || "Pending"]}`}>
+                          {lead.contacted && <CheckCircle2 className="w-2.5 h-2.5 mr-1" />}
+                          {lead.contact_outcome || "Pending"}
+                        </Badge>
+                      </div>
+                    </div>
+                    {(lead.city || lead.province) && (
+                      <p className="text-xs flex items-center gap-1" style={{ color: "#94a3b8" }}>
+                        <MapPin className="w-3 h-3" />{[lead.city, lead.province].filter(Boolean).join(", ")}
+                      </p>
+                    )}
+                    {lead.specialties?.length > 0 && (
+                      <div className="flex flex-wrap gap-1">
+                        {lead.specialties.slice(0, 3).map((s, j) => (
+                          <span key={j} className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: `${color}15`, color }}>{s}</span>
+                        ))}
+                      </div>
+                    )}
+                    {(lead.on_funda_panel || lead.is_samla_registered) && (
+                      <div className="flex gap-1.5">
+                        {lead.on_funda_panel && <span className="text-xs px-2 py-0.5 rounded-full border font-semibold" style={{ backgroundColor: "rgba(146,242,29,0.15)", borderColor: "rgba(146,242,29,0.4)", color: "#92F21D" }}>✓ FM Panel</span>}
+                        {lead.is_samla_registered && <span className="text-xs px-2 py-0.5 rounded-full border flex items-center gap-1" style={{ backgroundColor: "rgba(52,204,208,0.1)", borderColor: "rgba(52,204,208,0.3)", color: "#34CCD0" }}><ShieldCheck className="w-3 h-3" /> SAMLA</span>}
+                      </div>
+                    )}
+                    {lead.assigned_bul && <p className="text-xs" style={{ color: "#f59e0b" }}>👤 {lead.assigned_bul}</p>}
+                    {lead.contact_notes && <p className="text-xs italic truncate" style={{ color: "#94a3b8" }}>{lead.contact_notes}</p>}
+                    <div className="flex flex-wrap gap-3">
+                      {lead.phone && <a href={`tel:${lead.phone}`} className="flex items-center gap-1 text-xs hover:underline" style={{ color: "#92F21D" }}><Phone className="w-3 h-3" />{lead.phone}</a>}
+                      {lead.email && <a href={`mailto:${lead.email}`} className="flex items-center gap-1 text-xs hover:underline" style={{ color: "#92F21D" }}><Mail className="w-3 h-3" />{lead.email}</a>}
+                      {lead.website && <a href={lead.website.startsWith("http") ? lead.website : `https://${lead.website}`} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-xs hover:underline" style={{ color: "#34CCD0" }}><Globe className="w-3 h-3" />Website<ExternalLink className="w-2.5 h-2.5" /></a>}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Law firm mode */}
       {mode === "law_firms" && <>
