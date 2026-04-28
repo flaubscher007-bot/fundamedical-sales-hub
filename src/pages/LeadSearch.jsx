@@ -13,7 +13,10 @@ import { Search, MapPin, Phone, Mail, Globe, Building2, Loader2, ExternalLink, S
 import SaveLeadButton from "@/components/leadSearch/SaveLeadButton";
 import CompetitorBadge from "@/components/leadSearch/CompetitorBadge";
 import SavedLeadDetailModal from "@/components/leadSearch/SavedLeadDetailModal";
+import SaveAllExportPanel from "@/components/leadSearch/SaveAllExportPanel";
 import * as XLSX from "xlsx";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import { 
   BUL_TERRITORY_MAP, BUL_COLORS, PROVINCES, SPECIALTIES, OUTCOME_COLORS, VISIBLE_COUNT,
   getBULSuggestion, isSavedLead, fuzzyMatch, normalizeName, QUALITY_COLORS
@@ -583,63 +586,96 @@ Return between 10 and 15 firms. Only include real, verifiable law firms.`;
               </h2>
             </div>
             <div className="flex items-center gap-2 flex-wrap">
-              {results?.firms?.length > 0 && (
-                <>
-                  {(() => {
-                    const unsavedCount = results.firms.filter(f => !isSavedLead(f.firm_name)).length;
-                    return (
-                      <Button
-                        onClick={saveAllLeads}
-                        disabled={savingAll || unsavedCount === 0 || saveAllDone}
-                        size="sm"
-                        style={{
-                          backgroundColor: saveAllDone ? "rgba(146,242,29,0.15)" : "rgba(167,139,250,0.2)",
-                          color: saveAllDone ? "#92F21D" : "#a78bfa",
-                          fontWeight: 600,
-                          border: `1px solid ${saveAllDone ? "rgba(146,242,29,0.4)" : "rgba(167,139,250,0.4)"}`,
-                        }}
-                      >
-                        {savingAll ? (
-                          <><Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />Saving...</>
-                        ) : saveAllDone ? (
-                          <><CheckCircle2 className="w-3.5 h-3.5 mr-1.5" />All Saved</>
-                        ) : (
-                          <><Save className="w-3.5 h-3.5 mr-1.5" />Save All ({unsavedCount} new)</>
-                        )}
-                      </Button>
-                    );
-                  })()}
-                  <Button
-                    onClick={exportFirmsToExcel}
-                    size="sm"
-                    style={{ backgroundColor: "#1d6f42", color: "#ffffff", fontWeight: 600 }}
-                  >
-                    <Download className="w-3.5 h-3.5 mr-1.5" />
-                    Export to Excel ({results.firms.length})
-                  </Button>
-                </>
-              )}
-              {selectedFirms.length > 0 && (
-                <>
-                  <Button
-                    onClick={() => setShowOutreach(true)}
-                    style={{ backgroundColor: "#34CCD0", color: "#081F3F", fontWeight: 700 }}
-                    size="sm"
-                  >
-                    <Mail className="w-3.5 h-3.5 mr-1.5" />
-                    Outreach ({selectedFirms.length})
-                  </Button>
-                  <Button
-                    onClick={() => setShowProposal(true)}
-                    style={{ backgroundColor: "#92F21D", color: "#081F3F", fontWeight: 700 }}
-                    size="sm"
-                  >
-                    <FileText className="w-3.5 h-3.5 mr-1.5" />
-                    Create Proposal ({selectedFirms.length})
-                  </Button>
-                </>
-              )}
-            </div>
+               {results?.firms?.length > 0 && (
+                 <>
+                   {(() => {
+                     const unsavedCount = results.firms.filter(f => !isSavedLead(f.firm_name)).length;
+                     return (
+                       <SaveAllExportPanel
+                         results={results}
+                         leadType="Law Firm"
+                         unsavedCount={unsavedCount}
+                         onSaveAll={saveAllLeads}
+                         onExportExcel={exportFirmsToExcel}
+                         customPDFFn={async () => {
+                           const doc = new jsPDF('p', 'mm', 'a4');
+                           const firms = results.firms;
+                           let y = 10;
+
+                           doc.setFontSize(16);
+                           doc.setTextColor(146, 242, 29);
+                           doc.text('Law Firm Leads', 10, y);
+
+                           y += 10;
+                           doc.setFontSize(10);
+                           doc.setTextColor(100, 100, 100);
+                           doc.text(`Generated: ${new Date().toLocaleDateString()}`, 10, y);
+
+                           y += 15;
+                           doc.setFontSize(9);
+
+                           firms.forEach((firm, idx) => {
+                             if (y > 270) {
+                               doc.addPage();
+                               y = 10;
+                             }
+
+                             doc.setTextColor(146, 242, 29);
+                             doc.text(`${idx + 1}. ${firm.firm_name}`, 10, y);
+                             y += 6;
+
+                             doc.setTextColor(0, 0, 0);
+                             const details = [
+                               ['City:', firm.city || '-'],
+                               ['Province:', firm.province || '-'],
+                               ['Phone:', firm.phone || '-'],
+                               ['Email:', firm.email || '-'],
+                               ['Website:', firm.website || '-'],
+                               ['Lead Quality:', firm.lead_quality || '-'],
+                               ['Specialties:', (firm.specialties || []).join(', ') || '-'],
+                             ];
+
+                             details.forEach(([label, value]) => {
+                               doc.setFont(undefined, 'bold');
+                               doc.text(label, 10, y);
+                               doc.setFont(undefined, 'normal');
+                               doc.text(String(value).substring(0, 80), 40, y);
+                               y += 5;
+                             });
+
+                             y += 5;
+                           });
+
+                           doc.save(`FundaMedical_LawFirmLeads_${new Date().toISOString().slice(0, 10)}.pdf`);
+                         }}
+                         isSaving={savingAll}
+                         saveAllDone={saveAllDone}
+                       />
+                     );
+                   })()}
+                 </>
+               )}
+               {selectedFirms.length > 0 && (
+                 <>
+                   <Button
+                     onClick={() => setShowOutreach(true)}
+                     style={{ backgroundColor: "#34CCD0", color: "#081F3F", fontWeight: 700 }}
+                     size="sm"
+                   >
+                     <Mail className="w-3.5 h-3.5 mr-1.5" />
+                     Outreach ({selectedFirms.length})
+                   </Button>
+                   <Button
+                     onClick={() => setShowProposal(true)}
+                     style={{ backgroundColor: "#92F21D", color: "#081F3F", fontWeight: 700 }}
+                     size="sm"
+                   >
+                     <FileText className="w-3.5 h-3.5 mr-1.5" />
+                     Create Proposal ({selectedFirms.length})
+                   </Button>
+                 </>
+               )}
+             </div>
           </div>
 
           {results.firms?.length === 0 && (

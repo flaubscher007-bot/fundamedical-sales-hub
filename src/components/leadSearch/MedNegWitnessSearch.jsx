@@ -9,7 +9,9 @@ import {
   ShieldCheck, BookOpen, Download, ChevronDown, Scale, AlertCircle, User
 } from "lucide-react";
 import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
 import SaveLeadButton from "@/components/leadSearch/SaveLeadButton";
+import SaveAllExportPanel from "@/components/leadSearch/SaveAllExportPanel";
 
 const PROVINCES = [
   "Western Cape", "KwaZulu-Natal", "Gauteng", "Eastern Cape",
@@ -79,6 +81,9 @@ export default function MedNegWitnessSearch() {
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
   const [showAll, setShowAll] = useState(false);
+  const [savingAll, setSavingAll] = useState(false);
+  const [saveAllDone, setSaveAllDone] = useState(false);
+  const [existingExperts, setExistingExperts] = useState([]);
 
   const handleSearch = async () => {
     if (!location.trim() && province === "all") return;
@@ -164,6 +169,46 @@ Return between 10 and 15 experts. Only include real, verifiable practitioners co
 
     setResults(result);
     setLoading(false);
+  };
+
+  const isSavedExpert = (name) => {
+    if (!name) return false;
+    const norm = (s) => s.toLowerCase().replace(/[^a-z\s]/g, "").trim();
+    return existingExperts.some(e => norm(e.name || "").includes(norm(name)) || norm(name).includes(norm(e.name || "")));
+  };
+
+  const saveAllExperts = async () => {
+    if (!results?.experts?.length) return;
+    setSavingAll(true);
+    try {
+      const unsaved = results.experts.filter(e => !isSavedExpert(e.expert_name));
+      for (const expert of unsaved) {
+        await base44.entities.LeadRecord.create({
+          lead_type: "Med Neg Expert Witness",
+          name: expert.expert_name,
+          discipline: expert.discipline,
+          qualifications: expert.qualifications || [],
+          practice_name: expert.practice_name,
+          address: expert.address,
+          city: expert.city,
+          province: expert.province,
+          phone: expert.phone,
+          email: expert.email,
+          website: expert.website,
+          hpcsa_number: expert.hpcsa_number,
+          hpcsa_status: expert.hpcsa_status,
+          lead_quality: "High",
+          notes: expert.notes,
+          contact_outcome: "Pending",
+          contacted: false,
+        });
+      }
+      setSaveAllDone(true);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSavingAll(false);
+    }
   };
 
   const exportToExcel = () => {
@@ -290,12 +335,71 @@ Return between 10 and 15 experts. Only include real, verifiable practitioners co
                 )}
               </h2>
             </div>
-            {results.experts?.length > 0 && (
-              <Button onClick={exportToExcel} size="sm" style={{ backgroundColor: "#1d6f42", color: "#ffffff", fontWeight: 600 }}>
-                <Download className="w-3.5 h-3.5 mr-1.5" /> Export to Excel ({results.experts.length})
-              </Button>
-            )}
-          </div>
+            {results.experts?.length > 0 && (() => {
+                const unsavedCount = results.experts.filter(e => !isSavedExpert(e.expert_name)).length;
+                return (
+                  <SaveAllExportPanel
+                    results={results}
+                    leadType="Med Neg Expert Witness"
+                    unsavedCount={unsavedCount}
+                    onSaveAll={saveAllExperts}
+                    onExportExcel={exportToExcel}
+                    customPDFFn={async () => {
+                      const doc = new jsPDF('p', 'mm', 'a4');
+                      const experts = results.experts;
+                      let y = 10;
+
+                      doc.setFontSize(16);
+                      doc.setTextColor(244, 63, 94);
+                      doc.text('Medical Negligence Expert Witnesses', 10, y);
+
+                      y += 10;
+                      doc.setFontSize(10);
+                      doc.setTextColor(100, 100, 100);
+                      doc.text(`Generated: ${new Date().toLocaleDateString()}`, 10, y);
+
+                      y += 15;
+                      doc.setFontSize(9);
+
+                      experts.forEach((expert, idx) => {
+                        if (y > 270) {
+                          doc.addPage();
+                          y = 10;
+                        }
+
+                        doc.setTextColor(146, 242, 29);
+                        doc.text(`${idx + 1}. ${expert.expert_name}`, 10, y);
+                        y += 6;
+
+                        doc.setTextColor(0, 0, 0);
+                        const details = [
+                          ['Discipline:', expert.discipline || '-'],
+                          ['City:', expert.city || '-'],
+                          ['Province:', expert.province || '-'],
+                          ['HPCSA:', expert.hpcsa_status || 'Unknown'],
+                          ['Testified Against:', expert.colleague_area || '-'],
+                          ['Cases:', expert.med_neg_case_count || '0'],
+                        ];
+
+                        details.forEach(([label, value]) => {
+                          doc.setFont(undefined, 'bold');
+                          doc.text(label, 10, y);
+                          doc.setFont(undefined, 'normal');
+                          doc.text(String(value).substring(0, 80), 50, y);
+                          y += 5;
+                        });
+
+                        y += 5;
+                      });
+
+                      doc.save(`FundaMedical_MedNeg_ExpertWitnesses_${new Date().toISOString().slice(0, 10)}.pdf`);
+                    }}
+                    isSaving={savingAll}
+                    saveAllDone={saveAllDone}
+                  />
+                  );
+                  })()}
+                  </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {(showAll ? results.experts : results.experts?.slice(0, VISIBLE_COUNT))?.map((expert, i) => (

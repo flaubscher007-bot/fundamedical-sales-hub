@@ -6,6 +6,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Search, Loader2, MapPin, Phone, Mail, Globe, ExternalLink, Building2, Users, TrendingUp, Star, Download } from 'lucide-react';
 import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import SaveAllExportPanel from '@/components/leadSearch/SaveAllExportPanel';
 
 const PARTNER_TYPES = [
   { value: 'funding', label: 'Funding Partners' },
@@ -30,6 +32,8 @@ export default function PartnersSearch() {
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
+  const [savingAll, setSavingAll] = useState(false);
+  const [saveAllDone, setSaveAllDone] = useState(false);
 
   const handleSearch = async () => {
     if (!location.trim()) return;
@@ -113,6 +117,38 @@ Return between 8 and 12 potential partners. Only include real, verifiable organi
       setResults({ partners: [], search_summary: 'Error performing search. Please try again.' });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const saveAllPartners = async () => {
+    if (!results?.partners?.length) return;
+    setSavingAll(true);
+    try {
+      for (const partner of results.partners) {
+        // Check if already exists
+        const existing = await base44.entities.LeadRecord.filter({ name: partner.organization_name });
+        if (existing && existing.length > 0) continue;
+        
+        await base44.entities.LeadRecord.create({
+          lead_type: 'Strategic Partner',
+          name: partner.organization_name,
+          city: partner.city,
+          province: partner.province,
+          phone: partner.phone,
+          email: partner.email,
+          website: partner.website,
+          specialties: [partner.partner_type, ...( partner.services || [])],
+          lead_quality: partner.lead_quality,
+          notes: partner.notes,
+          contact_outcome: 'Pending',
+          contacted: false,
+        });
+      }
+      setSaveAllDone(true);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSavingAll(false);
     }
   };
 
@@ -265,14 +301,65 @@ Return between 8 and 12 potential partners. Only include real, verifiable organi
               </h2>
             </div>
             {results?.partners?.length > 0 && (
-              <Button
-                onClick={exportToExcel}
-                size="sm"
-                style={{ backgroundColor: '#1d6f42', color: '#ffffff', fontWeight: 600 }}
-              >
-                <Download className="w-3.5 h-3.5 mr-1.5" />
-                Export to Excel ({results.partners.length})
-              </Button>
+              <SaveAllExportPanel
+                results={results}
+                leadType="Strategic Partner"
+                unsavedCount={results.partners.length}
+                onSaveAll={saveAllPartners}
+                onExportExcel={exportToExcel}
+                customPDFFn={async () => {
+                  const doc = new jsPDF('p', 'mm', 'a4');
+                  const partners = results.partners;
+                  let y = 10;
+
+                  doc.setFontSize(16);
+                  doc.setTextColor(146, 242, 29);
+                  doc.text('Strategic Partner Leads', 10, y);
+
+                  y += 10;
+                  doc.setFontSize(10);
+                  doc.setTextColor(100, 100, 100);
+                  doc.text(`Generated: ${new Date().toLocaleDateString()}`, 10, y);
+
+                  y += 15;
+                  doc.setFontSize(9);
+
+                  partners.forEach((partner, idx) => {
+                    if (y > 270) {
+                      doc.addPage();
+                      y = 10;
+                    }
+
+                    doc.setTextColor(146, 242, 29);
+                    doc.text(`${idx + 1}. ${partner.organization_name}`, 10, y);
+                    y += 6;
+
+                    doc.setTextColor(0, 0, 0);
+                    const details = [
+                      ['Partner Type:', partner.partner_type || '-'],
+                      ['City:', partner.city || '-'],
+                      ['Province:', partner.province || '-'],
+                      ['Phone:', partner.phone || '-'],
+                      ['Email:', partner.email || '-'],
+                      ['Lead Quality:', partner.lead_quality || '-'],
+                    ];
+
+                    details.forEach(([label, value]) => {
+                      doc.setFont(undefined, 'bold');
+                      doc.text(label, 10, y);
+                      doc.setFont(undefined, 'normal');
+                      doc.text(String(value).substring(0, 80), 50, y);
+                      y += 5;
+                    });
+
+                    y += 5;
+                  });
+
+                  doc.save(`FundaMedical_PartnerLeads_${new Date().toISOString().slice(0, 10)}.pdf`);
+                }}
+                isSaving={savingAll}
+                saveAllDone={saveAllDone}
+              />
             )}
           </div>
 
