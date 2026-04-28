@@ -25,6 +25,7 @@ import ExpertManagerDashboard from './pages/ExpertManagerDashboard';
 import LeadDatabase from './pages/LeadDatabase';
 import ComparisonPage from './pages/ComparisonPage';
 import Competitors from './pages/Competitors';
+import CompetitorAnalytics from './pages/CompetitorAnalytics';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
@@ -99,6 +100,7 @@ const AuthenticatedApp = () => {
       <Route path="/LeadDatabase" element={<LayoutWrapper currentPageName="LeadDatabase"><LeadDatabase /></LayoutWrapper>} />
       <Route path="/ComparisonPage" element={<LayoutWrapper currentPageName="ComparisonPage"><ComparisonPage /></LayoutWrapper>} />
       <Route path="/Competitors" element={<LayoutWrapper currentPageName="Competitors"><Competitors /></LayoutWrapper>} />
+      <Route path="/CompetitorAnalytics" element={<LayoutWrapper currentPageName="CompetitorAnalytics"><CompetitorAnalytics /></LayoutWrapper>} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

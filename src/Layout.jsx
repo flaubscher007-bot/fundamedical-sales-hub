@@ -65,6 +65,7 @@ const expertItems = [
 const competitorsItems = [
   { name: "All Competitors", icon: Share2, page: "Competitors" },
   { name: "Competitor Comparison", icon: Share2, page: "ComparisonPage" },
+  { name: "Competitor Analytics", icon: TrendingUp, page: "CompetitorAnalytics" },
 ];
 
 const mainNavItems = [
