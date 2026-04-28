@@ -23,6 +23,7 @@ export default function CompetitorManager() {
   const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedArea, setSelectedArea] = useState("");
   const [showSearchDialog, setShowSearchDialog] = useState(false);
+  const [importingLeads, setImportingLeads] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     contact_person: "",
@@ -118,6 +119,21 @@ export default function CompetitorManager() {
       await loadCompetitors();
     } catch (e) {
       toast.error("Failed to delete competitor");
+    }
+  };
+
+  const handleImportLeads = async () => {
+    setImportingLeads(true);
+    try {
+      const response = await base44.functions.invoke("importLeadsAsCompetitors", {});
+      const result = response.data;
+      toast.success(`Imported ${result.imported} leads as competitors`);
+      await loadCompetitors();
+    } catch (e) {
+      toast.error("Failed to import leads");
+      console.error(e);
+    } finally {
+      setImportingLeads(false);
     }
   };
 
@@ -351,6 +367,14 @@ export default function CompetitorManager() {
           >
             <Download className="w-4 h-4" />
             Export PDF
+          </Button>
+          <Button
+            onClick={handleImportLeads}
+            disabled={importingLeads}
+            className="flex items-center gap-2"
+            style={{ backgroundColor: "#92F21D", color: "#081F3F" }}
+          >
+            {importingLeads ? "Importing..." : "Import from Leads"}
           </Button>
           <Button
             onClick={() => setShowSearchDialog(true)}

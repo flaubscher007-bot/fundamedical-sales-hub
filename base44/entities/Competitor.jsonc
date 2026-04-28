@@ -110,12 +110,7 @@
     "create": {
       "user_condition": {
         "role": {
-          "$in": [
-            "admin",
-            "Sales Manager",
-            "senior_management",
-            "bul_manager"
-          ]
+          "$ne": ""
         }
       }
     },
@@ -129,22 +124,14 @@
     "update": {
       "user_condition": {
         "role": {
-          "$in": [
-            "admin",
-            "Sales Manager",
-            "senior_management",
-            "bul_manager"
-          ]
+          "$ne": ""
         }
       }
     },
     "delete": {
       "user_condition": {
         "role": {
-          "$in": [
-            "admin",
-            "senior_management"
-          ]
+          "$ne": ""
         }
       }
     }
