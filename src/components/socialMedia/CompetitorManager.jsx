@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { jsPDF } from "jspdf";
 import ActivityLogDialog from "./ActivityLogDialog";
 import CompetitorDashboard from "./CompetitorDashboard";
+import CompetitorSearchDialog from "@/components/competitors/CompetitorSearchDialog";
 import { Search, Filter, X as FilterX } from "lucide-react";
 
 export default function CompetitorManager() {
@@ -21,6 +22,7 @@ export default function CompetitorManager() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedArea, setSelectedArea] = useState("");
+  const [showSearchDialog, setShowSearchDialog] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     contact_person: "",
@@ -327,7 +329,7 @@ export default function CompetitorManager() {
   return (
     <div className="space-y-6">
       {/* Dashboard Toggle & Controls */}
-      <div className="flex justify-between items-center gap-2">
+      <div className="flex justify-between items-center gap-2 flex-wrap">
         <Button
           onClick={() => setShowDashboard(!showDashboard)}
           variant="outline"
@@ -335,7 +337,7 @@ export default function CompetitorManager() {
         >
           {showDashboard ? "Hide" : "Show"} Dashboard
         </Button>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <Button
             onClick={exportToPDF}
             variant="outline"
@@ -346,6 +348,14 @@ export default function CompetitorManager() {
             Export PDF
           </Button>
           <Button
+            onClick={() => setShowSearchDialog(true)}
+            className="flex items-center gap-2"
+            style={{ backgroundColor: "#34CCD0", color: "#081F3F" }}
+          >
+            <Search className="w-4 h-4" />
+            Search & Add
+          </Button>
+          <Button
             onClick={() => {
               resetForm();
               setShowForm(true);
@@ -353,10 +363,21 @@ export default function CompetitorManager() {
             className="flex items-center gap-2"
           >
             <Plus className="w-4 h-4" />
-            Add Competitor
+            Add Manually
           </Button>
         </div>
       </div>
+
+      {/* Search Dialog */}
+      {showSearchDialog && (
+        <CompetitorSearchDialog
+          onCompetitorSaved={(competitor) => {
+            loadCompetitors();
+            toast.success(`${competitor.name} added to competitors`);
+          }}
+          onClose={() => setShowSearchDialog(false)}
+        />
+      )}
 
       {/* Dashboard */}
       {showDashboard && competitors.length > 0 && (
