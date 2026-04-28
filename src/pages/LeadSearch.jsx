@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import OutreachModule from "@/components/leadSearch/OutreachModule";
 import ProposalGenerator from "@/components/leadSearch/ProposalGenerator";
+import ExpertLeadSearch from "@/components/leadSearch/ExpertLeadSearch";
 import { jsPDF } from "jspdf";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, MapPin, Phone, Mail, Globe, Building2, Loader2, ExternalLink, Star, Download, FileText } from "lucide-react";
+import { Search, MapPin, Phone, Mail, Globe, Building2, Loader2, ExternalLink, Star, Download, FileText, Stethoscope } from "lucide-react";
 
 // BUL territory map for allocation suggestions
 const BUL_TERRITORY_MAP = [
@@ -66,6 +67,7 @@ const SPECIALTIES = [
 ];
 
 export default function LeadSearch() {
+  const [mode, setMode] = useState("law_firms"); // "law_firms" | "experts"
   const [location, setLocation] = useState("");
   const [province, setProvince] = useState("all");
   const [specialty, setSpecialty] = useState("both");
@@ -286,9 +288,41 @@ Return between 5 and 15 firms. Only include real, verifiable law firms.`;
           <Search className="w-6 h-6" /> Lead Search
         </h1>
         <p className="text-sm mt-1" style={{ color: "#34CCD0" }}>
-          Discover personal injury & medical negligence law firms in your visit area — potential leads for FundaMedical expert services
+          {mode === "law_firms"
+            ? "Discover personal injury & medical negligence law firms — potential leads for FundaMedical expert services"
+            : "Find SAMLA-registered medical experts and expert witnesses — potential panel additions for FundaMedical"}
         </p>
       </div>
+
+      {/* Mode Toggle */}
+      <div className="flex gap-1 p-1 rounded-xl w-fit" style={{ backgroundColor: "rgba(52,204,208,0.08)", border: "1px solid rgba(52,204,208,0.2)" }}>
+        <button
+          onClick={() => setMode("law_firms")}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all"
+          style={{
+            backgroundColor: mode === "law_firms" ? "#92F21D" : "transparent",
+            color: mode === "law_firms" ? "#081F3F" : "#94a3b8",
+          }}
+        >
+          <Building2 className="w-4 h-4" /> Law Firms
+        </button>
+        <button
+          onClick={() => setMode("experts")}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all"
+          style={{
+            backgroundColor: mode === "experts" ? "#34CCD0" : "transparent",
+            color: mode === "experts" ? "#081F3F" : "#94a3b8",
+          }}
+        >
+          <Stethoscope className="w-4 h-4" /> Medical Experts
+        </button>
+      </div>
+
+      {/* Expert mode */}
+      {mode === "experts" && <ExpertLeadSearch />}
+
+      {/* Law firm mode */}
+      {mode === "law_firms" && <>
 
       {/* Search Form */}
       <div className="rounded-xl border border-[#34CCD0]/30 p-5 space-y-4" style={{ backgroundColor: "rgba(52,204,208,0.06)" }}>
@@ -659,6 +693,7 @@ Return between 5 and 15 firms. Only include real, verifiable law firms.`;
           </p>
         </div>
       )}
+      </> }
     </div>
   );
 }

@@ -83,9 +83,8 @@ export default function Experts() {
          </div>
        </div>
 
-       <>
-         {/* Refresh Button */}
-         <div className="flex justify-end">
+       {/* Refresh Button */}
+       <div className="flex justify-end">
            <Button onClick={() => refetch()} size="sm" variant="outline" style={{ color: "#34CCD0", borderColor: "#34CCD0" }}>
              Refresh Data
            </Button>
@@ -106,7 +105,7 @@ export default function Experts() {
                         setSearch("");
                         setDisciplineFilter("all");
                         setActiveFilter("all");
-                        setSelectedBul("all");
+
                       }}
                       style={{ color: "#34CCD0", borderColor: "#34CCD0" }}
                     >
@@ -246,9 +245,6 @@ export default function Experts() {
               </div>
             </CardContent>
           </Card>
-        </>
-      )}
-
       <InviteContactDialog
         open={!!inviteTarget}
         onClose={() => setInviteTarget(null)}
