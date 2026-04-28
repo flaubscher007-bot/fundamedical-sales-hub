@@ -37,44 +37,38 @@ export default function CompetitorSearchDialog({ onCompetitorSaved, onClose }) {
   const handleSaveCompetitor = async (result) => {
     setSaving(true);
     try {
-      // Check if competitor already exists
-      const existing = await base44.entities.Competitor.filter({
-        name: { $regex: result.name, $options: "i" }
-      }).catch(() => []);
-
-      if (!existing?.length) {
-        // Create new competitor
-        const competitor = await base44.entities.Competitor.create({
-          name: result.name,
-          website: result.website || "",
-          phone: result.phone || "",
-          email: result.email || "",
-          address: result.address || "",
-          city: result.city || "",
-          province: result.province || "",
-          areas_of_operation: result.services || [],
-          notes: result.description || ""
-        });
-        onCompetitorSaved?.(competitor);
-      } else {
-        // Update existing competitor with any new info
-        const competitor = existing[0];
-        await base44.entities.Competitor.update(competitor.id, {
-          website: result.website || competitor.website,
-          phone: result.phone || competitor.phone,
-          email: result.email || competitor.email,
-          address: result.address || competitor.address,
-          city: result.city || competitor.city,
-          province: result.province || competitor.province,
-          areas_of_operation: [
-            ...new Set([...(competitor.areas_of_operation || []), ...(result.services || [])])
-          ]
-        });
-        onCompetitorSaved?.(competitor);
-      }
+      // Create new competitor - let the backend handle duplicates
+      const competitor = await base44.entities.Competitor.create({
+        name: result.name,
+        contact_person: result.contact_person || "",
+        website: result.website || "",
+        phone: result.phone || "",
+        email: result.email || "",
+        address: result.address || "",
+        city: result.city || "",
+        province: result.province || "",
+        areas_of_operation: result.services || result.areas_of_operation || [],
+        linked_experts: [],
+        law_firms_assisted: [],
+        social_accounts: {
+          facebook: result.facebook || "",
+          linkedin: result.linkedin || "",
+          instagram: result.instagram || "",
+          youtube: result.youtube || ""
+        },
+        notes: result.description || ""
+      });
+      
+      onCompetitorSaved?.(competitor);
       onClose?.();
+      
+      // Show success message
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
     } catch (error) {
       console.error("Save failed:", error);
+      alert("Failed to save competitor. It may already exist.");
     }
     setSaving(false);
   };
