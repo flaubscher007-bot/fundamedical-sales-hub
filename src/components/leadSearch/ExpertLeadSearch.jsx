@@ -107,6 +107,7 @@ export default function ExpertLeadSearch() {
   const [searched, setSearched] = useState(false);
   const [existingExperts, setExistingExperts] = useState([]);
   const [showAll, setShowAll] = useState(false);
+  const [savingCompetitors, setSavingCompetitors] = useState(false);
 
   const handleSearch = async () => {
     if (!location.trim() && province === "all") return;
@@ -215,6 +216,39 @@ Return between 10 and 15 experts. Only include real, verifiable medical professi
     if (!name) return false;
     const norm = (s) => s.toLowerCase().replace(/[^a-z\s]/g, "").trim();
     return existingExperts.some(e => norm(e.name || "").includes(norm(name)) || norm(name).includes(norm(e.name || "")));
+  };
+
+  const saveCompetitorPanels = async () => {
+    if (!results?.experts?.length) return;
+    setSavingCompetitors(true);
+    try {
+      // Collect all unique competitor names from results
+      const allCompetitors = new Set();
+      results.experts.forEach(expert => {
+        if (expert.competitor_panels && Array.isArray(expert.competitor_panels)) {
+          expert.competitor_panels.forEach(panel => {
+            if (panel) allCompetitors.add(panel);
+          });
+        }
+      });
+
+      if (allCompetitors.size === 0) {
+        alert('No competitor panels found in results');
+        setSavingCompetitors(false);
+        return;
+      }
+
+      const response = await base44.functions.invoke('saveCompetitorPanelsFromExperts', {
+        competitor_names: Array.from(allCompetitors)
+      });
+
+      alert(`Successfully saved ${response.data.created} competitor companies`);
+    } catch (error) {
+      alert('Failed to save competitors');
+      console.error(error);
+    } finally {
+      setSavingCompetitors(false);
+    }
   };
 
   const exportToExcel = () => {
@@ -341,9 +375,14 @@ Return between 10 and 15 experts. Only include real, verifiable medical professi
               </h2>
             </div>
             {results.experts?.length > 0 && (
-              <Button onClick={exportToExcel} size="sm" style={{ backgroundColor: "#1d6f42", color: "#ffffff", fontWeight: 600 }}>
-                <Download className="w-3.5 h-3.5 mr-1.5" /> Export to Excel ({results.experts.length})
-              </Button>
+              <div className="flex gap-2">
+                <Button onClick={saveCompetitorPanels} disabled={savingCompetitors} size="sm" style={{ backgroundColor: "#34CCD0", color: "#081F3F", fontWeight: 600 }}>
+                  {savingCompetitors ? 'Saving...' : 'Save Competitor Companies'}
+                </Button>
+                <Button onClick={exportToExcel} size="sm" style={{ backgroundColor: "#1d6f42", color: "#ffffff", fontWeight: 600 }}>
+                  <Download className="w-3.5 h-3.5 mr-1.5" /> Export to Excel ({results.experts.length})
+                </Button>
+              </div>
             )}
           </div>
 
