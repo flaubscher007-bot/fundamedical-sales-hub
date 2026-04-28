@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, MapPin, Phone, Mail, Globe, Building2, Loader2, ExternalLink, Star, Download, FileText, Stethoscope, ChevronDown, Scale, Database, CheckCircle2, ShieldCheck } from "lucide-react";
+import { Search, MapPin, Phone, Mail, Globe, Building2, Loader2, ExternalLink, Star, Download, FileText, Stethoscope, ChevronDown, Scale, Database, CheckCircle2, Shield } from "lucide-react";
 import SaveLeadButton from "@/components/leadSearch/SaveLeadButton";
 import * as XLSX from "xlsx";
 
@@ -457,7 +457,7 @@ Return between 10 and 15 firms. Only include real, verifiable law firms.`;
                     {(lead.on_funda_panel || lead.is_samla_registered) && (
                       <div className="flex gap-1.5">
                         {lead.on_funda_panel && <span className="text-xs px-2 py-0.5 rounded-full border font-semibold" style={{ backgroundColor: "rgba(146,242,29,0.15)", borderColor: "rgba(146,242,29,0.4)", color: "#92F21D" }}>✓ FM Panel</span>}
-                        {lead.is_samla_registered && <span className="text-xs px-2 py-0.5 rounded-full border flex items-center gap-1" style={{ backgroundColor: "rgba(52,204,208,0.1)", borderColor: "rgba(52,204,208,0.3)", color: "#34CCD0" }}><ShieldCheck className="w-3 h-3" /> SAMLA</span>}
+                        {lead.is_samla_registered && <span className="text-xs px-2 py-0.5 rounded-full border flex items-center gap-1" style={{ backgroundColor: "rgba(52,204,208,0.1)", borderColor: "rgba(52,204,208,0.3)", color: "#34CCD0" }}><Shield className="w-3 h-3" /> SAMLA</span>}
                       </div>
                     )}
                     {lead.assigned_bul && <p className="text-xs" style={{ color: "#f59e0b" }}>👤 {lead.assigned_bul}</p>}
