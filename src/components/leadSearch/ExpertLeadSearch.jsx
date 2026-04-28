@@ -111,7 +111,7 @@ For each expert found, provide:
 - lead_quality_reason: one sentence explaining the lead quality rating
 - notes: any other relevant notes about suitability as a FundaMedical expert
 
-Return between 30 and 50 experts. Only include real, verifiable medical professionals.`;
+Return between 10 and 15 experts. Only include real, verifiable medical professionals.`;
 
     const result = await base44.integrations.Core.InvokeLLM({
       prompt,

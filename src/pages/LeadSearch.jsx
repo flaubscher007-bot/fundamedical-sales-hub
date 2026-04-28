@@ -194,7 +194,7 @@ For each firm found, provide:
 - correspondent_firms: array of names of correspondent firms they use or are associated with (empty array if none known)
 - correspondent_notes: any notes on their correspondent relationships
 
-Return between 30 and 50 firms. Only include real, verifiable law firms.`;
+Return between 10 and 15 firms. Only include real, verifiable law firms.`;
 
     const result = await base44.integrations.Core.InvokeLLM({
       prompt,
