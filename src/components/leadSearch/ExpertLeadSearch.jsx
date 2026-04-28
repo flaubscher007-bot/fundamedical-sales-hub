@@ -242,7 +242,21 @@ Return between 10 and 15 experts. Only include real, verifiable medical professi
         competitor_names: Array.from(allCompetitors)
       });
 
-      alert(`Successfully saved ${response.data.created} competitor companies`);
+      const result = response.data;
+      let message = `✓ Saved ${result.created} new competitor companies`;
+      
+      if (result.duplicates_found > 0) {
+        message += `\n⚠ ${result.duplicates_found} duplicate(s) skipped (already exist)`;
+        if (result.duplicate_details && result.duplicate_details.length > 0) {
+          const examples = result.duplicate_details.slice(0, 3).map(d => `"${d.submitted}" ≈ "${d.existing}"`).join('\n');
+          message += `\n\nExamples:\n${examples}`;
+          if (result.duplicate_details.length > 3) {
+            message += `\n+${result.duplicate_details.length - 3} more`;
+          }
+        }
+      }
+      
+      alert(message);
     } catch (error) {
       alert('Failed to save competitors');
       console.error(error);

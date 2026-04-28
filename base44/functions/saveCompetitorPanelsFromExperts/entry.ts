@@ -15,15 +15,63 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'No competitor names provided' }, { status: 400 });
     }
 
+    // Normalize name for comparison
+    const normalizeName = (name) => {
+      if (!name) return '';
+      return name.toLowerCase()
+        .trim()
+        .replace(/\s+/g, ' ')
+        .replace(/[^\w\s]/g, '') // Remove special chars
+        .replace(/\b(ltd|inc|pty|group|limited|corporation|corp|llc|cc|sa)\b/g, '') // Remove legal entities
+        .trim();
+    };
+
     // Get existing competitors
     const existingCompetitors = await base44.asServiceRole.entities.Competitor.list();
-    const existingNames = new Set(existingCompetitors.map(c => c.name?.toLowerCase()));
+    const existingMap = new Map();
+    existingCompetitors.forEach(c => {
+      const normalized = normalizeName(c.name);
+      existingMap.set(normalized, c.name);
+    });
 
-    // Filter out duplicates and create new competitors
-    const competitorsToCreate = competitor_names
-      .filter(name => name && !existingNames.has(name.toLowerCase()))
-      .map(name => ({
-        name: name.trim(),
+    // Filter out exact duplicates and create new competitors
+    const uniqueNames = new Map(); // Track normalized -> original mapping
+    const duplicates = [];
+    const toCreate = [];
+
+    competitor_names.forEach(name => {
+      if (!name) return;
+      const trimmed = name.trim();
+      const normalized = normalizeName(trimmed);
+
+      // Check if already exists in system
+      if (existingMap.has(normalized)) {
+        duplicates.push({
+          submitted: trimmed,
+          existing: existingMap.get(normalized)
+        });
+        return;
+      }
+
+      // Check if it's a duplicate within the current batch
+      if (uniqueNames.has(normalized)) {
+        duplicates.push({
+          submitted: trimmed,
+          existing: uniqueNames.get(normalized)
+        });
+        return;
+      }
+
+      // New competitor
+      uniqueNames.set(normalized, trimmed);
+      toCreate.push(trimmed);
+    });
+
+    // Create new competitors
+    let created = 0;
+    if (toCreate.length > 0) {
+      const competitorsToCreate = toCreate.map(name => ({
+        name,
         contact_person: '',
         email: '',
         phone: '',
@@ -42,18 +90,16 @@ Deno.serve(async (req) => {
         },
         notes: 'Added from expert competitor panel listings'
       }));
-
-    let created = 0;
-    if (competitorsToCreate.length > 0) {
+      
       await base44.asServiceRole.entities.Competitor.bulkCreate(competitorsToCreate);
-      created = competitorsToCreate.length;
+      created = toCreate.length;
     }
 
     return Response.json({
-      message: `Successfully saved ${created} competitors from expert panels`,
       created,
-      total_submitted: competitor_names.length,
-      skipped: competitor_names.length - created
+      duplicates_found: duplicates.length,
+      duplicate_details: duplicates,
+      total_submitted: competitor_names.length
     });
   } catch (error) {
     console.error('Error saving competitors:', error);
