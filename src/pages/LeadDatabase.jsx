@@ -6,10 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Building2, Stethoscope, Scale, Search, MapPin, Phone, Mail, Globe,
-  ExternalLink, ShieldCheck, Star, CheckCircle2, Edit2, Trash2, Download, Filter, X
+  ExternalLink, Shield, Star, CheckCircle2, Edit2, Trash2, Download, Filter, X, Sparkles, Loader2
 } from "lucide-react";
 import * as XLSX from "xlsx";
 import LeadEditDialog from "@/components/leadSearch/LeadEditDialog";
+import AIScoreBadge from "@/components/leadSearch/AIScoreBadge";
 
 const PROVINCES = [
   "Western Cape", "KwaZulu-Natal", "Gauteng", "Eastern Cape",
@@ -46,7 +47,76 @@ export default function LeadDatabase() {
   const [filterOutcome, setFilterOutcome] = useState("all");
   const [filterPanel, setFilterPanel] = useState("all");
   const [filterContacted, setFilterContacted] = useState("all");
+  const [filterAIScore, setFilterAIScore] = useState("all");
   const [editingLead, setEditingLead] = useState(null);
+  const [scoringIds, setScoringIds] = useState(new Set());
+  const [bulkScoring, setBulkScoring] = useState(false);
+
+  const buildLeadContext = (lead) => {
+    const parts = [
+      `Lead Type: ${lead.lead_type}`,
+      `Name: ${lead.name}`,
+      lead.discipline ? `Discipline: ${lead.discipline}` : null,
+      lead.specialties?.length ? `Specialties: ${lead.specialties.join(", ")}` : null,
+      lead.city ? `City: ${lead.city}` : null,
+      lead.province ? `Province: ${lead.province}` : null,
+      lead.lead_quality ? `Initial Lead Quality (from search): ${lead.lead_quality}` : null,
+      lead.contacted ? `Contacted: Yes` : `Contacted: No`,
+      lead.contact_outcome ? `Contact Outcome: ${lead.contact_outcome}` : null,
+      lead.contact_notes ? `Contact Notes: ${lead.contact_notes}` : null,
+      lead.notes ? `Additional Notes: ${lead.notes}` : null,
+      lead.on_funda_panel ? `Currently on FundaMedical Panel: Yes` : null,
+      lead.is_samla_registered ? `SAMLA Registered: Yes` : null,
+      lead.hpcsa_status ? `HPCSA Status: ${lead.hpcsa_status}` : null,
+      lead.assigned_bul ? `Assigned BUL: ${lead.assigned_bul}` : null,
+    ].filter(Boolean);
+    return parts.join("\n");
+  };
+
+  const scoreOneLead = async (lead) => {
+    setScoringIds(prev => new Set([...prev, lead.id]));
+    const context = buildLeadContext(lead);
+    const result = await base44.integrations.Core.InvokeLLM({
+      prompt: `You are a sales qualification specialist for FundaMedical, a medical-legal services company in South Africa.
+Analyse the following lead and assign a qualification score.
+
+SCORING CRITERIA:
+- Hot: Strong indicators of immediate need (Interested outcome, multiple specialties matching FM services, contacted with positive response, high initial quality, or already on panel)
+- Warm: Moderate potential (some relevant specialties, no response yet but high quality, follow-up required, medium quality with contact)
+- Cold: Low immediate potential (Not Interested outcome, no relevant indicators, very little information available, or already fully serviced)
+
+LEAD DETAILS:
+${context}
+
+Respond with a score (Hot, Warm, or Cold) and a brief 1-2 sentence justification focused on the most important factors.`,
+      response_json_schema: {
+        type: "object",
+        properties: {
+          score: { type: "string", enum: ["Hot", "Warm", "Cold"] },
+          justification: { type: "string" }
+        }
+      }
+    });
+
+    const updated = await base44.entities.LeadRecord.update(lead.id, {
+      ai_score: result.score,
+      ai_justification: result.justification,
+      ai_scored_at: new Date().toISOString(),
+    });
+
+    setLeads(prev => prev.map(l => l.id === lead.id ? { ...l, ...updated } : l));
+    setScoringIds(prev => { const s = new Set(prev); s.delete(lead.id); return s; });
+  };
+
+  const scoreAllUnscored = async () => {
+    const unscored = filtered.filter(l => !l.ai_score);
+    if (!unscored.length) return;
+    setBulkScoring(true);
+    for (const lead of unscored) {
+      await scoreOneLead(lead);
+    }
+    setBulkScoring(false);
+  };
 
   const fetchLeads = async () => {
     setLoading(true);
@@ -68,6 +138,8 @@ export default function LeadDatabase() {
     setEditingLead(null);
   };
 
+  const AI_SCORE_ORDER = { Hot: 0, Warm: 1, Cold: 2, undefined: 3 };
+
   const filtered = leads.filter(l => {
     if (filterType !== "all" && l.lead_type !== filterType) return false;
     if (filterProvince !== "all" && l.province !== filterProvince) return false;
@@ -76,6 +148,10 @@ export default function LeadDatabase() {
     if (filterPanel === "no" && l.on_funda_panel) return false;
     if (filterContacted === "yes" && !l.contacted) return false;
     if (filterContacted === "no" && l.contacted) return false;
+    if (filterAIScore !== "all") {
+      if (filterAIScore === "unscored" && l.ai_score) return false;
+      if (filterAIScore !== "unscored" && l.ai_score !== filterAIScore) return false;
+    }
     if (search.trim()) {
       const q = search.toLowerCase();
       return (
@@ -87,6 +163,12 @@ export default function LeadDatabase() {
       );
     }
     return true;
+  }).sort((a, b) => {
+    if (filterAIScore === "all" || filterAIScore === "unscored") {
+      // If filtering by AI score, keep natural order; otherwise sort Hot > Warm > Cold > unscored
+      return (AI_SCORE_ORDER[a.ai_score] ?? 3) - (AI_SCORE_ORDER[b.ai_score] ?? 3);
+    }
+    return 0;
   });
 
   // Summary counts
@@ -121,6 +203,8 @@ export default function LeadDatabase() {
       "Assigned BUL": l.assigned_bul || "",
       "Contact Notes": l.contact_notes || "",
       "Notes": l.notes || "",
+      "AI Score": l.ai_score || "",
+      "AI Justification": l.ai_justification || "",
     }));
     const ws = XLSX.utils.json_to_sheet(rows);
     ws["!cols"] = Array(22).fill({ wch: 20 });
@@ -132,10 +216,11 @@ export default function LeadDatabase() {
   const clearFilters = () => {
     setSearch(""); setFilterType("all"); setFilterProvince("all");
     setFilterOutcome("all"); setFilterPanel("all"); setFilterContacted("all");
+    setFilterAIScore("all");
   };
 
   const hasFilters = search || filterType !== "all" || filterProvince !== "all" ||
-    filterOutcome !== "all" || filterPanel !== "all" || filterContacted !== "all";
+    filterOutcome !== "all" || filterPanel !== "all" || filterContacted !== "all" || filterAIScore !== "all";
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
@@ -147,9 +232,19 @@ export default function LeadDatabase() {
             All saved leads — law firms, PI expert witnesses, and med neg expert witnesses
           </p>
         </div>
-        <Button onClick={exportToExcel} style={{ backgroundColor: "#1d6f42", color: "#fff", fontWeight: 600 }}>
-          <Download className="w-4 h-4 mr-2" /> Export ({filtered.length})
-        </Button>
+        <div className="flex items-center gap-2 flex-wrap">
+          <Button
+            onClick={scoreAllUnscored}
+            disabled={bulkScoring || filtered.filter(l => !l.ai_score).length === 0}
+            style={{ backgroundColor: "rgba(167,139,250,0.2)", color: "#a78bfa", fontWeight: 600, border: "1px solid rgba(167,139,250,0.4)" }}
+          >
+            {bulkScoring ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
+            {bulkScoring ? "Scoring..." : `AI Score Unscored (${filtered.filter(l => !l.ai_score).length})`}
+          </Button>
+          <Button onClick={exportToExcel} style={{ backgroundColor: "#1d6f42", color: "#fff", fontWeight: 600 }}>
+            <Download className="w-4 h-4 mr-2" /> Export ({filtered.length})
+          </Button>
+        </div>
       </div>
 
       {/* Summary Cards */}
@@ -218,6 +313,16 @@ export default function LeadDatabase() {
               <SelectItem value="all">Panel: All</SelectItem>
               <SelectItem value="yes">On FM Panel</SelectItem>
               <SelectItem value="no">Not on Panel</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={filterAIScore} onValueChange={setFilterAIScore}>
+            <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="AI Score" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">AI Score: All</SelectItem>
+              <SelectItem value="Hot">🔥 Hot</SelectItem>
+              <SelectItem value="Warm">🌡️ Warm</SelectItem>
+              <SelectItem value="Cold">❄️ Cold</SelectItem>
+              <SelectItem value="unscored">Not Scored</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -299,14 +404,28 @@ export default function LeadDatabase() {
                     {lead.is_samla_registered && (
                       <span className="text-xs px-2 py-0.5 rounded-full border flex items-center gap-1"
                         style={{ backgroundColor: "rgba(52,204,208,0.1)", borderColor: "rgba(52,204,208,0.3)", color: "#34CCD0" }}>
-                        <ShieldCheck className="w-3 h-3" /> SAMLA
+                        <Shield className="w-3 h-3" /> SAMLA
                       </span>
                     )}
+                    <AIScoreBadge
+                      score={lead.ai_score}
+                      justification={lead.ai_justification}
+                      loading={scoringIds.has(lead.id)}
+                      onScore={() => scoreOneLead(lead)}
+                    />
                     <Badge className={`text-xs border ${OUTCOME_COLORS[lead.contact_outcome || "Pending"]}`}>
                       {lead.contacted && <CheckCircle2 className="w-2.5 h-2.5 mr-1" />}
                       {lead.contact_outcome || "Pending"}
                     </Badge>
                   </div>
+
+                  {/* AI Justification */}
+                  {lead.ai_justification && (
+                    <p className="text-xs italic px-2 py-1.5 rounded-lg"
+                      style={{ backgroundColor: "rgba(167,139,250,0.08)", borderLeft: "2px solid rgba(167,139,250,0.4)", color: "#c4b5fd" }}>
+                      🤖 {lead.ai_justification}
+                    </p>
+                  )}
 
                   {/* Assigned BUL */}
                   {lead.assigned_bul && (

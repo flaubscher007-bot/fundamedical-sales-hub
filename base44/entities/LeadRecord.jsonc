@@ -124,6 +124,23 @@
     "source_search": {
       "type": "string",
       "description": "Search query that found this lead"
+    },
+    "ai_score": {
+      "type": "string",
+      "enum": [
+        "Hot",
+        "Warm",
+        "Cold"
+      ],
+      "description": "AI-generated qualification score"
+    },
+    "ai_justification": {
+      "type": "string",
+      "description": "AI brief justification for the qualification score"
+    },
+    "ai_scored_at": {
+      "type": "string",
+      "description": "ISO datetime when AI score was last generated"
     }
   },
   "required": [
