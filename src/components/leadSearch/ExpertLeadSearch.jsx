@@ -81,7 +81,7 @@ export default function ExpertLeadSearch() {
     const locationStr = [location.trim(), province !== "all" ? province : ""].filter(Boolean).join(", ");
     const disciplineLabel = DISCIPLINES.find(d => d.value === discipline)?.label || "medical";
 
-    const prompt = `Find ${disciplineLabel === "Any Discipline" ? "medical" : disciplineLabel} experts in ${locationStr}, South Africa who are active expert witnesses in personal injury, road accident fund (RAF), COIDA, or medical negligence matters.
+    const prompt = `Find ${disciplineLabel === "Any Discipline" ? "medical" : disciplineLabel} experts within a 50km radius of ${locationStr}, South Africa who are active expert witnesses in personal injury, road accident fund (RAF), COIDA, or medical negligence matters.
 
 Use ALL of the following sources to find and verify experts:
 1. HPCSA (Health Professions Council of South Africa) — check if the expert holds a valid HPCSA registration number and is in good standing. The HPCSA register at hpcsa.co.za is the authoritative source for licensed South African medical practitioners.

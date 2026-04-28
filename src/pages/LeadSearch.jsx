@@ -168,7 +168,7 @@ export default function LeadSearch() {
     const locationStr = [location.trim(), province !== "all" ? province : ""].filter(Boolean).join(", ");
     const specialtyLabel = SPECIALTIES.find(s => s.value === specialty)?.label || "Personal Injury and Medical Negligence";
 
-    const prompt = `Find law firms in ${locationStr}, South Africa that specialise in ${specialtyLabel} law.
+    const prompt = `Find law firms within a 50km radius of ${locationStr}, South Africa that specialise in ${specialtyLabel} law.
 These firms would typically handle cases involving medical experts, medical-legal reports, and expert witnesses.
 Focus on firms that would benefit from medical expert services including orthopaedic surgeons, neurologists, and other specialist doctors for medico-legal reports.
 
