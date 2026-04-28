@@ -1,0 +1,106 @@
+{
+  "name": "ScheduledPost",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Post title / subject"
+    },
+    "platform": {
+      "type": "string",
+      "enum": [
+        "Facebook",
+        "LinkedIn",
+        "Instagram",
+        "YouTube"
+      ],
+      "description": "Target platform"
+    },
+    "content": {
+      "type": "string",
+      "description": "Post copy / draft text"
+    },
+    "hashtags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Hashtags for the post"
+    },
+    "scheduled_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date scheduled to post"
+    },
+    "scheduled_time": {
+      "type": "string",
+      "description": "Time scheduled (HH:MM)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Draft",
+        "Scheduled",
+        "Published",
+        "Cancelled"
+      ],
+      "default": "Draft"
+    },
+    "tone": {
+      "type": "string",
+      "description": "Tone/style used for generation"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Internal notes"
+    }
+  },
+  "required": [
+    "platform",
+    "status"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "admin",
+            "Sales Manager",
+            "senior_management",
+            "bul_manager"
+          ]
+        }
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": {
+          "$ne": ""
+        }
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "admin",
+            "Sales Manager",
+            "senior_management",
+            "bul_manager"
+          ]
+        }
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "admin",
+            "Sales Manager",
+            "senior_management"
+          ]
+        }
+      }
+    }
+  }
+}

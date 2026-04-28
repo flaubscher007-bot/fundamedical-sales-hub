@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Upload, History, Sparkles, Globe, PenLine } from "lucide-react";
+import { Upload, History, Sparkles, Globe, PenLine, CalendarDays } from "lucide-react";
 import SocialMediaUploader from "@/components/socialMedia/SocialMediaUploader";
 import SocialPostHistory from "@/components/socialMedia/SocialPostHistory";
 import PastPostsPanel from "@/components/socialMedia/PastPostsPanel";
 import AIPostGenerator from "@/components/socialMedia/AIPostGenerator";
+import ContentCalendar from "@/components/socialMedia/ContentCalendar";
 
 export default function SocialMedia() {
   const [sessions, setSessions] = useState([]);
@@ -31,7 +32,7 @@ export default function SocialMedia() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto space-y-6">
       <div>
         <h1 className="text-2xl font-bold flex items-center gap-2" style={{ color: "#92F21D" }}>
           <Sparkles className="w-6 h-6" /> Social Media AI Advisor
@@ -61,6 +62,10 @@ export default function SocialMedia() {
             style={{ color: activeTab === "generate" ? "#081F3F" : "#94a3b8" }}>
             <PenLine className="w-4 h-4" /> Generate Posts
           </TabsTrigger>
+          <TabsTrigger value="calendar" className="flex items-center gap-2 data-[state=active]:text-[#081F3F]"
+            style={{ color: activeTab === "calendar" ? "#081F3F" : "#94a3b8" }}>
+            <CalendarDays className="w-4 h-4" /> Content Calendar
+          </TabsTrigger>
           <TabsTrigger value="past" className="flex items-center gap-2 data-[state=active]:text-[#081F3F]"
             style={{ color: activeTab === "past" ? "#081F3F" : "#94a3b8" }}>
             <Globe className="w-4 h-4" /> Past Posts
@@ -77,6 +82,10 @@ export default function SocialMedia() {
 
         <TabsContent value="history" className="mt-4">
           <SocialPostHistory sessions={sessions} loading={loading} onDelete={() => setRefreshKey(k => k + 1)} />
+        </TabsContent>
+
+        <TabsContent value="calendar" className="mt-4">
+          <ContentCalendar />
         </TabsContent>
 
         <TabsContent value="past" className="mt-4">
