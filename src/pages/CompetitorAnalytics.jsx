@@ -6,6 +6,7 @@ import {
   BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
 import { TrendingUp, Users, AlertCircle, Activity } from 'lucide-react';
+import CompetitorInsightsEngine from '@/components/competitors/CompetitorInsightsEngine';
 
 export default function CompetitorAnalytics() {
   const [competitors, setCompetitors] = useState([]);
@@ -294,6 +295,14 @@ export default function CompetitorAnalytics() {
           </CardContent>
         </Card>
       )}
+
+      {/* AI Insights Section */}
+      <div className="border-t border-[#34CCD0] pt-6 mt-6">
+        <CompetitorInsightsEngine 
+          competitors={selectedCompetitors.length > 0 ? competitors.filter(c => selectedCompetitors.includes(c.id)) : competitors}
+          onInsightsGenerated={(insights) => console.log('Insights generated:', insights)}
+        />
+      </div>
     </div>
   );
 }
