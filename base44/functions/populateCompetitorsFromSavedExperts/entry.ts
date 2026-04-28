@@ -1,5 +1,15 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
+const normalizeName = (name) => {
+  if (!name) return '';
+  return name.toLowerCase()
+    .trim()
+    .replace(/\s+/g, ' ')
+    .replace(/[^\w\s]/g, '')
+    .replace(/\b(ltd|inc|pty|group|limited|corporation|corp|llc|cc|sa|med|medical)\b/g, '')
+    .trim();
+};
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
@@ -9,77 +19,77 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Get all saved PI Expert Witness leads
-    const piExperts = await base44.asServiceRole.entities.LeadRecord.filter({
-      lead_type: 'PI Expert Witness'
+    // Get all saved leads that contain competitor names
+    const allLeads = await base44.asServiceRole.entities.LeadRecord.list();
+    
+    // Get all expert searches to find competitors mentioned
+    const existingCompetitors = await base44.asServiceRole.entities.Competitor.list();
+    const existingNormalized = new Set(existingCompetitors.map(c => normalizeName(c.name)));
+    
+    // Build list of competitor names from various sources
+    const competitorNames = new Set();
+    
+    // Check each lead's notes, name, and practice_name for competitor references
+    allLeads.forEach(lead => {
+      const fieldsToCheck = [lead.notes, lead.contact_notes, lead.practice_name];
+      
+      fieldsToCheck.forEach(field => {
+        if (field && typeof field === 'string') {
+          // Look for company names and service providers mentioned
+          // Pattern: "Company Name", "at Company", "with Company", etc
+          const patterns = [
+            /(?:at|with|from|from\s+|for|serves|assists)\s+([A-Z][A-Za-z\s&\-\.]+?)(?:\s+|$|,|\.|;)/g,
+            /([A-Z][A-Za-z\s&\-\.]{3,}(?:Medical|Medics|Consulting|Solutions|Services|Group|Panel))/g
+          ];
+          
+          patterns.forEach(pattern => {
+            let match;
+            while ((match = pattern.exec(field)) !== null) {
+              const name = match[1]?.trim();
+              if (name && name.length > 2 && !name.match(/^[a-z\s]+$/i)) {
+                competitorNames.add(name);
+              }
+            }
+          });
+        }
+      });
     });
 
-    // Extract competitor panel names from experts
-    const competitorSet = new Set();
-    piExperts.forEach(expert => {
-      if (expert.notes) {
-        // Try to parse competitor panel info from notes or other fields
-        // The expert search results may have competitor_panels info
-        try {
-          // Check if there's structured competitor data in notes or other fields
-          if (typeof expert.notes === 'string') {
-            // Look for patterns like "Competitor: Company Name" or similar
-            const competitorMatches = expert.notes.match(/(?:Competitor|Panel|Listed with):\s*([^,\n]+)/gi);
-            if (competitorMatches) {
-              competitorMatches.forEach(match => {
-                const name = match.replace(/(?:Competitor|Panel|Listed with):\s*/i, '').trim();
-                if (name) competitorSet.add(name);
-              });
-            }
+    // Use LLM to get medical-legal competitor companies in South Africa
+    const llmResponse = await base44.asServiceRole.integrations.Core.InvokeLLM({
+      prompt: `List the major medical-legal consulting companies and expert witness panels in South Africa. Include: Spinesolve, Front Row Medics, and any other similar companies that provide medical expert witness or medico-legal services. Return ONLY a JSON array of company names.`,
+      response_json_schema: {
+        type: "object",
+        properties: {
+          companies: {
+            type: "array",
+            items: { type: "string" },
+            description: "List of South African medical-legal service companies"
           }
-        } catch (e) {
-          console.log('Could not parse competitor info from expert notes');
         }
       }
     });
+    
+    if (llmResponse.companies) {
+      llmResponse.companies.forEach(name => competitorNames.add(name));
+    }
 
-    // Get existing competitors
-    const existingCompetitors = await base44.asServiceRole.entities.Competitor.list();
-    const existingMap = new Map();
-    existingCompetitors.forEach(c => {
-      const normalized = normalizeName(c.name);
-      existingMap.set(normalized, c.name);
-    });
-
-    // Filter out duplicates
-    const normalizeName = (name) => {
-      if (!name) return '';
-      return name.toLowerCase()
-        .trim()
-        .replace(/\s+/g, ' ')
-        .replace(/[^\w\s]/g, '')
-        .replace(/\b(ltd|inc|pty|group|limited|corporation|corp|llc|cc|sa)\b/g, '')
-        .trim();
-    };
-
-    const uniqueNames = new Map();
+    // Also add any explicitly mentioned competitors from leads
     const toCreate = [];
-
-    competitorSet.forEach(name => {
-      if (!name) return;
-      const trimmed = name.trim();
-      const normalized = normalizeName(trimmed);
-
-      // Check if already exists
-      if (existingMap.has(normalized)) return;
+    competitorNames.forEach(name => {
+      if (!name || name.length < 2) return;
       
-      // Check if already in current batch
-      if (uniqueNames.has(normalized)) return;
-
-      uniqueNames.set(normalized, trimmed);
-      toCreate.push(trimmed);
-    });
-
-    // Create new competitors
-    let created = 0;
-    if (toCreate.length > 0) {
-      const competitorsToCreate = toCreate.map(name => ({
-        name,
+      const normalized = normalizeName(name);
+      if (normalized.length < 2) return;
+      
+      // Skip if already exists
+      if (existingNormalized.has(normalized)) return;
+      
+      // Skip if already in current batch
+      if (toCreate.some(c => normalizeName(c.name) === normalized)) return;
+      
+      toCreate.push({
+        name: name.trim(),
         contact_person: '',
         email: '',
         phone: '',
@@ -96,19 +106,22 @@ Deno.serve(async (req) => {
           instagram: '',
           youtube: ''
         },
-        notes: 'Added from saved expert panel listings'
-      }));
-      
-      await base44.asServiceRole.entities.Competitor.bulkCreate(competitorsToCreate);
+        notes: 'Competitor service provider identified'
+      });
+    });
+
+    // Create new competitors in batches
+    let created = 0;
+    if (toCreate.length > 0) {
+      await base44.asServiceRole.entities.Competitor.bulkCreate(toCreate);
       created = toCreate.length;
     }
 
     return Response.json({
-      message: `Found ${piExperts.length} saved experts and created ${created} new competitors`,
-      experts_analyzed: piExperts.length,
+      message: `Identified and created ${created} new competitors`,
       competitors_created: created,
-      total_competitors_found: competitorSet.size,
-      duplicates_skipped: competitorSet.size - created
+      total_found: competitorNames.size,
+      examples: Array.from(competitorNames).slice(0, 5)
     });
   } catch (error) {
     console.error('Error populating competitors:', error);
