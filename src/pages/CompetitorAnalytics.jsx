@@ -16,6 +16,11 @@ export default function CompetitorAnalytics() {
 
   useEffect(() => {
     fetchCompetitors();
+    // Subscribe to competitor changes
+    const unsubscribe = base44.entities.Competitor.subscribe((event) => {
+      fetchCompetitors();
+    });
+    return unsubscribe;
   }, []);
 
   const fetchCompetitors = async () => {

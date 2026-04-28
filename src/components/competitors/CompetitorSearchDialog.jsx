@@ -28,6 +28,7 @@ export default function CompetitorSearchDialog({ onCompetitorSaved, onClose }) {
       setResults(response.data?.results || []);
     } catch (error) {
       console.error("Search failed:", error);
+      alert("Search failed. Please try a different search term.");
       setResults([]);
     }
     setSearching(false);
