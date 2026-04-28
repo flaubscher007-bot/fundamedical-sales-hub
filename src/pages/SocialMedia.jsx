@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Upload, History, Sparkles, Globe } from "lucide-react";
+import { Upload, History, Sparkles, Globe, PenLine } from "lucide-react";
 import SocialMediaUploader from "@/components/socialMedia/SocialMediaUploader";
 import SocialPostHistory from "@/components/socialMedia/SocialPostHistory";
 import PastPostsPanel from "@/components/socialMedia/PastPostsPanel";
+import AIPostGenerator from "@/components/socialMedia/AIPostGenerator";
 
 export default function SocialMedia() {
   const [sessions, setSessions] = useState([]);
@@ -56,6 +57,10 @@ export default function SocialMedia() {
               </span>
             )}
           </TabsTrigger>
+          <TabsTrigger value="generate" className="flex items-center gap-2 data-[state=active]:text-[#081F3F]"
+            style={{ color: activeTab === "generate" ? "#081F3F" : "#94a3b8" }}>
+            <PenLine className="w-4 h-4" /> Generate Posts
+          </TabsTrigger>
           <TabsTrigger value="past" className="flex items-center gap-2 data-[state=active]:text-[#081F3F]"
             style={{ color: activeTab === "past" ? "#081F3F" : "#94a3b8" }}>
             <Globe className="w-4 h-4" /> Past Posts
@@ -64,6 +69,10 @@ export default function SocialMedia() {
 
         <TabsContent value="upload" className="mt-4">
           <SocialMediaUploader onSaved={onSessionSaved} />
+        </TabsContent>
+
+        <TabsContent value="generate" className="mt-4">
+          <AIPostGenerator />
         </TabsContent>
 
         <TabsContent value="history" className="mt-4">
