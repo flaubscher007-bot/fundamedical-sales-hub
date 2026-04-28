@@ -63,7 +63,7 @@ const expertItems = [
 ];
 
 const competitorsItems = [
-  { name: "All Competitors", icon: Share2, page: "SocialMedia" },
+  { name: "All Competitors", icon: Share2, page: "Competitors" },
   { name: "Competitor Comparison", icon: Share2, page: "ComparisonPage" },
 ];
 
