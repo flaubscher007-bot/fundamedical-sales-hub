@@ -23,6 +23,7 @@ import ClientImportManager from './pages/ClientImportManager';
 import FieldVisits from './pages/FieldVisits';
 import ExpertManagerDashboard from './pages/ExpertManagerDashboard';
 import LeadDatabase from './pages/LeadDatabase';
+import ComparisonPage from './pages/ComparisonPage';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
@@ -95,6 +96,7 @@ const AuthenticatedApp = () => {
       <Route path="/FieldVisits" element={<LayoutWrapper currentPageName="FieldVisits"><FieldVisits /></LayoutWrapper>} />
       <Route path="/ExpertManagerDashboard" element={<LayoutWrapper currentPageName="ExpertManagerDashboard"><ExpertManagerDashboard /></LayoutWrapper>} />
       <Route path="/LeadDatabase" element={<LayoutWrapper currentPageName="LeadDatabase"><LeadDatabase /></LayoutWrapper>} />
+      <Route path="/ComparisonPage" element={<LayoutWrapper currentPageName="ComparisonPage"><ComparisonPage /></LayoutWrapper>} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

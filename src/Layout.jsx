@@ -99,7 +99,8 @@ const marketingItems = [
   { name: "Marketing Materials", icon: FileText, page: "Marketing" },
   { name: "Business Cards", icon: CreditCard, page: "BusinessCard" },
   { name: "Pricing Models", icon: DollarSign, page: "PricingModels" },
- { name: "Social Media Posts", icon: Share2, page: "SocialMedia" },
+  { name: "Social Media Posts", icon: Share2, page: "SocialMedia" },
+  { name: "Competitor Comparison", icon: Share2, page: "ComparisonPage" },
 ];
 
 const allNavItems = [...dashboardItems, ...clientItems, ...expertItems, ...mainNavItems, ...marketingItems];
