@@ -154,14 +154,9 @@ export default function CompetitorSearchDialog({ onCompetitorSaved, onClose }) {
                             <p className="text-xs text-slate-400 mt-1">{result.description}</p>
                           )}
                           <div className="flex flex-wrap gap-2 mt-2">
-                            {result.website && (
-                              <span className="text-xs bg-slate-700 px-2 py-1 rounded" style={{ color: "#34CCD0" }}>
-                                {result.website}
-                              </span>
-                            )}
-                            {result.city && (
+                            {result.city && result.province && (
                               <span className="text-xs bg-slate-700 px-2 py-1 rounded text-slate-300">
-                                📍 {result.city}
+                                📍 {result.city}, {result.province}
                               </span>
                             )}
                             {result.confidence && (
@@ -174,6 +169,25 @@ export default function CompetitorSearchDialog({ onCompetitorSaved, onClose }) {
                               </span>
                             )}
                           </div>
+                          {result.medical_disciplines && result.medical_disciplines.length > 0 && (
+                            <div className="mt-2 pt-2 border-t border-slate-700">
+                              <p className="text-xs font-medium text-slate-300 mb-1">Medical Disciplines:</p>
+                              <div className="flex flex-wrap gap-1">
+                                {result.medical_disciplines.map((discipline, idx) => (
+                                  <span key={idx} className="text-xs bg-blue-900/30 text-blue-300 px-2 py-1 rounded">
+                                    {discipline}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          {result.website && (
+                            <div className="mt-2">
+                              <a href={result.website} target="_blank" rel="noopener noreferrer" className="text-xs" style={{ color: "#34CCD0" }}>
+                                {result.website}
+                              </a>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
