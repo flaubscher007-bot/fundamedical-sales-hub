@@ -91,13 +91,22 @@ const RouterContent = () => {
 };
 
 const AppContent = () => {
-  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+  const authContext = useAuth();
+  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = authContext || {};
 
   useEffect(() => {
     if (authError?.type === 'auth_required') {
-      navigateToLogin();
+      navigateToLogin?.();
     }
   }, [authError, navigateToLogin]);
+
+  if (!authContext) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-slate-900">
+        <p className="text-white">Initializing...</p>
+      </div>
+    );
+  }
 
   if (isLoadingPublicSettings || isLoadingAuth) {
     return (
