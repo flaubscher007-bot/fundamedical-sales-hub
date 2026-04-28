@@ -22,6 +22,18 @@
       "type": "string",
       "description": "Company website URL"
     },
+    "address": {
+      "type": "string",
+      "description": "Physical address/location"
+    },
+    "city": {
+      "type": "string",
+      "description": "City"
+    },
+    "province": {
+      "type": "string",
+      "description": "Province/State"
+    },
     "areas_of_operation": {
       "type": "array",
       "items": {
@@ -46,6 +58,22 @@
         }
       },
       "description": "Experts associated with this competitor"
+    },
+    "law_firms_assisted": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "firm_name": {
+            "type": "string"
+          },
+          "last_assisted_year": {
+            "type": "number",
+            "description": "Last year they assisted this firm"
+          }
+        }
+      },
+      "description": "Law firms this competitor has assisted in the last 5 years"
     },
     "social_accounts": {
       "type": "object",

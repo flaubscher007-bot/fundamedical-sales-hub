@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Plus, X, Edit2, Trash2, ExternalLink, Mail, Phone } from "lucide-react";
+import { Plus, X, Edit2, Trash2, ExternalLink, Mail, Phone, MapPin, Users, Building2 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function CompetitorManager() {
@@ -19,7 +19,12 @@ export default function CompetitorManager() {
     email: "",
     phone: "",
     website: "",
+    address: "",
+    city: "",
+    province: "",
     areas_of_operation: [],
+    linked_experts: [],
+    law_firms_assisted: [],
     social_accounts: {
       facebook: "",
       linkedin: "",
@@ -51,7 +56,12 @@ export default function CompetitorManager() {
       email: "",
       phone: "",
       website: "",
+      address: "",
+      city: "",
+      province: "",
       areas_of_operation: [],
+      linked_experts: [],
+      law_firms_assisted: [],
       social_accounts: {
         facebook: "",
         linkedin: "",
@@ -183,6 +193,21 @@ export default function CompetitorManager() {
               value={formData.website}
               onChange={(e) => setFormData({ ...formData, website: e.target.value })}
             />
+            <Input
+              placeholder="Address"
+              value={formData.address}
+              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+            />
+            <Input
+              placeholder="City"
+              value={formData.city}
+              onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+            />
+            <Input
+              placeholder="Province"
+              value={formData.province}
+              onChange={(e) => setFormData({ ...formData, province: e.target.value })}
+            />
           </div>
 
           {/* Social Accounts */}
@@ -255,6 +280,57 @@ export default function CompetitorManager() {
             </div>
           </div>
 
+          {/* Law Firms Assisted */}
+          <div className="mb-4">
+            <label className="text-sm font-medium mb-2 block" style={{ color: "#92F21D" }}>
+              Law Firms Assisted (Last 5 Years)
+            </label>
+            <div className="flex gap-2 mb-2">
+              <Input
+                placeholder="Firm name"
+                id="firmName"
+              />
+              <Input
+                type="number"
+                placeholder="Year"
+                min="2021"
+                max="2026"
+                id="firmYear"
+              />
+              <Button
+                variant="outline"
+                onClick={() => {
+                  const name = document.getElementById("firmName").value;
+                  const year = parseInt(document.getElementById("firmYear").value);
+                  if (name && year) {
+                    setFormData({
+                      ...formData,
+                      law_firms_assisted: [...(formData.law_firms_assisted || []), { firm_name: name, last_assisted_year: year }]
+                    });
+                    document.getElementById("firmName").value = "";
+                    document.getElementById("firmYear").value = "";
+                  }
+                }}
+              >
+                Add
+              </Button>
+            </div>
+            <div className="space-y-1">
+              {(formData.law_firms_assisted || []).map((firm, idx) => (
+                <div key={idx} className="flex items-center justify-between bg-slate-800 p-2 rounded text-xs">
+                  <span>{firm.firm_name} ({firm.last_assisted_year})</span>
+                  <X
+                    className="w-3 h-3 cursor-pointer hover:text-red-400"
+                    onClick={() => setFormData({
+                      ...formData,
+                      law_firms_assisted: formData.law_firms_assisted.filter((_, i) => i !== idx)
+                    })}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* Notes */}
           <Textarea
             placeholder="Additional notes about this competitor"
@@ -312,37 +388,50 @@ export default function CompetitorManager() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 text-sm">
-                {competitor.email && (
-                  <div className="flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-gray-500" />
-                    <a
-                      href={`mailto:${competitor.email}`}
-                      className="text-blue-400 hover:underline"
-                    >
-                      {competitor.email}
-                    </a>
-                  </div>
-                )}
-                {competitor.phone && (
-                  <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-gray-500" />
-                    <span>{competitor.phone}</span>
-                  </div>
-                )}
-                {competitor.website && (
-                  <div className="flex items-center gap-2">
-                    <ExternalLink className="w-4 h-4 text-gray-500" />
-                    <a
-                      href={competitor.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-400 hover:underline"
-                    >
-                      Website
-                    </a>
-                  </div>
-                )}
-              </div>
+                 {/* Location */}
+                 {(competitor.city || competitor.province || competitor.address) && (
+                   <div className="flex items-start gap-2">
+                     <MapPin className="w-4 h-4 text-[#92F21D] mt-0.5 flex-shrink-0" />
+                     <div>
+                       {competitor.address && <p>{competitor.address}</p>}
+                       {competitor.city || competitor.province ? (
+                         <p>{[competitor.city, competitor.province].filter(Boolean).join(", ")}</p>
+                       ) : null}
+                     </div>
+                   </div>
+                 )}
+
+                 {competitor.email && (
+                   <div className="flex items-center gap-2">
+                     <Mail className="w-4 h-4 text-gray-500" />
+                     <a
+                       href={`mailto:${competitor.email}`}
+                       className="text-blue-400 hover:underline"
+                     >
+                       {competitor.email}
+                     </a>
+                   </div>
+                 )}
+                 {competitor.phone && (
+                   <div className="flex items-center gap-2">
+                     <Phone className="w-4 h-4 text-gray-500" />
+                     <span>{competitor.phone}</span>
+                   </div>
+                 )}
+                 {competitor.website && (
+                   <div className="flex items-center gap-2">
+                     <ExternalLink className="w-4 h-4 text-gray-500" />
+                     <a
+                       href={competitor.website}
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       className="text-blue-400 hover:underline"
+                     >
+                       Website
+                     </a>
+                   </div>
+                 )}
+               </div>
 
               {/* Areas of Operation */}
               {competitor.areas_of_operation?.length > 0 && (
@@ -353,6 +442,24 @@ export default function CompetitorManager() {
                       <Badge key={idx} variant="outline" className="text-xs">
                         {area}
                       </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Law Firms Assisted */}
+              {(competitor.law_firms_assisted || []).length > 0 && (
+                <div className="mb-3">
+                  <p className="text-xs text-gray-400 mb-2 font-semibold flex items-center gap-1">
+                    <Building2 className="w-3 h-3" />
+                    Law Firms Assisted (Last 5 Years)
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    {competitor.law_firms_assisted.map((firm, idx) => (
+                      <div key={idx} className="bg-slate-800 p-2 rounded text-xs">
+                        <p className="font-medium">{firm.firm_name}</p>
+                        <p className="text-gray-400">Last: {firm.last_assisted_year}</p>
+                      </div>
                     ))}
                   </div>
                 </div>
