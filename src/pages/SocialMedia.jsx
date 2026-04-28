@@ -11,6 +11,7 @@ import ContentCalendar from "@/components/socialMedia/ContentCalendar";
 import MediaGallery from "@/components/socialMedia/MediaGallery";
 import AnalyticsDashboard from "@/components/socialMedia/AnalyticsDashboard";
 import DraftManager from "@/components/socialMedia/DraftManager";
+import PDFExporter from "@/components/socialMedia/PDFExporter";
 
 export default function SocialMedia() {
   const [sessions, setSessions] = useState([]);
@@ -36,16 +37,20 @@ export default function SocialMedia() {
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold flex items-center gap-2" style={{ color: "#92F21D" }}>
-          <Sparkles className="w-6 h-6" /> Social Media AI Advisor
-        </h1>
-        <p className="text-sm mt-1" style={{ color: "#34CCD0" }}>
-          Upload your content and get AI-powered advice tailored for Facebook, YouTube, Instagram & LinkedIn
-        </p>
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-bold flex items-center gap-2" style={{ color: "#92F21D" }}>
+            <Sparkles className="w-6 h-6" /> Social Media AI Advisor
+          </h1>
+          <p className="text-sm mt-1" style={{ color: "#34CCD0" }}>
+            Upload your content and get AI-powered advice tailored for Facebook, YouTube, Instagram & LinkedIn
+          </p>
+        </div>
+        <PDFExporter elementId="social-content" fileName="social-media-report" />
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
+      <div id="social-content">
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="gap-1" style={{ backgroundColor: "rgba(52,204,208,0.08)", border: "1px solid rgba(52,204,208,0.2)" }}>
           <TabsTrigger value="upload" className="flex items-center gap-2 data-[state=active]:text-[#081F3F]"
             style={{ color: activeTab === "upload" ? "#081F3F" : "#94a3b8" }}>
@@ -119,6 +124,7 @@ export default function SocialMedia() {
           <PastPostsPanel />
         </TabsContent>
       </Tabs>
+      </div>
     </div>
   );
 }
