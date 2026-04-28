@@ -41,32 +41,7 @@ const LayoutWrapper = ({ children, currentPageName }) => Layout ?
   <Layout currentPageName={currentPageName}>{children}</Layout>
   : <>{children}</>;
 
-const AuthenticatedApp = () => {
-  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
-
-  useEffect(() => {
-    if (authError?.type === 'auth_required') {
-      navigateToLogin();
-    }
-  }, [authError, navigateToLogin]);
-
-  // Show loading spinner while checking app public settings or auth
-  if (isLoadingPublicSettings || isLoadingAuth) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-
-  // Handle authentication errors
-  if (authError) {
-    if (authError.type === 'user_not_registered') {
-      return <UserNotRegisteredError />;
-    }
-  }
-
-  // Render the main app
+const RouterContent = () => {
   return (
     <Routes>
       <Route path="/" element={
@@ -115,16 +90,41 @@ const AuthenticatedApp = () => {
   );
 };
 
+const AppContent = () => {
+  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+
+  useEffect(() => {
+    if (authError?.type === 'auth_required') {
+      navigateToLogin();
+    }
+  }, [authError, navigateToLogin]);
+
+  if (isLoadingPublicSettings || isLoadingAuth) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (authError?.type === 'user_not_registered') {
+    return <UserNotRegisteredError />;
+  }
+
+  return (
+    <Router>
+      <RouterContent />
+      <Toaster />
+    </Router>
+  );
+};
 
 function App() {
   try {
     return (
       <AuthProvider>
         <QueryClientProvider client={queryClientInstance}>
-          <Router>
-            <AuthenticatedApp />
-            <Toaster />
-          </Router>
+          <AppContent />
         </QueryClientProvider>
       </AuthProvider>
     )
