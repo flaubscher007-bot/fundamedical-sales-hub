@@ -1,0 +1,102 @@
+{
+  "name": "PerformanceAlert",
+  "type": "object",
+  "properties": {
+    "post_id": {
+      "type": "string",
+      "description": "ID of the post that triggered the alert"
+    },
+    "post_title": {
+      "type": "string",
+      "description": "Post title (denormalized)"
+    },
+    "platform": {
+      "type": "string",
+      "enum": [
+        "Facebook",
+        "LinkedIn",
+        "Instagram",
+        "YouTube"
+      ],
+      "description": "Platform where post performed well"
+    },
+    "platform_average": {
+      "type": "number",
+      "description": "Average engagement rate for the platform"
+    },
+    "post_engagement_rate": {
+      "type": "number",
+      "description": "This post's engagement rate"
+    },
+    "performance_percentage": {
+      "type": "number",
+      "description": "How much better than average (e.g., 20 means 20% better)"
+    },
+    "reach": {
+      "type": "number",
+      "description": "Post reach"
+    },
+    "engagement": {
+      "type": "number",
+      "description": "Total engagement count"
+    },
+    "suggested_content_angle": {
+      "type": "string",
+      "description": "AI-suggested content angle for follow-up"
+    },
+    "suggested_topics": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Suggested topics for follow-up content"
+    },
+    "read": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether user has read the alert"
+    },
+    "actioned": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether user created follow-up content"
+    }
+  },
+  "required": [
+    "post_id",
+    "platform"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": {
+          "$ne": ""
+        }
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": {
+          "$ne": ""
+        }
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": {
+          "$ne": ""
+        }
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "admin",
+            "senior_management"
+          ]
+        }
+      }
+    }
+  }
+}

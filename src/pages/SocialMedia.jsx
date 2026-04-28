@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Upload, History, Sparkles, Globe, PenLine, CalendarDays, BarChart2, Images, FileText, Eye, TrendingUp } from "lucide-react";
+import { Upload, History, Sparkles, Globe, PenLine, CalendarDays, BarChart2, Images, FileText, Eye, TrendingUp, Bell, Users } from "lucide-react";
 import SocialMediaUploader from "@/components/socialMedia/SocialMediaUploader";
 import SocialPostHistory from "@/components/socialMedia/SocialPostHistory";
 import PastPostsPanel from "@/components/socialMedia/PastPostsPanel";
@@ -15,6 +15,9 @@ import PDFExporter from "@/components/socialMedia/PDFExporter";
 import LivePreviewPanel from "@/components/socialMedia/LivePreviewPanel";
 import UnifiedPerformanceDashboard from "@/components/socialMedia/UnifiedPerformanceDashboard";
 import WeeklyContentGenerator from "@/components/socialMedia/WeeklyContentGenerator";
+import PerformanceAlertCenter from "@/components/socialMedia/PerformanceAlertCenter";
+import CompetitorManager from "@/components/socialMedia/CompetitorManager";
+import CompetitorTrends from "@/components/socialMedia/CompetitorTrends";
 
 export default function SocialMedia() {
   const [sessions, setSessions] = useState([]);
@@ -102,8 +105,20 @@ export default function SocialMedia() {
            <TrendingUp className="w-4 h-4" /> Performance Overview
           </TabsTrigger>
           <TabsTrigger value="weekly" className="flex items-center gap-2 data-[state=active]:text-[#081F3F]"
-           style={{ color: activeTab === "weekly" ? "#081F3F" : "#94a3b8" }}>
-           <CalendarDays className="w-4 h-4" /> Weekly Plan
+            style={{ color: activeTab === "weekly" ? "#081F3F" : "#94a3b8" }}>
+            <CalendarDays className="w-4 h-4" /> Weekly Plan
+          </TabsTrigger>
+          <TabsTrigger value="alerts" className="flex items-center gap-2 data-[state=active]:text-[#081F3F]"
+            style={{ color: activeTab === "alerts" ? "#081F3F" : "#94a3b8" }}>
+            <Bell className="w-4 h-4" /> Performance Alerts
+          </TabsTrigger>
+          <TabsTrigger value="competitors" className="flex items-center gap-2 data-[state=active]:text-[#081F3F]"
+            style={{ color: activeTab === "competitors" ? "#081F3F" : "#94a3b8" }}>
+            <Users className="w-4 h-4" /> Competitors
+          </TabsTrigger>
+          <TabsTrigger value="competitor-trends" className="flex items-center gap-2 data-[state=active]:text-[#081F3F]"
+            style={{ color: activeTab === "competitor-trends" ? "#081F3F" : "#94a3b8" }}>
+            <TrendingUp className="w-4 h-4" /> Competitor Trends
           </TabsTrigger>
           </TabsList>
 
@@ -149,6 +164,18 @@ export default function SocialMedia() {
 
         <TabsContent value="weekly" className="mt-4">
           <WeeklyContentGenerator />
+        </TabsContent>
+
+        <TabsContent value="alerts" className="mt-4">
+          <PerformanceAlertCenter />
+        </TabsContent>
+
+        <TabsContent value="competitors" className="mt-4">
+          <CompetitorManager />
+        </TabsContent>
+
+        <TabsContent value="competitor-trends" className="mt-4">
+          <CompetitorTrends />
         </TabsContent>
       </Tabs>
       </div>

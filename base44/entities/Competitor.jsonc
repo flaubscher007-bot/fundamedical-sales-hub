@@ -1,0 +1,124 @@
+{
+  "name": "Competitor",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Competitor company/firm name"
+    },
+    "contact_person": {
+      "type": "string",
+      "description": "Primary contact name"
+    },
+    "email": {
+      "type": "string",
+      "description": "Contact email"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Contact phone number"
+    },
+    "website": {
+      "type": "string",
+      "description": "Company website URL"
+    },
+    "areas_of_operation": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Geographic areas or service areas"
+    },
+    "linked_experts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "expert_id": {
+            "type": "string"
+          },
+          "expert_name": {
+            "type": "string"
+          },
+          "discipline": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Experts associated with this competitor"
+    },
+    "social_accounts": {
+      "type": "object",
+      "properties": {
+        "facebook": {
+          "type": "string"
+        },
+        "linkedin": {
+          "type": "string"
+        },
+        "instagram": {
+          "type": "string"
+        },
+        "youtube": {
+          "type": "string"
+        }
+      },
+      "description": "Social media account URLs"
+    },
+    "last_analyzed": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last time competitor was analyzed"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes about competitor"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "admin",
+            "Sales Manager",
+            "senior_management",
+            "bul_manager"
+          ]
+        }
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": {
+          "$ne": ""
+        }
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "admin",
+            "Sales Manager",
+            "senior_management",
+            "bul_manager"
+          ]
+        }
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "admin",
+            "senior_management"
+          ]
+        }
+      }
+    }
+  }
+}
