@@ -36,7 +36,6 @@ import PWAInstallBanner from "@/components/PWAInstallBanner";
 import OfflineIndicator from "@/components/OfflineIndicator";
 import NotificationBell from "@/components/NotificationBell";
 import PageHelpButton from "@/components/PageHelpButton";
-import GlobalSearch from "@/components/GlobalSearch";
 import { hasPermission } from "@/lib/PageNotFound";
 
 const dashboardItems = [
@@ -434,7 +433,6 @@ export default function Layout({ children, currentPageName }) {
               {allNavItems.find((i) => i.page === currentPageName)?.name || currentPageName}
             </h2>
           </div>
-          <GlobalSearch />
           <div className="flex items-center gap-2 flex-shrink-0">
             <PageHelpButton currentPageName={currentPageName} />
             <NotificationBell />

@@ -9,6 +9,7 @@ export default function GlobalSearch() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [error, setError] = useState(null);
   const searchRef = useRef(null);
 
   useEffect(() => {
@@ -26,17 +27,19 @@ export default function GlobalSearch() {
     const searchAll = async () => {
       if (!query.trim()) {
         setResults([]);
+        setError(null);
         return;
       }
 
       setLoading(true);
+      setError(null);
       const q = query.toLowerCase();
 
       try {
         const [leads, firms, meetings] = await Promise.all([
-          base44.entities.LeadRecord.list("-created_date", 100),
-          base44.entities.Client.list("-created_date", 100),
-          base44.entities.MeetingMinutes.list("-created_date", 100),
+          base44.entities.LeadRecord.list("-created_date", 100).catch(() => []),
+          base44.entities.Client.list("-created_date", 100).catch(() => []),
+          base44.entities.MeetingMinutes.list("-created_date", 100).catch(() => []),
         ]);
 
         const leadResults = leads
@@ -97,6 +100,8 @@ export default function GlobalSearch() {
         setIsOpen(true);
       } catch (error) {
         console.error("Global search error:", error);
+        setError("Search unavailable");
+        setResults([]);
       } finally {
         setLoading(false);
       }
@@ -155,6 +160,10 @@ export default function GlobalSearch() {
           {loading ? (
             <div className="p-4 text-center">
               <div className="w-5 h-5 border-2 border-[#34CCD0] border-t-transparent rounded-full animate-spin mx-auto" />
+            </div>
+          ) : error ? (
+            <div className="p-4 text-center text-sm" style={{ color: "#94a3b8" }}>
+              {error}
             </div>
           ) : results.length === 0 ? (
             <div className="p-4 text-center text-sm" style={{ color: "#94a3b8" }}>
