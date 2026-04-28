@@ -3,11 +3,12 @@ import { base44 } from "@/api/base44Client";
 import OutreachModule from "@/components/leadSearch/OutreachModule";
 import ProposalGenerator from "@/components/leadSearch/ProposalGenerator";
 import ExpertLeadSearch from "@/components/leadSearch/ExpertLeadSearch";
+import MedNegWitnessSearch from "@/components/leadSearch/MedNegWitnessSearch";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, MapPin, Phone, Mail, Globe, Building2, Loader2, ExternalLink, Star, Download, FileText, Stethoscope, ChevronDown } from "lucide-react";
+import { Search, MapPin, Phone, Mail, Globe, Building2, Loader2, ExternalLink, Star, Download, FileText, Stethoscope, ChevronDown, Scale } from "lucide-react";
 import * as XLSX from "xlsx";
 
 // BUL territory map for allocation suggestions
@@ -69,7 +70,7 @@ const SPECIALTIES = [
 const VISIBLE_COUNT = 10;
 
 export default function LeadSearch() {
-  const [mode, setMode] = useState("law_firms"); // "law_firms" | "experts"
+  const [mode, setMode] = useState("law_firms"); // "law_firms" | "experts" | "med_neg"
   const [location, setLocation] = useState("");
   const [province, setProvince] = useState("all");
   const [specialty, setSpecialty] = useState("both");
@@ -256,7 +257,9 @@ Return between 10 and 15 firms. Only include real, verifiable law firms.`;
         <p className="text-sm mt-1" style={{ color: "#34CCD0" }}>
           {mode === "law_firms"
             ? "Discover personal injury & medical negligence law firms — potential leads for FundaMedical expert services"
-            : "Find SAMLA-registered medical experts and expert witnesses — potential panel additions for FundaMedical"}
+            : mode === "experts"
+            ? "Find HPCSA-registered medical experts and expert witnesses — potential panel additions for FundaMedical"
+            : "Find HPCSA-registered practitioners who testified as expert witnesses in medical negligence cases (2020–2025)"}
         </p>
       </div>
 
@@ -282,10 +285,23 @@ Return between 10 and 15 firms. Only include real, verifiable law firms.`;
         >
           <Stethoscope className="w-4 h-4" /> Medical Experts
         </button>
+        <button
+          onClick={() => setMode("med_neg")}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all"
+          style={{
+            backgroundColor: mode === "med_neg" ? "#f43f5e" : "transparent",
+            color: mode === "med_neg" ? "#ffffff" : "#94a3b8",
+          }}
+        >
+          <Scale className="w-4 h-4" /> Med Neg Witnesses
+        </button>
       </div>
 
       {/* Expert mode */}
       {mode === "experts" && <ExpertLeadSearch />}
+
+      {/* Med Neg Witness mode */}
+      {mode === "med_neg" && <MedNegWitnessSearch />}
 
       {/* Law firm mode */}
       {mode === "law_firms" && <>
