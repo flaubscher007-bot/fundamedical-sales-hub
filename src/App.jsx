@@ -112,17 +112,32 @@ const AuthenticatedApp = () => {
 
 
 function App() {
-
-  return (
-    <AuthProvider>
-      <QueryClientProvider client={queryClientInstance}>
-        <Router>
-          <AuthenticatedApp />
-        </Router>
-        <Toaster />
-      </QueryClientProvider>
-    </AuthProvider>
-  )
+  try {
+    return (
+      <AuthProvider>
+        <QueryClientProvider client={queryClientInstance}>
+          <Router>
+            <AuthenticatedApp />
+          </Router>
+          <Toaster />
+        </QueryClientProvider>
+      </AuthProvider>
+    )
+  } catch (error) {
+    console.error('App initialization error:', error);
+    return (
+      <div className="fixed inset-0 flex flex-col items-center justify-center bg-slate-900 text-white gap-4">
+        <h1 className="text-2xl font-bold">Application Error</h1>
+        <p>Failed to initialize the application. Please refresh the page.</p>
+        <button 
+          onClick={() => window.location.reload()}
+          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded"
+        >
+          Refresh
+        </button>
+      </div>
+    );
+  }
 }
 
 export default App
