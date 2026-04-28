@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Upload, History, Sparkles, Globe, PenLine, CalendarDays, BarChart2, Images, FileText } from "lucide-react";
+import { Upload, History, Sparkles, Globe, PenLine, CalendarDays, BarChart2, Images, FileText, Eye, TrendingUp } from "lucide-react";
 import SocialMediaUploader from "@/components/socialMedia/SocialMediaUploader";
 import SocialPostHistory from "@/components/socialMedia/SocialPostHistory";
 import PastPostsPanel from "@/components/socialMedia/PastPostsPanel";
@@ -12,6 +12,9 @@ import MediaGallery from "@/components/socialMedia/MediaGallery";
 import AnalyticsDashboard from "@/components/socialMedia/AnalyticsDashboard";
 import DraftManager from "@/components/socialMedia/DraftManager";
 import PDFExporter from "@/components/socialMedia/PDFExporter";
+import LivePreviewPanel from "@/components/socialMedia/LivePreviewPanel";
+import UnifiedPerformanceDashboard from "@/components/socialMedia/UnifiedPerformanceDashboard";
+import WeeklyContentGenerator from "@/components/socialMedia/WeeklyContentGenerator";
 
 export default function SocialMedia() {
   const [sessions, setSessions] = useState([]);
@@ -87,10 +90,22 @@ export default function SocialMedia() {
             <BarChart2 className="w-4 h-4" /> Analytics
           </TabsTrigger>
           <TabsTrigger value="past" className="flex items-center gap-2 data-[state=active]:text-[#081F3F]"
-            style={{ color: activeTab === "past" ? "#081F3F" : "#94a3b8" }}>
-            <Globe className="w-4 h-4" /> Past Posts
+           style={{ color: activeTab === "past" ? "#081F3F" : "#94a3b8" }}>
+           <Globe className="w-4 h-4" /> Past Posts
           </TabsTrigger>
-        </TabsList>
+          <TabsTrigger value="preview" className="flex items-center gap-2 data-[state=active]:text-[#081F3F]"
+           style={{ color: activeTab === "preview" ? "#081F3F" : "#94a3b8" }}>
+           <Eye className="w-4 h-4" /> Live Preview
+          </TabsTrigger>
+          <TabsTrigger value="overview" className="flex items-center gap-2 data-[state=active]:text-[#081F3F]"
+           style={{ color: activeTab === "overview" ? "#081F3F" : "#94a3b8" }}>
+           <TrendingUp className="w-4 h-4" /> Performance Overview
+          </TabsTrigger>
+          <TabsTrigger value="weekly" className="flex items-center gap-2 data-[state=active]:text-[#081F3F]"
+           style={{ color: activeTab === "weekly" ? "#081F3F" : "#94a3b8" }}>
+           <CalendarDays className="w-4 h-4" /> Weekly Plan
+          </TabsTrigger>
+          </TabsList>
 
         <TabsContent value="upload" className="mt-4">
           <SocialMediaUploader onSaved={onSessionSaved} />
@@ -122,6 +137,18 @@ export default function SocialMedia() {
 
         <TabsContent value="past" className="mt-4">
           <PastPostsPanel />
+        </TabsContent>
+
+        <TabsContent value="preview" className="mt-4">
+          <LivePreviewPanel />
+        </TabsContent>
+
+        <TabsContent value="overview" className="mt-4">
+          <UnifiedPerformanceDashboard />
+        </TabsContent>
+
+        <TabsContent value="weekly" className="mt-4">
+          <WeeklyContentGenerator />
         </TabsContent>
       </Tabs>
       </div>
