@@ -72,6 +72,7 @@ const mainNavItems = [
   { name: "Monthly Import Hub", icon: Upload, page: "MonthlyImportHub" },
   { name: "Appointment Tools", icon: Wrench, page: "AppointmentTools" },
   { name: "Lead Search", icon: Search, page: "LeadSearch" },
+  { name: "Geospatial Dashboard", icon: MapPin, page: "GeospatialDashboard" },
   { name: "Lead CRM", icon: Users, page: "LeadCRM" },
   { name: "Lead Pipeline", icon: TrendingUp, page: "LeadPipelineDashboard" },
   { name: "Lead Database", icon: Database, page: "LeadDatabase" },

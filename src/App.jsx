@@ -18,6 +18,7 @@ import CalendarView from './pages/CalendarView';
 import MeetingRecordings from './pages/MeetingRecordings';
 import ClientMapPage from './pages/ClientMapPage';
 import LeadSearch from './pages/LeadSearch';
+import GeospatialDashboard from './pages/GeospatialDashboard';
 import PricingModels from './pages/PricingModels';
 import ClientImportManager from './pages/ClientImportManager';
 import FieldVisits from './pages/FieldVisits';
@@ -95,6 +96,7 @@ const AuthenticatedApp = () => {
       <Route path="/MeetingRecordings" element={<LayoutWrapper currentPageName="MeetingRecordings"><MeetingRecordings /></LayoutWrapper>} />
       <Route path="/ClientMapPage" element={<LayoutWrapper currentPageName="ClientMapPage"><ClientMapPage /></LayoutWrapper>} />
       <Route path="/LeadSearch" element={<LayoutWrapper currentPageName="LeadSearch"><LeadSearch /></LayoutWrapper>} />
+      <Route path="/GeospatialDashboard" element={<LayoutWrapper currentPageName="GeospatialDashboard"><GeospatialDashboard /></LayoutWrapper>} />
       <Route path="/PricingModels" element={<LayoutWrapper currentPageName="PricingModels"><PricingModels /></LayoutWrapper>} />
       <Route path="/ClientImportManager" element={<LayoutWrapper currentPageName="ClientImportManager"><ClientImportManager /></LayoutWrapper>} />
       <Route path="/FieldVisits" element={<LayoutWrapper currentPageName="FieldVisits"><FieldVisits /></LayoutWrapper>} />
