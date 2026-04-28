@@ -213,6 +213,24 @@ Respond with a score (Hot, Warm, or Cold) and a brief 1-2 sentence justification
     XLSX.writeFile(wb, `FundaMedical_LeadDatabase_${new Date().toISOString().slice(0, 10)}.xlsx`);
   };
 
+  const exportToPDF = async () => {
+    try {
+      const response = await base44.functions.invoke('exportLeadDatabasePDF', { leads: filtered });
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `FundaMedical_LeadDatabase_${new Date().toISOString().slice(0, 10)}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('PDF export failed:', error);
+      alert('Failed to generate PDF report');
+    }
+  };
+
   const clearFilters = () => {
     setSearch(""); setFilterType("all"); setFilterProvince("all");
     setFilterOutcome("all"); setFilterPanel("all"); setFilterContacted("all");
@@ -233,18 +251,21 @@ Respond with a score (Hot, Warm, or Cold) and a brief 1-2 sentence justification
           </p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
-          <Button
-            onClick={scoreAllUnscored}
-            disabled={bulkScoring || filtered.filter(l => !l.ai_score).length === 0}
-            style={{ backgroundColor: "rgba(167,139,250,0.2)", color: "#a78bfa", fontWeight: 600, border: "1px solid rgba(167,139,250,0.4)" }}
-          >
-            {bulkScoring ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
-            {bulkScoring ? "Scoring..." : `AI Score Unscored (${filtered.filter(l => !l.ai_score).length})`}
-          </Button>
-          <Button onClick={exportToExcel} style={{ backgroundColor: "#1d6f42", color: "#fff", fontWeight: 600 }}>
-            <Download className="w-4 h-4 mr-2" /> Export ({filtered.length})
-          </Button>
-        </div>
+           <Button
+             onClick={scoreAllUnscored}
+             disabled={bulkScoring || filtered.filter(l => !l.ai_score).length === 0}
+             style={{ backgroundColor: "rgba(167,139,250,0.2)", color: "#a78bfa", fontWeight: 600, border: "1px solid rgba(167,139,250,0.4)" }}
+           >
+             {bulkScoring ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
+             {bulkScoring ? "Scoring..." : `AI Score Unscored (${filtered.filter(l => !l.ai_score).length})`}
+           </Button>
+           <Button onClick={exportToExcel} style={{ backgroundColor: "#1d6f42", color: "#fff", fontWeight: 600 }}>
+             <Download className="w-4 h-4 mr-2" /> Excel ({filtered.length})
+           </Button>
+           <Button onClick={exportToPDF} style={{ backgroundColor: "#d97706", color: "#fff", fontWeight: 600 }}>
+             <Download className="w-4 h-4 mr-2" /> PDF Report
+           </Button>
+         </div>
       </div>
 
       {/* Summary Cards */}
