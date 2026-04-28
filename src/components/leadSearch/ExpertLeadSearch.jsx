@@ -81,12 +81,19 @@ export default function ExpertLeadSearch() {
     const locationStr = [location.trim(), province !== "all" ? province : ""].filter(Boolean).join(", ");
     const disciplineLabel = DISCIPLINES.find(d => d.value === discipline)?.label || "medical";
 
-    const prompt = `Find ${disciplineLabel === "Any Discipline" ? "medical" : disciplineLabel} experts in ${locationStr}, South Africa who perform medico-legal assessments or act as expert witnesses in personal injury, road accident fund, COIDA, or medical negligence matters.
+    const prompt = `Find ${disciplineLabel === "Any Discipline" ? "medical" : disciplineLabel} experts in ${locationStr}, South Africa who are active expert witnesses in personal injury, road accident fund (RAF), COIDA, or medical negligence matters.
 
-I am specifically looking for:
-1. Experts registered with SAMLA (South African Medico-Legal Association)
-2. Experts who have appeared as expert witnesses in South African court cases
-3. Experts listed on medico-legal panels for companies similar to FundaMedical (e.g. MedLaw, Medicolegal SA, Medi-Clinic medico-legal panels, MLA, MedAssess, NetCare Forensic, Afri-Medico-Legal, IME panels, etc.)
+Use ALL of the following sources to find and verify experts:
+1. HPCSA (Health Professions Council of South Africa) — check if the expert holds a valid HPCSA registration number and is in good standing. The HPCSA register at hpcsa.co.za is the authoritative source for licensed South African medical practitioners.
+2. SAMLA (South African Medico-Legal Association) — check if the expert is a registered SAMLA member, which indicates active involvement in medico-legal work.
+3. Published South African court judgments — check SafLII (saflii.org), ZASCA, high court rolls for cases where the expert appeared as a witness.
+4. Medico-legal panel listings — check MedLaw, MLA, MedAssess, IME panels, NetCare Forensic, Afri-Medico-Legal, Medi-Clinic medico-legal panels.
+
+Prioritise experts who:
+- Are verifiably active as expert witnesses (recent court appearances or case references)
+- Hold current HPCSA registration in good standing
+- Have experience in RAF, COIDA, personal injury or medical negligence contexts
+- Are SAMLA registered (a strong indicator of medico-legal activity)
 
 For each expert found, provide:
 - expert_name: full name with title (e.g. Dr. John Smith)
@@ -99,19 +106,22 @@ For each expert found, provide:
 - phone: contact number if available
 - email: email if available
 - website: website if available
-- is_samla_registered: true or false — whether this expert is known to be registered with SAMLA (South African Medico-Legal Association)
-- samla_notes: any notes about their SAMLA registration or membership status
+- hpcsa_number: HPCSA registration number if found (e.g. MP0012345)
+- hpcsa_status: "Active" / "Suspended" / "Unknown" — their HPCSA registration status
+- hpcsa_notes: any relevant notes about their HPCSA registration or standing
+- is_samla_registered: true or false — whether this expert is known to be registered with SAMLA
+- samla_notes: any notes about their SAMLA membership
 - court_case_mentions: number of known court case mentions as expert witness (0 if none found)
-- court_cases: array of brief descriptions of notable cases or case references where they appeared as expert (empty if none)
+- court_cases: array of brief descriptions of notable cases or case references (e.g. "Smith v RAF [2021] ZAGPPHC 123")
 - court_case_summary: summary of their expert witness activity in courts
-- competitor_panel_listed: true or false — whether they appear on medico-legal panel lists for other companies (MedLaw, MLA, MedAssess, IME panels, etc.)
+- competitor_panel_listed: true or false — whether they appear on medico-legal panels for competitor companies
 - competitor_panels: array of company names they are listed with (empty if none)
 - competitor_panel_notes: any notes about their competitor panel listings
-- lead_quality: "High" if SAMLA registered OR has court case mentions AND is not already on a competitor panel exclusively; "Medium" if partial; "Low" otherwise
+- lead_quality: "High" if HPCSA active AND (SAMLA registered OR has court case mentions); "Medium" if HPCSA active but limited medico-legal track record; "Low" if HPCSA status unknown or inactive
 - lead_quality_reason: one sentence explaining the lead quality rating
 - notes: any other relevant notes about suitability as a FundaMedical expert
 
-Return between 10 and 15 experts. Only include real, verifiable medical professionals.`;
+Return between 10 and 15 experts. Only include real, verifiable medical professionals with confirmed HPCSA registration where possible.`;
 
     const result = await base44.integrations.Core.InvokeLLM({
       prompt,
@@ -135,6 +145,9 @@ Return between 10 and 15 experts. Only include real, verifiable medical professi
                 phone: { type: "string" },
                 email: { type: "string" },
                 website: { type: "string" },
+                hpcsa_number: { type: "string" },
+                hpcsa_status: { type: "string" },
+                hpcsa_notes: { type: "string" },
                 is_samla_registered: { type: "boolean" },
                 samla_notes: { type: "string" },
                 court_case_mentions: { type: "number" },
@@ -178,6 +191,9 @@ Return between 10 and 15 experts. Only include real, verifiable medical professi
       "Phone": e.phone || "",
       "Email": e.email || "",
       "Website": e.website || "",
+      "HPCSA Number": e.hpcsa_number || "",
+      "HPCSA Status": e.hpcsa_status || "Unknown",
+      "HPCSA Notes": e.hpcsa_notes || "",
       "SAMLA Registered": e.is_samla_registered ? "YES" : "NO",
       "SAMLA Notes": e.samla_notes || "",
       "Court Cases (count)": e.court_case_mentions ?? 0,
@@ -334,6 +350,26 @@ Return between 10 and 15 experts. Only include real, verifiable medical professi
 
                 {expert.practice_name && (
                   <p className="text-xs" style={{ color: "#94a3b8" }}>🏥 {expert.practice_name}</p>
+                )}
+
+                {/* HPCSA status */}
+                {(expert.hpcsa_number || expert.hpcsa_status) && (
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${
+                      expert.hpcsa_status === "Active"
+                        ? "border-green-600/40 bg-green-900/30 text-green-400"
+                        : expert.hpcsa_status === "Suspended"
+                        ? "border-red-600/40 bg-red-900/30 text-red-400"
+                        : "border-slate-600/40 bg-slate-800/30 text-slate-400"
+                    }`}>
+                      <ShieldCheck className="w-3.5 h-3.5" />
+                      HPCSA {expert.hpcsa_status || "Unknown"}
+                      {expert.hpcsa_number && <span className="ml-1 opacity-70 font-normal">#{expert.hpcsa_number}</span>}
+                    </div>
+                  </div>
+                )}
+                {expert.hpcsa_notes && (
+                  <p className="text-xs" style={{ color: "#94a3b8" }}>🏥 {expert.hpcsa_notes}</p>
                 )}
 
                 {/* Status badges */}
