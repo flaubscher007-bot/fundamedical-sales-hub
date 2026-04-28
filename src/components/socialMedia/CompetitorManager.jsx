@@ -8,12 +8,19 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, X, Edit2, Trash2, ExternalLink, Mail, Phone, MapPin, Users, Building2, Download } from "lucide-react";
 import { toast } from "sonner";
 import { jsPDF } from "jspdf";
+import ActivityLogDialog from "./ActivityLogDialog";
+import CompetitorDashboard from "./CompetitorDashboard";
+import { Search, Filter, X as FilterX } from "lucide-react";
 
 export default function CompetitorManager() {
   const [competitors, setCompetitors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [showDashboard, setShowDashboard] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedProvince, setSelectedProvince] = useState("");
+  const [selectedArea, setSelectedArea] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     contact_person: "",
@@ -298,30 +305,161 @@ export default function CompetitorManager() {
     );
   }
 
+  const filteredCompetitors = competitors.filter((comp) => {
+    const matchesSearch =
+      !searchQuery ||
+      comp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (comp.contact_person || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (comp.email || "").toLowerCase().includes(searchQuery.toLowerCase());
+
+    const matchesProvince = !selectedProvince || comp.province === selectedProvince;
+
+    const matchesArea =
+      !selectedArea ||
+      (comp.areas_of_operation || []).includes(selectedArea);
+
+    return matchesSearch && matchesProvince && matchesArea;
+  });
+
+  const provinces = [...new Set(competitors.map((c) => c.province).filter(Boolean))].sort();
+  const areas = [...new Set(competitors.flatMap((c) => c.areas_of_operation || []))].sort();
+
   return (
     <div className="space-y-6">
-      {/* Add Button & Export */}
-      <div className="flex justify-between items-center">
+      {/* Dashboard Toggle & Controls */}
+      <div className="flex justify-between items-center gap-2">
         <Button
-          onClick={exportToPDF}
+          onClick={() => setShowDashboard(!showDashboard)}
           variant="outline"
-          disabled={competitors.length === 0}
           className="flex items-center gap-2"
         >
-          <Download className="w-4 h-4" />
-          Export to PDF
+          {showDashboard ? "Hide" : "Show"} Dashboard
         </Button>
-        <Button
-          onClick={() => {
-            resetForm();
-            setShowForm(true);
-          }}
-          className="flex items-center gap-2"
-        >
-          <Plus className="w-4 h-4" />
-          Add Competitor
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            onClick={exportToPDF}
+            variant="outline"
+            disabled={competitors.length === 0}
+            className="flex items-center gap-2"
+          >
+            <Download className="w-4 h-4" />
+            Export PDF
+          </Button>
+          <Button
+            onClick={() => {
+              resetForm();
+              setShowForm(true);
+            }}
+            className="flex items-center gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            Add Competitor
+          </Button>
+        </div>
       </div>
+
+      {/* Dashboard */}
+      {showDashboard && competitors.length > 0 && (
+        <CompetitorDashboard competitors={competitors} />
+      )}
+
+      {/* Search & Filters */}
+      <Card className="p-4 bg-slate-900 border-slate-700">
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 bg-slate-800 rounded-lg px-3 py-2">
+            <Search className="w-4 h-4 text-gray-500" />
+            <input
+              type="text"
+              placeholder="Search by name, contact, or email..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="bg-transparent flex-1 outline-none text-white placeholder-gray-500"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="text-gray-500 hover:text-gray-300"
+              >
+                <FilterX className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+
+          <div className="flex gap-3 flex-wrap">
+            {/* Province Filter */}
+            {provinces.length > 0 && (
+              <div className="flex items-center gap-2">
+                <Filter className="w-4 h-4 text-gray-500" />
+                <select
+                  value={selectedProvince}
+                  onChange={(e) => setSelectedProvince(e.target.value)}
+                  className="bg-slate-800 border border-slate-700 rounded px-3 py-1 text-sm text-white focus:outline-none focus:ring-1 focus:ring-[#34CCD0]"
+                >
+                  <option value="">All Provinces</option>
+                  {provinces.map((province) => (
+                    <option key={province} value={province}>
+                      {province}
+                    </option>
+                  ))}
+                </select>
+                {selectedProvince && (
+                  <button
+                    onClick={() => setSelectedProvince("")}
+                    className="text-gray-500 hover:text-gray-300"
+                  >
+                    <FilterX className="w-3 h-3" />
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* Area Filter */}
+            {areas.length > 0 && (
+              <div className="flex items-center gap-2">
+                <select
+                  value={selectedArea}
+                  onChange={(e) => setSelectedArea(e.target.value)}
+                  className="bg-slate-800 border border-slate-700 rounded px-3 py-1 text-sm text-white focus:outline-none focus:ring-1 focus:ring-[#34CCD0]"
+                >
+                  <option value="">All Areas</option>
+                  {areas.map((area) => (
+                    <option key={area} value={area}>
+                      {area}
+                    </option>
+                  ))}
+                </select>
+                {selectedArea && (
+                  <button
+                    onClick={() => setSelectedArea("")}
+                    className="text-gray-500 hover:text-gray-300"
+                  >
+                    <FilterX className="w-3 h-3" />
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Active Filters Summary */}
+          {(searchQuery || selectedProvince || selectedArea) && (
+            <div className="text-sm text-gray-400">
+              Showing {filteredCompetitors.length} of {competitors.length} competitors
+              {(searchQuery || selectedProvince || selectedArea) && (
+                <button
+                  onClick={() => {
+                    setSearchQuery("");
+                    setSelectedProvince("");
+                    setSelectedArea("");
+                  }}
+                  className="ml-2 text-[#34CCD0] hover:text-[#92F21D]"
+                >
+                  Clear all filters
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+      </Card>
 
       {/* Form */}
       {showForm && (
@@ -519,9 +657,13 @@ export default function CompetitorManager() {
         <Card className="p-12 bg-slate-900 border-slate-700 text-center">
           <p className="text-gray-400">No competitors added yet. Add one to get started.</p>
         </Card>
+      ) : filteredCompetitors.length === 0 ? (
+        <Card className="p-12 bg-slate-900 border-slate-700 text-center">
+          <p className="text-gray-400">No competitors match your filters. Try adjusting your search.</p>
+        </Card>
       ) : (
         <div className="grid gap-4">
-          {competitors.map((competitor) => (
+          {filteredCompetitors.map((competitor) => (
             <Card key={competitor.id} className="p-6 bg-slate-900 border-slate-700">
               <div className="flex items-start justify-between mb-3">
                 <div>
@@ -533,6 +675,10 @@ export default function CompetitorManager() {
                   )}
                 </div>
                 <div className="flex gap-2">
+                  <ActivityLogDialog
+                    competitorId={competitor.id}
+                    competitorName={competitor.name}
+                  />
                   <Button
                     size="sm"
                     variant="ghost"
