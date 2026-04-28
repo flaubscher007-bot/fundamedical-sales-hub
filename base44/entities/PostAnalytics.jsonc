@@ -1,0 +1,126 @@
+{
+  "name": "PostAnalytics",
+  "type": "object",
+  "properties": {
+    "scheduled_post_id": {
+      "type": "string",
+      "description": "ID of the linked ScheduledPost"
+    },
+    "title": {
+      "type": "string",
+      "description": "Post title (denormalized)"
+    },
+    "platform": {
+      "type": "string",
+      "enum": [
+        "Facebook",
+        "LinkedIn",
+        "Instagram",
+        "YouTube"
+      ],
+      "description": "Platform"
+    },
+    "published_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date post was published"
+    },
+    "topic": {
+      "type": "string",
+      "description": "Topic / subject of the post"
+    },
+    "tone": {
+      "type": "string",
+      "enum": [
+        "Professional",
+        "Informative",
+        "Inspiring",
+        "Casual",
+        "Urgent",
+        "Promotional"
+      ],
+      "description": "Tone used"
+    },
+    "reach": {
+      "type": "number",
+      "default": 0,
+      "description": "Total reach (unique accounts)"
+    },
+    "impressions": {
+      "type": "number",
+      "default": 0,
+      "description": "Total impressions"
+    },
+    "likes": {
+      "type": "number",
+      "default": 0
+    },
+    "comments": {
+      "type": "number",
+      "default": 0
+    },
+    "shares": {
+      "type": "number",
+      "default": 0
+    },
+    "clicks": {
+      "type": "number",
+      "default": 0
+    },
+    "engagement_rate": {
+      "type": "number",
+      "description": "Engagement rate as a percentage"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Manual notes on performance"
+    }
+  },
+  "required": [
+    "platform"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "admin",
+            "Sales Manager",
+            "senior_management",
+            "bul_manager"
+          ]
+        }
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": {
+          "$ne": ""
+        }
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "admin",
+            "Sales Manager",
+            "senior_management",
+            "bul_manager"
+          ]
+        }
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "admin",
+            "Sales Manager",
+            "senior_management"
+          ]
+        }
+      }
+    }
+  }
+}

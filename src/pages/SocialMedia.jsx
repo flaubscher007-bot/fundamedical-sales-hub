@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Upload, History, Sparkles, Globe, PenLine, CalendarDays } from "lucide-react";
+import { Upload, History, Sparkles, Globe, PenLine, CalendarDays, BarChart2, Images } from "lucide-react";
 import SocialMediaUploader from "@/components/socialMedia/SocialMediaUploader";
 import SocialPostHistory from "@/components/socialMedia/SocialPostHistory";
 import PastPostsPanel from "@/components/socialMedia/PastPostsPanel";
 import AIPostGenerator from "@/components/socialMedia/AIPostGenerator";
 import ContentCalendar from "@/components/socialMedia/ContentCalendar";
+import MediaGallery from "@/components/socialMedia/MediaGallery";
+import AnalyticsDashboard from "@/components/socialMedia/AnalyticsDashboard";
 
 export default function SocialMedia() {
   const [sessions, setSessions] = useState([]);
@@ -66,6 +68,14 @@ export default function SocialMedia() {
             style={{ color: activeTab === "calendar" ? "#081F3F" : "#94a3b8" }}>
             <CalendarDays className="w-4 h-4" /> Content Calendar
           </TabsTrigger>
+          <TabsTrigger value="media" className="flex items-center gap-2 data-[state=active]:text-[#081F3F]"
+            style={{ color: activeTab === "media" ? "#081F3F" : "#94a3b8" }}>
+            <Images className="w-4 h-4" /> Media Gallery
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="flex items-center gap-2 data-[state=active]:text-[#081F3F]"
+            style={{ color: activeTab === "analytics" ? "#081F3F" : "#94a3b8" }}>
+            <BarChart2 className="w-4 h-4" /> Analytics
+          </TabsTrigger>
           <TabsTrigger value="past" className="flex items-center gap-2 data-[state=active]:text-[#081F3F]"
             style={{ color: activeTab === "past" ? "#081F3F" : "#94a3b8" }}>
             <Globe className="w-4 h-4" /> Past Posts
@@ -86,6 +96,14 @@ export default function SocialMedia() {
 
         <TabsContent value="calendar" className="mt-4">
           <ContentCalendar />
+        </TabsContent>
+
+        <TabsContent value="media" className="mt-4">
+          <MediaGallery />
+        </TabsContent>
+
+        <TabsContent value="analytics" className="mt-4">
+          <AnalyticsDashboard />
         </TabsContent>
 
         <TabsContent value="past" className="mt-4">
