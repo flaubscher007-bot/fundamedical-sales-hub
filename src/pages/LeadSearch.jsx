@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, MapPin, Phone, Mail, Globe, Building2, Loader2, ExternalLink, Star, Download, FileText, Stethoscope, ChevronDown, Scale, Database, CheckCircle2, Shield } from "lucide-react";
+import { Search, MapPin, Phone, Mail, Globe, Building2, Loader2, ExternalLink, Star, Download, FileText, Stethoscope, ChevronDown, Scale, Database, CheckCircle2, Shield, Save } from "lucide-react";
 import SaveLeadButton from "@/components/leadSearch/SaveLeadButton";
 import * as XLSX from "xlsx";
 
@@ -95,6 +95,8 @@ export default function LeadSearch() {
   const [showAll, setShowAll] = useState(false);
   const [savedLeads, setSavedLeads] = useState([]);
   const [savedLeadsLoading, setSavedLeadsLoading] = useState(false);
+  const [savingAll, setSavingAll] = useState(false);
+  const [saveAllDone, setSaveAllDone] = useState(false);
 
   useEffect(() => {
     const fetchSaved = async () => {
@@ -301,7 +303,37 @@ Return between 10 and 15 firms. Only include real, verifiable law firms.`;
     });
 
     setResults(result);
+    setSaveAllDone(false);
     setLoading(false);
+  };
+
+  const saveAllLeads = async () => {
+    if (!results?.firms?.length) return;
+    setSavingAll(true);
+    const unsaved = results.firms.filter(f => !isSavedLead(f.firm_name));
+    for (const firm of unsaved) {
+      await base44.entities.LeadRecord.create({
+        lead_type: "Law Firm",
+        name: firm.firm_name,
+        address: firm.address,
+        city: firm.city,
+        province: firm.province,
+        phone: firm.phone,
+        email: firm.email,
+        website: firm.website,
+        specialties: firm.specialties || [],
+        lead_quality: firm.lead_quality,
+        notes: firm.notes,
+        source_search: location.trim() || province,
+        contact_outcome: "Pending",
+        contacted: false,
+      });
+    }
+    // Refresh saved leads list
+    const updated = await base44.entities.LeadRecord.list("-created_date", 500);
+    setSavedLeads(updated);
+    setSavingAll(false);
+    setSaveAllDone(true);
   };
 
   const qualityColor = (q) => {
@@ -608,14 +640,40 @@ Return between 10 and 15 firms. Only include real, verifiable law firms.`;
             </div>
             <div className="flex items-center gap-2 flex-wrap">
               {results?.firms?.length > 0 && (
-                <Button
-                  onClick={exportFirmsToExcel}
-                  size="sm"
-                  style={{ backgroundColor: "#1d6f42", color: "#ffffff", fontWeight: 600 }}
-                >
-                  <Download className="w-3.5 h-3.5 mr-1.5" />
-                  Export to Excel ({results.firms.length})
-                </Button>
+                <>
+                  {(() => {
+                    const unsavedCount = results.firms.filter(f => !isSavedLead(f.firm_name)).length;
+                    return (
+                      <Button
+                        onClick={saveAllLeads}
+                        disabled={savingAll || unsavedCount === 0 || saveAllDone}
+                        size="sm"
+                        style={{
+                          backgroundColor: saveAllDone ? "rgba(146,242,29,0.15)" : "rgba(167,139,250,0.2)",
+                          color: saveAllDone ? "#92F21D" : "#a78bfa",
+                          fontWeight: 600,
+                          border: `1px solid ${saveAllDone ? "rgba(146,242,29,0.4)" : "rgba(167,139,250,0.4)"}`,
+                        }}
+                      >
+                        {savingAll ? (
+                          <><Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />Saving...</>
+                        ) : saveAllDone ? (
+                          <><CheckCircle2 className="w-3.5 h-3.5 mr-1.5" />All Saved</>
+                        ) : (
+                          <><Save className="w-3.5 h-3.5 mr-1.5" />Save All ({unsavedCount} new)</>
+                        )}
+                      </Button>
+                    );
+                  })()}
+                  <Button
+                    onClick={exportFirmsToExcel}
+                    size="sm"
+                    style={{ backgroundColor: "#1d6f42", color: "#ffffff", fontWeight: 600 }}
+                  >
+                    <Download className="w-3.5 h-3.5 mr-1.5" />
+                    Export to Excel ({results.firms.length})
+                  </Button>
+                </>
               )}
               {selectedFirms.length > 0 && (
                 <>
