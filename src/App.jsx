@@ -26,6 +26,8 @@ import LeadDatabase from './pages/LeadDatabase';
 import ComparisonPage from './pages/ComparisonPage';
 import Competitors from './pages/Competitors';
 import CompetitorAnalytics from './pages/CompetitorAnalytics';
+import LeadCRM from './pages/LeadCRM';
+import LeadPipelineDashboard from './pages/LeadPipelineDashboard';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
@@ -101,6 +103,8 @@ const AuthenticatedApp = () => {
       <Route path="/ComparisonPage" element={<LayoutWrapper currentPageName="ComparisonPage"><ComparisonPage /></LayoutWrapper>} />
       <Route path="/Competitors" element={<LayoutWrapper currentPageName="Competitors"><Competitors /></LayoutWrapper>} />
       <Route path="/CompetitorAnalytics" element={<LayoutWrapper currentPageName="CompetitorAnalytics"><CompetitorAnalytics /></LayoutWrapper>} />
+      <Route path="/LeadCRM" element={<LayoutWrapper currentPageName="LeadCRM"><LeadCRM /></LayoutWrapper>} />
+      <Route path="/LeadPipelineDashboard" element={<LayoutWrapper currentPageName="LeadPipelineDashboard"><LeadPipelineDashboard /></LayoutWrapper>} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

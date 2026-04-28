@@ -1,0 +1,113 @@
+{
+  "name": "CompetitorInsight",
+  "type": "object",
+  "properties": {
+    "report_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the report was generated"
+    },
+    "report_month": {
+      "type": "string",
+      "description": "Month in YYYY-MM format"
+    },
+    "competitor_count": {
+      "type": "number",
+      "description": "Number of competitors analyzed"
+    },
+    "total_activity_count": {
+      "type": "number",
+      "description": "Total activities across all competitors"
+    },
+    "market_summary": {
+      "type": "string",
+      "description": "Executive summary of market conditions"
+    },
+    "key_threats": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of identified threats"
+    },
+    "emerging_opportunities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of strategic opportunities"
+    },
+    "market_shifts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Notable changes in competitor behavior"
+    },
+    "recommendations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Actionable recommendations"
+    },
+    "regional_focus": {
+      "type": "string",
+      "description": "Region(s) with most competitive activity"
+    },
+    "data_snapshot": {
+      "type": "array",
+      "description": "Snapshot of aggregated competitor data",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "required": [
+    "report_date",
+    "market_summary"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "admin",
+            "Sales Manager",
+            "senior_management",
+            "bul_manager"
+          ]
+        }
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": {
+          "$ne": ""
+        }
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "admin",
+            "Sales Manager",
+            "senior_management",
+            "bul_manager"
+          ]
+        }
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "admin",
+            "senior_management"
+          ]
+        }
+      }
+    }
+  }
+}
