@@ -6,9 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Search, MapPin, Phone, Mail, Globe, Stethoscope, Loader2,
-  ExternalLink, Star, ShieldCheck, BookOpen, Building2, AlertCircle, Download
+  ExternalLink, Star, ShieldCheck, BookOpen, Building2, AlertCircle, Download, ChevronDown
 } from "lucide-react";
-import { jsPDF } from "jspdf";
+import * as XLSX from "xlsx";
 
 const PROVINCES = [
   "Western Cape", "KwaZulu-Natal", "Gauteng", "Eastern Cape",
@@ -57,6 +57,8 @@ const qualityColor = (q) => {
   return "bg-slate-700 text-slate-300 border-slate-600";
 };
 
+const VISIBLE_COUNT = 10;
+
 export default function ExpertLeadSearch() {
   const [location, setLocation] = useState("");
   const [province, setProvince] = useState("all");
@@ -65,6 +67,7 @@ export default function ExpertLeadSearch() {
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
   const [existingExperts, setExistingExperts] = useState([]);
+  const [showAll, setShowAll] = useState(false);
 
   const handleSearch = async () => {
     if (!location.trim() && province === "all") return;
@@ -108,7 +111,7 @@ For each expert found, provide:
 - lead_quality_reason: one sentence explaining the lead quality rating
 - notes: any other relevant notes about suitability as a FundaMedical expert
 
-Return between 5 and 15 experts. Only include real, verifiable medical professionals.`;
+Return between 30 and 50 experts. Only include real, verifiable medical professionals.`;
 
     const result = await base44.integrations.Core.InvokeLLM({
       prompt,
@@ -161,61 +164,49 @@ Return between 5 and 15 experts. Only include real, verifiable medical professio
     return existingExperts.some(e => norm(e.name || "").includes(norm(name)) || norm(name).includes(norm(e.name || "")));
   };
 
-  const printToPDF = () => {
+  const exportToExcel = () => {
     if (!results?.experts?.length) return;
-    const doc = new jsPDF({ unit: "mm", format: "a4" });
-    const pageW = doc.internal.pageSize.getWidth();
-    const margin = 15;
-    let y = 0;
+    const rows = results.experts.map((e, i) => ({
+      "No.": i + 1,
+      "Expert Name": e.expert_name || "",
+      "Discipline": e.discipline || "",
+      "Qualifications": (e.qualifications || []).join(", "),
+      "Practice Name": e.practice_name || "",
+      "Address": e.address || "",
+      "City": e.city || "",
+      "Province": e.province || "",
+      "Phone": e.phone || "",
+      "Email": e.email || "",
+      "Website": e.website || "",
+      "SAMLA Registered": e.is_samla_registered ? "YES" : "NO",
+      "SAMLA Notes": e.samla_notes || "",
+      "Court Cases (count)": e.court_case_mentions ?? 0,
+      "Court Case Summary": e.court_case_summary || "",
+      "Notable Cases": (e.court_cases || []).join(" | "),
+      "On Competitor Panel": e.competitor_panel_listed ? "YES" : "NO",
+      "Competitor Panels": (e.competitor_panels || []).join(", "),
+      "Competitor Panel Notes": e.competitor_panel_notes || "",
+      "Lead Quality": e.lead_quality || "",
+      "Lead Quality Reason": e.lead_quality_reason || "",
+      "Already on FM Panel": isExistingExpert(e.expert_name) ? "YES" : "NO",
+      "Notes": e.notes || "",
+      "Action": "",
+      "Contact Date": "",
+      "Outcome": "",
+    }));
 
-    // Header
-    doc.setFillColor(8, 31, 63); doc.rect(0, 0, 210, 297, "F");
-    doc.setFillColor(146, 242, 29); doc.rect(0, 0, 210, 35, "F");
-    doc.setFontSize(18); doc.setFont("helvetica", "bold"); doc.setTextColor(8, 31, 63);
-    doc.text("FUNDA", margin, 15);
-    doc.setTextColor(52, 204, 208); doc.text("MEDICAL", margin + 32, 15);
-    doc.setFontSize(9); doc.setFont("helvetica", "normal"); doc.setTextColor(8, 31, 63);
-    doc.text("Expert Lead Search — Medical Legal Specialists", margin, 22);
-    doc.text(new Date().toLocaleDateString("en-ZA"), pageW - margin, 22, { align: "right" });
-    y = 44;
-
-    results.experts.forEach((expert, idx) => {
-      if (y + 40 > 275) { doc.addPage(); y = 15; }
-      doc.setFillColor(idx % 2 === 0 ? 10 : 14, idx % 2 === 0 ? 38 : 48, idx % 2 === 0 ? 70 : 88);
-      doc.roundedRect(margin, y, pageW - margin * 2, 38, 2, 2, "F");
-
-      doc.setFontSize(11); doc.setFont("helvetica", "bold"); doc.setTextColor(146, 242, 29);
-      doc.text(expert.expert_name || "", margin + 4, y + 7);
-
-      doc.setFontSize(8); doc.setFont("helvetica", "normal"); doc.setTextColor(52, 204, 208);
-      doc.text([expert.discipline, expert.practice_name].filter(Boolean).join(" · "), margin + 4, y + 13);
-
-      if (expert.city || expert.province) {
-        doc.setTextColor(148, 163, 184);
-        doc.text([expert.city, expert.province].filter(Boolean).join(", "), margin + 4, y + 19);
-      }
-
-      const flags = [];
-      if (expert.is_samla_registered) flags.push("✓ SAMLA");
-      if (expert.court_case_mentions > 0) flags.push(`⚖ ${expert.court_case_mentions} cases`);
-      if (expert.competitor_panel_listed) flags.push("⚠ Competitor panel");
-      if (flags.length) { doc.setTextColor(146, 242, 29); doc.text(flags.join("  |  "), margin + 4, y + 25); }
-
-      if (expert.notes) {
-        doc.setFontSize(7.5); doc.setTextColor(180, 180, 180);
-        const noteLines = doc.splitTextToSize(expert.notes, pageW - margin * 2 - 8);
-        doc.text(noteLines[0] || "", margin + 4, y + 31);
-      }
-
-      y += 42;
-    });
-
-    const total = doc.getNumberOfPages();
-    for (let p = 1; p <= total; p++) {
-      doc.setPage(p); doc.setFontSize(7); doc.setTextColor(80, 80, 80);
-      doc.text(`Page ${p} of ${total} | FundaMedical Expert Lead Search | Confidential`, pageW / 2, 292, { align: "center" });
-    }
-    doc.save(`FundaMedical_ExpertLeads_${new Date().toISOString().slice(0,10)}.pdf`);
+    const ws = XLSX.utils.json_to_sheet(rows);
+    // Column widths
+    ws["!cols"] = [
+      { wch: 4 }, { wch: 28 }, { wch: 22 }, { wch: 30 }, { wch: 28 },
+      { wch: 35 }, { wch: 18 }, { wch: 18 }, { wch: 18 }, { wch: 28 },
+      { wch: 25 }, { wch: 14 }, { wch: 30 }, { wch: 14 }, { wch: 40 },
+      { wch: 50 }, { wch: 18 }, { wch: 30 }, { wch: 35 }, { wch: 12 },
+      { wch: 40 }, { wch: 14 }, { wch: 40 }, { wch: 20 }, { wch: 16 }, { wch: 20 },
+    ];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Expert Leads");
+    XLSX.writeFile(wb, `FundaMedical_ExpertLeads_${new Date().toISOString().slice(0,10)}.xlsx`);
   };
 
   return (
@@ -288,11 +279,14 @@ Return between 5 and 15 experts. Only include real, verifiable medical professio
               <Stethoscope className="w-4 h-4" style={{ color: "#34CCD0" }} />
               <h2 className="text-lg font-bold" style={{ color: "#92F21D" }}>
                 {results.experts?.length || 0} experts found
+                {!showAll && results.experts?.length > VISIBLE_COUNT && (
+                  <span className="text-sm font-normal ml-2" style={{ color: "#94a3b8" }}>(showing {VISIBLE_COUNT})</span>
+                )}
               </h2>
             </div>
             {results.experts?.length > 0 && (
-              <Button onClick={printToPDF} variant="outline" size="sm" className="border-[#34CCD0]/40" style={{ color: "#34CCD0" }}>
-                <Download className="w-3.5 h-3.5 mr-1.5" /> Print to PDF
+              <Button onClick={exportToExcel} size="sm" style={{ backgroundColor: "#1d6f42", color: "#ffffff", fontWeight: 600 }}>
+                <Download className="w-3.5 h-3.5 mr-1.5" /> Export to Excel ({results.experts.length})
               </Button>
             )}
           </div>
@@ -305,7 +299,7 @@ Return between 5 and 15 experts. Only include real, verifiable medical professio
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {results.experts?.map((expert, i) => (
+            {(showAll ? results.experts : results.experts?.slice(0, VISIBLE_COUNT))?.map((expert, i) => (
               <div key={i} className="rounded-xl border p-4 space-y-3 hover:border-[#34CCD0]/60 transition-colors"
                 style={{ borderColor: expert.is_samla_registered ? "rgba(146,242,29,0.35)" : "rgba(52,204,208,0.25)", backgroundColor: "rgba(8,31,63,0.6)" }}>
 
@@ -423,6 +417,20 @@ Return between 5 and 15 experts. Only include real, verifiable medical professio
               </div>
             ))}
           </div>
+
+          {results.experts?.length > VISIBLE_COUNT && (
+            <div className="flex justify-center pt-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowAll(v => !v)}
+                style={{ color: "#34CCD0", borderColor: "#34CCD0" }}
+              >
+                <ChevronDown className={`w-4 h-4 mr-1.5 transition-transform ${showAll ? "rotate-180" : ""}`} />
+                {showAll ? `Show less` : `Show all ${results.experts.length} experts`}
+              </Button>
+            </div>
+          )}
         </div>
       )}
 
