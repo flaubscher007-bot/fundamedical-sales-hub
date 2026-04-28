@@ -35,6 +35,7 @@ import {
 import PWAInstallBanner from "@/components/PWAInstallBanner";
 import OfflineIndicator from "@/components/OfflineIndicator";
 import NotificationBell from "@/components/NotificationBell";
+import PageHelpButton from "@/components/PageHelpButton";
 import { hasPermission } from "@/lib/PageNotFound";
 
 const dashboardItems = [
@@ -392,7 +393,10 @@ export default function Layout({ children, currentPageName }) {
               {allNavItems.find((i) => i.page === currentPageName)?.name || currentPageName}
             </h2>
           </div>
-          <NotificationBell />
+          <div className="flex items-center gap-2">
+            <PageHelpButton currentPageName={currentPageName} />
+            <NotificationBell />
+          </div>
         </header>
         <main className="flex-1 p-4 lg:p-8 overflow-y-auto" style={{background: 'linear-gradient(135deg, #081F3F 0%, #0a2d52 100%)', backgroundAttachment: 'fixed', minHeight: '100vh'}}>
           {children}

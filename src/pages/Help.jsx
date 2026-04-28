@@ -1,335 +1,233 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ChevronDown, ChevronUp, Play, FileText, Video, BookOpen } from "lucide-react";
+import { ChevronDown, ChevronUp, Search, HelpCircle } from "lucide-react";
+import { PAGE_GUIDES } from "@/lib/helpContent";
+
+const CATEGORIES = [
+  { label: "🚀 Getting Started", pages: ["Dashboard", "UserProfile"] },
+  { label: "👥 Client Management", pages: ["Clients", "ClientMapPage", "FirmReferenceTable"] },
+  { label: "📅 Appointments & Meetings", pages: ["AppointmentTools", "TeamCalendar", "MeetingRecordings", "MeetingAnalyticsDashboard"] },
+  { label: "🔍 Lead Management", pages: ["LeadSearch", "LeadDatabase"] },
+  { label: "💰 Finance", pages: ["Finance", "FinanceDashboard", "CollectionsReport", "MonthlyImportHub"] },
+  { label: "📄 Contracts & Marketing", pages: ["Contracts", "Marketing"] },
+  { label: "📈 Analytics & Reporting", pages: ["Analytics", "BULPerformance", "BULManagement"] },
+  { label: "🗂️ Operations", pages: ["ExpensesHub", "FieldVisits", "Goals", "ActionItemsDashboard", "MessageCentre"] },
+  { label: "🩺 Experts", pages: ["Experts"] },
+  { label: "⚙️ Admin", pages: ["UserManagement", "HealthChecker"] },
+];
 
 export default function Help() {
   const [searchTerm, setSearchTerm] = useState("");
   const [expandedGuide, setExpandedGuide] = useState(null);
+  const [expandedSection, setExpandedSection] = useState({});
 
-  const guides = [
-    {
-      id: "dashboard",
-      title: "Dashboard Overview",
-      category: "Getting Started",
-      icon: "📊",
-      description: "Learn about key metrics and features on your dashboard",
-      steps: [
-        "Your dashboard displays real-time business metrics at the top",
-        "Upcoming appointments show scheduled client meetings",
-        "Pending follow-ups section lists all outstanding tasks",
-        "BUL Performance summary shows sales metrics and targets",
-        "Recent contracts and pricing proposals appear on the right panel",
-      ],
-      tips: [
-        "Customize which widgets appear on your dashboard",
-        "Use date filters to view specific time periods",
-        "Click any section to drill down into more details",
-      ],
-    },
-    {
-      id: "clients",
-      title: "Managing Clients",
-      category: "Core Features",
-      icon: "👥",
-      description: "Add, edit, and organize client information",
-      steps: [
-        "Navigate to Clients section from the sidebar",
-        "Click 'Add New Client' or 'Onboarding Wizard' to create a new client",
-        "Fill in firm details, contacts (Director, Attorney, etc.), and location",
-        "Assign a Business Unit Leader and finance contacts",
-        "Set activity status (Active/Inactive/Prospect) and special requirements",
-      ],
-      tips: [
-        "Use the search bar to quickly find clients",
-        "Filter by Business Unit Leader, Finance Clerk, or Account Status",
-        "Add multiple contacts per role (Director, Attorney, Legal Secretary)",
-        "Update client contact details anytime from the edit dialog",
-      ],
-    },
-    {
-      id: "appointments",
-      title: "Scheduling Appointments",
-      category: "Core Features",
-      icon: "📅",
-      description: "Schedule and manage client meetings",
-      steps: [
-        "Go to Appointment Tools from the sidebar",
-        "Click 'Schedule New Appointment' to create a meeting",
-        "Select client, date, time, and appointment type",
-        "Choose In-Person, Virtual, Phone Call, or Site Visit",
-        "Request attendance confirmation from participants",
-      ],
-      tips: [
-        "View all appointments in calendar view for better visualization",
-        "Mark attendance as confirmed when clients respond",
-        "Create meeting minutes immediately after appointments",
-        "Automatically generate action items and follow-ups",
-      ],
-    },
-    {
-      id: "contracts",
-      title: "Creating & Managing Contracts",
-      category: "Core Features",
-      icon: "📄",
-      description: "Draft, send, and track contract agreements",
-      steps: [
-        "Navigate to Contract Tools / Contracts page",
-        "Choose a contract template or create from scratch",
-        "Fill in client details and pricing information",
-        "Review contract and request digital signature",
-        "Track contract status (Draft/Sent/Signed/Declined/Expired)",
-      ],
-      tips: [
-        "Use contract templates for faster document creation",
-        "Set expiry dates to track contract validity",
-        "Send contracts directly to clients for e-signature",
-        "Store signed contracts with completion dates for records",
-      ],
-    },
-    {
-      id: "finance",
-      title: "Finance & Statements",
-      category: "Financial Management",
-      icon: "💰",
-      description: "Monitor client accounts and financial metrics",
-      steps: [
-        "Access Finance section to view all client statements",
-        "Check account status (GREEN/ORANGE) and movement indicators",
-        "View deposit and balance aging analysis",
-        "Monitor deposits collected and balance payments",
-        "Access detailed PowerBI dashboards for deeper analysis",
-      ],
-      tips: [
-        "Use Finance Dashboard for graphical views of key metrics",
-        "Filter statements by Business Unit Leader or Finance Clerk",
-        "Review aging analysis to identify overdue deposits",
-        "Export statements for external reporting or audits",
-      ],
-    },
-    {
-      id: "followups",
-      title: "Follow-Up Management",
-      category: "Task Management",
-      icon: "✅",
-      description: "Create and track follow-up tasks and reminders",
-      steps: [
-        "Navigate to Follow-Ups page or Appointment Tools",
-        "Create new follow-up tasks for clients",
-        "Set due dates and priority levels",
-        "Choose follow-up type (Call, Email, Meeting, WhatsApp, Other)",
-        "Update status as Pending, Completed, or Overdue",
-      ],
-      tips: [
-        "Filter follow-ups by priority and due date",
-        "Assign follow-ups to specific team members",
-        "Create follow-ups directly from appointment summaries",
-        "Use the automated follow-up rules for recurring tasks",
-      ],
-    },
-    {
-      id: "followup-rules",
-      title: "Automated Follow-Up Rules",
-      category: "Automation",
-      icon: "🤖",
-      description: "Set up automatic follow-ups for inactive clients",
-      steps: [
-        "Go to Follow-Up Rules from the sidebar",
-        "Click 'New Rule' to create an automation",
-        "Set inactivity threshold (e.g., 30 days without contact)",
-        "Configure email subject and body templates",
-        "Define task title, description, and priority",
-      ],
-      tips: [
-        "Apply rules to all clients or select specific ones",
-        "Customize email templates with {{client_name}} placeholders",
-        "Rules automatically create calendar events and send emails",
-        "Monitor 'Last Run' timestamp to verify rule execution",
-      ],
-    },
-    {
-      id: "expenses",
-      title: "Expense Tracking",
-      category: "Financial Management",
-      icon: "🧾",
-      description: "Log and manage business expenses",
-      steps: [
-        "Navigate to Expenses Hub from the sidebar",
-        "Click 'Add Expense' to record a new expense",
-        "Select category and attach receipts if needed",
-        "Set amount, date, and business purpose",
-        "Submit for approval (if required by your role)",
-      ],
-      tips: [
-        "Categorize expenses for easier reporting",
-        "Upload photos of receipts for documentation",
-        "Track mileage separately in the Mileage section",
-        "Export expense reports for accounting purposes",
-      ],
-    },
-    {
-      id: "reports",
-      title: "Viewing Reports & Dashboards",
-      category: "Analytics",
-      icon: "📈",
-      description: "Access business intelligence and reporting tools",
-      steps: [
-        "Use Power BI section to access business dashboards",
-        "BUL Dashboard shows sales performance metrics",
-        "Finance Dashboard displays financial KPIs",
-        "Finance Reporting provides detailed transaction analysis",
-        "All dashboards update in real-time with latest data",
-      ],
-      tips: [
-        "Use filters to analyze data by period or BUL",
-        "Export dashboard data for presentations",
-        "Monitor targets vs. actuals in performance dashboards",
-        "Use insights for decision-making and planning",
-      ],
-    },
-  ];
+  const toggleSection = (guideId, section) => {
+    setExpandedSection(prev => ({
+      ...prev,
+      [`${guideId}-${section}`]: !prev[`${guideId}-${section}`],
+    }));
+  };
 
-  const filteredGuides = guides.filter(
-    (guide) =>
-      guide.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      guide.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      guide.category.toLowerCase().includes(searchTerm.toLowerCase())
+  const isSectionOpen = (guideId, section) => expandedSection[`${guideId}-${section}`];
+
+  const filtered = Object.entries(PAGE_GUIDES).filter(([, g]) =>
+    !searchTerm ||
+    g.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    g.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    g.overview?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const categories = [...new Set(guides.map((g) => g.category))];
+  const filteredKeys = new Set(filtered.map(([k]) => k));
 
   return (
-    <div className="space-y-8">
+    <div className="max-w-4xl mx-auto space-y-8">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#7ed957]/10 to-[#00bcd4]/10 rounded-lg p-8 border border-[#00bcd4]/20">
-        <h1 className="text-3xl font-bold mb-2">Help & Training Guides</h1>
-        <p className="text-slate-600">
-          Learn how to use FundaMedical Sales Hub with interactive guides and step-by-step tutorials
+      <div className="rounded-xl p-6" style={{ background: "linear-gradient(135deg, rgba(146,242,29,0.08) 0%, rgba(52,204,208,0.08) 100%)", border: "1px solid rgba(52,204,208,0.25)" }}>
+        <div className="flex items-center gap-3 mb-2">
+          <HelpCircle className="w-8 h-8" style={{ color: "#34CCD0" }} />
+          <h1 className="text-2xl font-bold" style={{ color: "#92F21D" }}>Help & Training Guide</h1>
+        </div>
+        <p style={{ color: "#34CCD0" }}>
+          Step-by-step instructions, feature overviews, and tips for every page in FundaMedical Sales Hub.
+          You can also click the <strong style={{ color: "#34CCD0" }}>ⓘ button</strong> in the top right of any page header to get instant help for that page.
         </p>
       </div>
 
       {/* Search */}
-      <div>
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#34CCD0" }} />
         <Input
-          placeholder="Search guides, features, or topics..."
+          placeholder="Search guides by page name or topic..."
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="max-w-md"
+          onChange={e => setSearchTerm(e.target.value)}
+          className="pl-10 max-w-lg"
         />
       </div>
 
-      {/* Guides by Category */}
-      {categories.map((category) => {
-        const categoryGuides = filteredGuides.filter((g) => g.category === category);
-        if (categoryGuides.length === 0) return null;
-
+      {/* Categories */}
+      {CATEGORIES.map(cat => {
+        const catPages = cat.pages.filter(p => filteredKeys.has(p) && PAGE_GUIDES[p]);
+        if (catPages.length === 0) return null;
         return (
-          <div key={category}>
-            <h2 className="text-xl font-bold mb-4 text-slate-800">{category}</h2>
-            <div className="grid gap-4">
-              {categoryGuides.map((guide) => (
-                <Card
-                  key={guide.id}
-                  className="cursor-pointer hover:shadow-lg transition-all"
-                  onClick={() =>
-                    setExpandedGuide(expandedGuide === guide.id ? null : guide.id)
-                  }
-                >
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-start gap-4 flex-1">
-                        <div className="text-3xl">{guide.icon}</div>
-                        <div className="flex-1">
-                          <CardTitle className="text-lg flex items-center gap-2">
-                            {guide.title}
-                            {expandedGuide === guide.id ? (
-                              <ChevronUp className="w-4 h-4 text-slate-400" />
-                            ) : (
-                              <ChevronDown className="w-4 h-4 text-slate-400" />
+          <div key={cat.label}>
+            <h2 className="text-lg font-bold mb-3" style={{ color: "#92F21D" }}>{cat.label}</h2>
+            <div className="space-y-2">
+              {catPages.map(pageKey => {
+                const guide = PAGE_GUIDES[pageKey];
+                const isOpen = expandedGuide === pageKey;
+                return (
+                  <div key={pageKey} className="rounded-xl overflow-hidden" style={{ border: "1px solid rgba(52,204,208,0.2)", backgroundColor: "rgba(8,31,63,0.6)" }}>
+                    {/* Guide header */}
+                    <button
+                      className="w-full flex items-center gap-4 px-5 py-4 text-left transition-colors hover:bg-white/5"
+                      onClick={() => {
+                        setExpandedGuide(isOpen ? null : pageKey);
+                        if (!isOpen) setExpandedSection({ [`${pageKey}-overview`]: true });
+                      }}
+                    >
+                      <span className="text-2xl">{guide.icon}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-semibold text-sm" style={{ color: "#92F21D" }}>{guide.title}</div>
+                        <div className="text-xs mt-0.5 truncate" style={{ color: "#34CCD0" }}>{guide.description}</div>
+                      </div>
+                      {isOpen ? <ChevronUp className="w-4 h-4 flex-shrink-0" style={{ color: "#34CCD0" }} /> : <ChevronDown className="w-4 h-4 flex-shrink-0" style={{ color: "#34CCD0" }} />}
+                    </button>
+
+                    {/* Expanded guide content */}
+                    {isOpen && (
+                      <div className="px-5 pb-5 space-y-2 border-t" style={{ borderColor: "rgba(52,204,208,0.15)" }}>
+
+                        {/* Overview */}
+                        {guide.overview && (
+                          <div className="rounded-lg overflow-hidden mt-3" style={{ border: "1px solid rgba(52,204,208,0.2)" }}>
+                            <button
+                              className="w-full flex items-center justify-between px-4 py-2.5 text-sm font-semibold"
+                              style={{ backgroundColor: isSectionOpen(pageKey, "overview") ? "rgba(52,204,208,0.15)" : "rgba(52,204,208,0.05)", color: "#34CCD0" }}
+                              onClick={() => toggleSection(pageKey, "overview")}
+                            >
+                              📖 Overview
+                              {isSectionOpen(pageKey, "overview") ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                            </button>
+                            {isSectionOpen(pageKey, "overview") && (
+                              <div className="px-4 py-3 text-sm" style={{ color: "#ffffff", backgroundColor: "rgba(8,31,63,0.9)" }}>
+                                {guide.overview}
+                              </div>
                             )}
-                          </CardTitle>
-                          <CardDescription>{guide.description}</CardDescription>
-                        </div>
-                      </div>
-                    </div>
-                  </CardHeader>
+                          </div>
+                        )}
 
-                  {expandedGuide === guide.id && (
-                    <CardContent className="space-y-4 border-t pt-4">
-                      {/* Steps */}
-                      <div>
-                        <h4 className="font-semibold text-sm text-slate-800 mb-3">
-                          Steps:
-                        </h4>
-                        <ol className="space-y-2">
-                          {guide.steps.map((step, idx) => (
-                            <li key={idx} className="flex gap-3">
-                              <span className="font-semibold text-[#00bcd4] text-sm min-w-6">
-                                {idx + 1}.
-                              </span>
-                              <span className="text-sm text-slate-600">{step}</span>
-                            </li>
-                          ))}
-                        </ol>
-                      </div>
+                        {/* Steps */}
+                        {guide.steps?.length > 0 && (
+                          <div className="rounded-lg overflow-hidden" style={{ border: "1px solid rgba(146,242,29,0.2)" }}>
+                            <button
+                              className="w-full flex items-center justify-between px-4 py-2.5 text-sm font-semibold"
+                              style={{ backgroundColor: isSectionOpen(pageKey, "steps") ? "rgba(146,242,29,0.1)" : "rgba(146,242,29,0.04)", color: "#92F21D" }}
+                              onClick={() => toggleSection(pageKey, "steps")}
+                            >
+                              🚀 How To Use
+                              {isSectionOpen(pageKey, "steps") ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                            </button>
+                            {isSectionOpen(pageKey, "steps") && (
+                              <ol className="px-4 py-3 space-y-2" style={{ backgroundColor: "rgba(8,31,63,0.9)" }}>
+                                {guide.steps.map((step, i) => (
+                                  <li key={i} className="flex gap-3 text-sm">
+                                    <span className="font-bold flex-shrink-0 w-5" style={{ color: "#92F21D" }}>{i + 1}.</span>
+                                    <span style={{ color: "#ffffff" }}>{step}</span>
+                                  </li>
+                                ))}
+                              </ol>
+                            )}
+                          </div>
+                        )}
 
-                      {/* Tips */}
-                      <div>
-                        <h4 className="font-semibold text-sm text-slate-800 mb-3">
-                          💡 Tips:
-                        </h4>
-                        <ul className="space-y-2">
-                          {guide.tips.map((tip, idx) => (
-                            <li key={idx} className="flex gap-3">
-                              <span className="text-[#7ed957] text-sm">✓</span>
-                              <span className="text-sm text-slate-600">{tip}</span>
-                            </li>
-                          ))}
-                        </ul>
+                        {/* Features */}
+                        {guide.features?.length > 0 && (
+                          <div className="rounded-lg overflow-hidden" style={{ border: "1px solid rgba(167,139,250,0.2)" }}>
+                            <button
+                              className="w-full flex items-center justify-between px-4 py-2.5 text-sm font-semibold"
+                              style={{ backgroundColor: isSectionOpen(pageKey, "features") ? "rgba(167,139,250,0.12)" : "rgba(167,139,250,0.04)", color: "#a78bfa" }}
+                              onClick={() => toggleSection(pageKey, "features")}
+                            >
+                              ⚡ Key Features
+                              {isSectionOpen(pageKey, "features") ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                            </button>
+                            {isSectionOpen(pageKey, "features") && (
+                              <ul className="px-4 py-3 space-y-1.5" style={{ backgroundColor: "rgba(8,31,63,0.9)" }}>
+                                {guide.features.map((f, i) => (
+                                  <li key={i} className="flex gap-2 text-sm">
+                                    <span style={{ color: "#a78bfa" }}>◆</span>
+                                    <span style={{ color: "#ffffff" }}>{f}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </div>
+                        )}
+
+                        {/* Tips */}
+                        {guide.tips?.length > 0 && (
+                          <div className="rounded-lg overflow-hidden" style={{ border: "1px solid rgba(245,158,11,0.2)" }}>
+                            <button
+                              className="w-full flex items-center justify-between px-4 py-2.5 text-sm font-semibold"
+                              style={{ backgroundColor: isSectionOpen(pageKey, "tips") ? "rgba(245,158,11,0.12)" : "rgba(245,158,11,0.04)", color: "#f59e0b" }}
+                              onClick={() => toggleSection(pageKey, "tips")}
+                            >
+                              💡 Tips & Best Practices
+                              {isSectionOpen(pageKey, "tips") ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                            </button>
+                            {isSectionOpen(pageKey, "tips") && (
+                              <ul className="px-4 py-3 space-y-1.5" style={{ backgroundColor: "rgba(8,31,63,0.9)" }}>
+                                {guide.tips.map((t, i) => (
+                                  <li key={i} className="flex gap-2 text-sm">
+                                    <span style={{ color: "#f59e0b" }}>✓</span>
+                                    <span style={{ color: "#ffffff" }}>{t}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </div>
+                        )}
+
+                        {/* Role Access */}
+                        {guide.roles && (
+                          <div className="rounded-lg px-4 py-2.5 text-xs" style={{ backgroundColor: "rgba(52,204,208,0.06)", border: "1px solid rgba(52,204,208,0.15)" }}>
+                            <span style={{ color: "#34CCD0" }}>🔐 Who has access: </span>
+                            <span style={{ color: "#ffffff" }}>{guide.roles}</span>
+                          </div>
+                        )}
                       </div>
-                    </CardContent>
-                  )}
-                </Card>
-              ))}
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         );
       })}
 
-      {/* No results */}
-      {filteredGuides.length === 0 && (
-        <Card className="border-dashed text-center py-12">
-          <p className="text-slate-500">
-            No guides found for "{searchTerm}". Try searching with different keywords.
-          </p>
-        </Card>
+      {filtered.length === 0 && (
+        <div className="text-center py-16">
+          <Search className="w-10 h-10 mx-auto mb-3 text-slate-600" />
+          <p style={{ color: "#92F21D" }}>No guides found for "{searchTerm}"</p>
+          <p className="text-sm mt-1" style={{ color: "#34CCD0" }}>Try different keywords</p>
+        </div>
       )}
 
-      {/* FAQ Section */}
-      <div className="bg-slate-50 rounded-lg p-8">
-        <h2 className="text-2xl font-bold mb-6">Frequently Asked Questions</h2>
-        <div className="space-y-4">
-          <div className="bg-white p-4 rounded-lg border">
-            <h3 className="font-semibold mb-2">How do I reset my password?</h3>
-            <p className="text-sm text-slate-600">
-              Click on your profile in the bottom left, then select the logout icon. Use "Forgot Password" on the login screen.
-            </p>
+      {/* Quick FAQ */}
+      <div className="rounded-xl p-6 space-y-3" style={{ backgroundColor: "rgba(52,204,208,0.05)", border: "1px solid rgba(52,204,208,0.2)" }}>
+        <h2 className="text-lg font-bold" style={{ color: "#92F21D" }}>❓ Frequently Asked Questions</h2>
+        {[
+          { q: "How do I reset my password?", a: "Click your profile icon (bottom left of the sidebar) → logout → use 'Forgot Password' on the login screen." },
+          { q: "Why can't I see certain pages?", a: "Page access is controlled by your role. Contact your admin if you need access to a page not visible to you." },
+          { q: "How do I get help for a specific page?", a: "Click the ⓘ (info) button in the top-right of the page header to open instant help for that page." },
+          { q: "Can I export data from any page?", a: "Most pages have an Export to Excel button. Finance dashboards also support PDF export." },
+          { q: "How do I invite a new team member?", a: "Go to User Management (admin only) → click 'Invite User' → enter their email and assign a role." },
+        ].map((item, i) => (
+          <div key={i} className="rounded-lg px-4 py-3" style={{ backgroundColor: "rgba(8,31,63,0.6)", border: "1px solid rgba(52,204,208,0.15)" }}>
+            <p className="text-sm font-semibold mb-1" style={{ color: "#92F21D" }}>{item.q}</p>
+            <p className="text-sm" style={{ color: "#ffffff" }}>{item.a}</p>
           </div>
-          <div className="bg-white p-4 rounded-lg border">
-            <h3 className="font-semibold mb-2">Can I export data for reports?</h3>
-            <p className="text-sm text-slate-600">
-              Yes! Most pages have export options. Dashboards can be exported as images or data files.
-            </p>
-          </div>
-          <div className="bg-white p-4 rounded-lg border">
-            <h3 className="font-semibold mb-2">How do I invite team members?</h3>
-            <p className="text-sm text-slate-600">
-              Go to User Management (admin only) and click "Invite User" or "Create User" to add new team members.
-            </p>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );
