@@ -36,6 +36,7 @@ import PWAInstallBanner from "@/components/PWAInstallBanner";
 import OfflineIndicator from "@/components/OfflineIndicator";
 import NotificationBell from "@/components/NotificationBell";
 import PageHelpButton from "@/components/PageHelpButton";
+import GlobalSearch from "@/components/GlobalSearch";
 import { hasPermission } from "@/lib/PageNotFound";
 
 const dashboardItems = [
@@ -424,16 +425,17 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Main */}
       <div className="flex-1 flex flex-col min-h-screen min-w-0">
-        <header className="sticky top-0 z-30 border-b px-4 lg:px-8 h-16 flex items-center justify-between" style={{background: 'linear-gradient(135deg, rgba(8, 31, 63, 0.95) 0%, rgba(10, 45, 82, 0.95) 100%)', backdropFilter: 'blur(10px)', borderColor: 'rgba(52, 204, 208, 0.2)'}}>
-          <div className="flex items-center gap-4">
-            <button onClick={() => setSidebarOpen(true)} className="lg:hidden" style={{color: '#34CCD0'}}>
+        <header className="sticky top-0 z-30 border-b px-4 lg:px-8 h-16 flex items-center justify-between gap-4" style={{background: 'linear-gradient(135deg, rgba(8, 31, 63, 0.95) 0%, rgba(10, 45, 82, 0.95) 100%)', backdropFilter: 'blur(10px)', borderColor: 'rgba(52, 204, 208, 0.2)'}}>
+          <div className="flex items-center gap-4 min-w-0">
+            <button onClick={() => setSidebarOpen(true)} className="lg:hidden flex-shrink-0" style={{color: '#34CCD0'}}>
               <Menu className="w-6 h-6" />
             </button>
-            <h2 className="text-lg font-semibold" style={{color: '#92F21D', textShadow: '0 0 8px rgba(146, 242, 29, 0.2)'}}>
+            <h2 className="text-lg font-semibold truncate flex-shrink-0" style={{color: '#92F21D', textShadow: '0 0 8px rgba(146, 242, 29, 0.2)'}}>
               {allNavItems.find((i) => i.page === currentPageName)?.name || currentPageName}
             </h2>
           </div>
-          <div className="flex items-center gap-2">
+          <GlobalSearch />
+          <div className="flex items-center gap-2 flex-shrink-0">
             <PageHelpButton currentPageName={currentPageName} />
             <NotificationBell />
           </div>
