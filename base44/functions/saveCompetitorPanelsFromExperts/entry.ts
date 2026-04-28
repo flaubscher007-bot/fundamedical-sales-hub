@@ -3,6 +3,12 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
+    const user = await base44.auth.me();
+    
+    if (!user) {
+      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const { competitor_names } = await req.json();
     
     if (!competitor_names || !Array.isArray(competitor_names) || competitor_names.length === 0) {
@@ -21,7 +27,7 @@ Deno.serve(async (req) => {
     };
 
     // Get existing competitors
-    const existingCompetitors = await base44.asServiceRole.entities.Competitor.list();
+    const existingCompetitors = await base44.entities.Competitor.list();
     const existingMap = new Map();
     existingCompetitors.forEach(c => {
       const normalized = normalizeName(c.name);
@@ -85,7 +91,7 @@ Deno.serve(async (req) => {
         notes: 'Added from expert competitor panel listings'
       }));
       
-      await base44.asServiceRole.entities.Competitor.bulkCreate(competitorsToCreate);
+      await base44.entities.Competitor.bulkCreate(competitorsToCreate);
       created = toCreate.length;
     }
 
