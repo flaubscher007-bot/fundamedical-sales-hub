@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Upload, History, Sparkles } from "lucide-react";
+import { Upload, History, Sparkles, Globe } from "lucide-react";
 import SocialMediaUploader from "@/components/socialMedia/SocialMediaUploader";
 import SocialPostHistory from "@/components/socialMedia/SocialPostHistory";
+import PastPostsPanel from "@/components/socialMedia/PastPostsPanel";
 
 export default function SocialMedia() {
   const [sessions, setSessions] = useState([]);
@@ -47,13 +48,17 @@ export default function SocialMedia() {
           </TabsTrigger>
           <TabsTrigger value="history" className="flex items-center gap-2 data-[state=active]:text-[#081F3F]"
             style={{ color: activeTab === "history" ? "#081F3F" : "#94a3b8" }}>
-            <History className="w-4 h-4" /> Past Sessions
+            <History className="w-4 h-4" /> Saved Sessions
             {sessions.length > 0 && (
               <span className="text-xs px-1.5 py-0.5 rounded-full font-bold ml-1"
                 style={{ backgroundColor: "rgba(167,139,250,0.3)", color: "#a78bfa" }}>
                 {sessions.length}
               </span>
             )}
+          </TabsTrigger>
+          <TabsTrigger value="past" className="flex items-center gap-2 data-[state=active]:text-[#081F3F]"
+            style={{ color: activeTab === "past" ? "#081F3F" : "#94a3b8" }}>
+            <Globe className="w-4 h-4" /> Past Posts
           </TabsTrigger>
         </TabsList>
 
@@ -63,6 +68,10 @@ export default function SocialMedia() {
 
         <TabsContent value="history" className="mt-4">
           <SocialPostHistory sessions={sessions} loading={loading} onDelete={() => setRefreshKey(k => k + 1)} />
+        </TabsContent>
+
+        <TabsContent value="past" className="mt-4">
+          <PastPostsPanel />
         </TabsContent>
       </Tabs>
     </div>
