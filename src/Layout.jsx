@@ -62,6 +62,11 @@ const expertItems = [
   { name: "Import Experts", icon: Upload, page: "ExpertImportManager" },
 ];
 
+const competitorsItems = [
+  { name: "All Competitors", icon: Share2, page: "SocialMedia" },
+  { name: "Competitor Comparison", icon: Share2, page: "ComparisonPage" },
+];
+
 const mainNavItems = [
   { name: "Monthly Import Hub", icon: Upload, page: "MonthlyImportHub" },
   { name: "Appointment Tools", icon: Wrench, page: "AppointmentTools" },
@@ -100,10 +105,9 @@ const marketingItems = [
   { name: "Business Cards", icon: CreditCard, page: "BusinessCard" },
   { name: "Pricing Models", icon: DollarSign, page: "PricingModels" },
   { name: "Social Media Posts", icon: Share2, page: "SocialMedia" },
-  { name: "Competitor Comparison", icon: Share2, page: "ComparisonPage" },
 ];
 
-const allNavItems = [...dashboardItems, ...clientItems, ...expertItems, ...mainNavItems, ...marketingItems];
+const allNavItems = [...dashboardItems, ...clientItems, ...expertItems, ...competitorsItems, ...mainNavItems, ...marketingItems];
 
 export default function Layout({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -118,6 +122,9 @@ export default function Layout({ children, currentPageName }) {
   );
   const [marketingOpen, setMarketingOpen] = useState(
     marketingItems.some(i => i.page === currentPageName)
+  );
+  const [competitorsOpen, setCompetitorsOpen] = useState(
+    competitorsItems.some(i => i.page === currentPageName)
   );
   const [user, setUser] = useState(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -147,6 +154,9 @@ export default function Layout({ children, currentPageName }) {
     }
     if (expertItems.some(i => i.page === currentPageName)) {
       setExpertsOpen(true);
+    }
+    if (competitorsItems.some(i => i.page === currentPageName)) {
+      setCompetitorsOpen(true);
     }
     if (marketingItems.some(i => i.page === currentPageName)) {
       setMarketingOpen(true);
@@ -213,11 +223,13 @@ export default function Layout({ children, currentPageName }) {
   const isDashboardsActive = dashboardItems.some(i => i.page === currentPageName);
   const isClientsActive = clientItems.some(i => i.page === currentPageName);
   const isExpertsActive = expertItems.some(i => i.page === currentPageName);
+  const isCompetitorsActive = competitorsItems.some(i => i.page === currentPageName);
   const isMarketingActive = marketingItems.some(i => i.page === currentPageName);
   const userRole = user?.role || "team_member";
   const hasDashboardAccess = dashboardItems.some(i => canAccessPage(userRole, i.page));
   const hasClientAccess = clientItems.some(i => canAccessPage(userRole, i.page));
   const hasExpertAccess = expertItems.some(i => canAccessPage(userRole, i.page));
+  const hasCompetitorsAccess = competitorsItems.some(i => canAccessPage(userRole, i.page));
 
   return (
     <div className="min-h-screen bg-slate-50 flex pb-safe">
@@ -315,6 +327,29 @@ export default function Layout({ children, currentPageName }) {
               {expertsOpen && (
                 <div className="ml-3 mt-1 pl-3 border-l border-white/10 space-y-0.5">
                   {expertItems.map(renderSubNavItem)}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Competitors Section */}
+          {hasCompetitorsAccess && (
+            <div className="mb-1">
+              <button
+                onClick={() => setCompetitorsOpen(o => !o)}
+                className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 group ${
+                  isCompetitorsActive
+                    ? "text-[var(--funda-accent)] bg-[var(--funda-accent)]/10"
+                    : "text-[#92F21D] hover:bg-white/5 hover:text-white"
+                }`}
+              >
+                <Share2 className={`w-4 h-4 shrink-0 ${isCompetitorsActive ? "text-[var(--funda-accent)]" : "text-slate-500 group-hover:text-slate-300"}`} />
+                <span>Competitors</span>
+                <ChevronDown className={`w-4 h-4 ml-auto transition-transform duration-200 ${competitorsOpen ? "rotate-180" : ""} ${isCompetitorsActive ? "text-[var(--funda-accent)]" : "text-slate-500"}`} />
+              </button>
+              {competitorsOpen && (
+                <div className="ml-3 mt-1 pl-3 border-l border-white/10 space-y-0.5">
+                  {competitorsItems.map(renderSubNavItem)}
                 </div>
               )}
             </div>
