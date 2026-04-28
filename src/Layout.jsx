@@ -232,7 +232,7 @@ export default function Layout({ children, currentPageName }) {
   const hasDashboardAccess = dashboardItems.some(i => canAccessPage(userRole, i.page));
   const hasClientAccess = clientItems.some(i => canAccessPage(userRole, i.page));
   const hasExpertAccess = expertItems.some(i => canAccessPage(userRole, i.page));
-  const hasCompetitorsAccess = competitorsItems.some(i => canAccessPage(userRole, i.page));
+  const hasCompetitorsAccess = true; // Always show competitors section to all users
 
   return (
     <div className="min-h-screen bg-slate-50 flex pb-safe">
