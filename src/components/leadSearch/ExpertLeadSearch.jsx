@@ -89,11 +89,12 @@ Use ALL of the following sources to find and verify experts:
 3. Published South African court judgments — check SafLII (saflii.org), ZASCA, high court rolls for cases where the expert appeared as a witness.
 4. Medico-legal panel listings — check MedLaw, MLA, MedAssess, IME panels, NetCare Forensic, Afri-Medico-Legal, Medi-Clinic medico-legal panels.
 
-Prioritise experts who:
-- Are verifiably active as expert witnesses (recent court appearances or case references)
-- Hold current HPCSA registration in good standing
-- Have experience in RAF, COIDA, personal injury or medical negligence contexts
-- Are SAMLA registered (a strong indicator of medico-legal activity)
+Include experts who meet ANY of the following criteria (do NOT exclude an expert just because they are not SAMLA registered):
+- Hold current HPCSA registration in good standing AND have been mentioned in South African court cases as an expert witness in the last 5 years (SafLII, ZASCA, High Court rolls)
+- Are SAMLA registered (a strong indicator of medico-legal activity) — include even without recent court mentions
+- Are listed on medico-legal panels (MedLaw, MLA, MedAssess, IME panels, etc.)
+
+SAMLA registration is a bonus but NOT a requirement. A verifiable HPCSA-registered expert with recent court case appearances is an equally strong lead.
 
 For each expert found, provide:
 - expert_name: full name with title (e.g. Dr. John Smith)
@@ -117,7 +118,7 @@ For each expert found, provide:
 - competitor_panel_listed: true or false — whether they appear on medico-legal panels for competitor companies
 - competitor_panels: array of company names they are listed with (empty if none)
 - competitor_panel_notes: any notes about their competitor panel listings
-- lead_quality: "High" if HPCSA active AND (SAMLA registered OR has court case mentions); "Medium" if HPCSA active but limited medico-legal track record; "Low" if HPCSA status unknown or inactive
+- lead_quality: "High" if HPCSA active AND (SAMLA registered OR has court case mentions in last 5 years); "Medium" if HPCSA active but limited medico-legal track record or no recent court mentions; "Low" if HPCSA status unknown or inactive
 - lead_quality_reason: one sentence explaining the lead quality rating
 - notes: any other relevant notes about suitability as a FundaMedical expert
 
