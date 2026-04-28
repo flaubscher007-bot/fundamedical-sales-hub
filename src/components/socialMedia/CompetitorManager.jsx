@@ -24,6 +24,7 @@ export default function CompetitorManager() {
   const [selectedArea, setSelectedArea] = useState("");
   const [showSearchDialog, setShowSearchDialog] = useState(false);
   const [importingLeads, setImportingLeads] = useState(false);
+  const [populatingFromExperts, setPopulatingFromExperts] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     contact_person: "",
@@ -134,6 +135,21 @@ export default function CompetitorManager() {
       console.error(e);
     } finally {
       setImportingLeads(false);
+    }
+  };
+
+  const handlePopulateFromExperts = async () => {
+    setPopulatingFromExperts(true);
+    try {
+      const response = await base44.functions.invoke("populateCompetitorsFromSavedExperts", {});
+      const result = response.data;
+      toast.success(`Created ${result.competitors_created} new competitors from saved experts`);
+      await loadCompetitors();
+    } catch (e) {
+      toast.error("Failed to populate competitors from experts");
+      console.error(e);
+    } finally {
+      setPopulatingFromExperts(false);
     }
   };
 
@@ -367,6 +383,14 @@ export default function CompetitorManager() {
           >
             <Download className="w-4 h-4" />
             Export PDF
+          </Button>
+          <Button
+            onClick={handlePopulateFromExperts}
+            disabled={populatingFromExperts}
+            className="flex items-center gap-2"
+            style={{ backgroundColor: "#34CCD0", color: "#081F3F" }}
+          >
+            {populatingFromExperts ? "Extracting..." : "From Saved Experts"}
           </Button>
           <Button
             onClick={handleImportLeads}
