@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, MapPin, Phone, Mail, Globe, Building2, Loader2, ExternalLink, Star, Download, FileText, Stethoscope, ChevronDown, Scale, Database, CheckCircle2, Shield, Save, Users } from "lucide-react";
 import SaveLeadButton from "@/components/leadSearch/SaveLeadButton";
+import CompetitorBadge from "@/components/leadSearch/CompetitorBadge";
 import * as XLSX from "xlsx";
 import { 
   BUL_TERRITORY_MAP, BUL_COLORS, PROVINCES, SPECIALTIES, OUTCOME_COLORS, VISIBLE_COUNT,
@@ -431,6 +432,7 @@ Return between 10 and 15 firms. Only include real, verifiable law firms.`;
                     )}
                     {lead.assigned_bul && <p className="text-xs" style={{ color: "#f59e0b" }}>👤 {lead.assigned_bul}</p>}
                     {lead.contact_notes && <p className="text-xs italic truncate" style={{ color: "#94a3b8" }}>{lead.contact_notes}</p>}
+                    <CompetitorBadge expert={lead} />
                     <div className="flex flex-wrap gap-3">
                       {lead.phone && <a href={`tel:${lead.phone}`} className="flex items-center gap-1 text-xs hover:underline" style={{ color: "#92F21D" }}><Phone className="w-3 h-3" />{lead.phone}</a>}
                       {lead.email && <a href={`mailto:${lead.email}`} className="flex items-center gap-1 text-xs hover:underline" style={{ color: "#92F21D" }}><Mail className="w-3 h-3" />{lead.email}</a>}
