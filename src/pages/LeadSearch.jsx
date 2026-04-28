@@ -4,11 +4,12 @@ import OutreachModule from "@/components/leadSearch/OutreachModule";
 import ProposalGenerator from "@/components/leadSearch/ProposalGenerator";
 import ExpertLeadSearch from "@/components/leadSearch/ExpertLeadSearch";
 import MedNegWitnessSearch from "@/components/leadSearch/MedNegWitnessSearch";
+import PartnersSearch from "@/components/leadSearch/PartnersSearch";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, MapPin, Phone, Mail, Globe, Building2, Loader2, ExternalLink, Star, Download, FileText, Stethoscope, ChevronDown, Scale, Database, CheckCircle2, Shield, Save } from "lucide-react";
+import { Search, MapPin, Phone, Mail, Globe, Building2, Loader2, ExternalLink, Star, Download, FileText, Stethoscope, ChevronDown, Scale, Database, CheckCircle2, Shield, Save, Users } from "lucide-react";
 import SaveLeadButton from "@/components/leadSearch/SaveLeadButton";
 import * as XLSX from "xlsx";
 
@@ -80,7 +81,7 @@ const OUTCOME_COLORS = {
 };
 
 export default function LeadSearch() {
-  const [mode, setMode] = useState("law_firms"); // "law_firms" | "experts" | "med_neg" | "saved"
+  const [mode, setMode] = useState("law_firms"); // "law_firms" | "experts" | "med_neg" | "partners" | "saved"
   const [savedLeadsTab, setSavedLeadsTab] = useState("Law Firm");
   const [location, setLocation] = useState("");
   const [province, setProvince] = useState("all");
@@ -356,6 +357,8 @@ Return between 10 and 15 firms. Only include real, verifiable law firms.`;
             ? "Find HPCSA-registered medical experts and expert witnesses — potential panel additions for FundaMedical"
             : mode === "med_neg"
             ? "Find HPCSA-registered practitioners who testified as expert witnesses in medical negligence cases (2020–2025)"
+            : mode === "partners"
+            ? "Discover funding partners, trust administrators, and insurance companies to expand FundaMedical's network"
             : `All saved leads across all categories — ${savedLeads.length} total`}
         </p>
       </div>
@@ -384,6 +387,13 @@ Return between 10 and 15 firms. Only include real, verifiable law firms.`;
           <Scale className="w-4 h-4" /> Med Neg Witnesses
         </button>
         <button
+          onClick={() => setMode("partners")}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all"
+          style={{ backgroundColor: mode === "partners" ? "#10b981" : "transparent", color: mode === "partners" ? "#ffffff" : "#94a3b8" }}
+        >
+          <Users className="w-4 h-4" /> Strategic Partners
+        </button>
+        <button
           onClick={() => setMode("saved")}
           className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all"
           style={{ backgroundColor: mode === "saved" ? "#a78bfa" : "transparent", color: mode === "saved" ? "#fff" : "#94a3b8" }}
@@ -402,6 +412,9 @@ Return between 10 and 15 firms. Only include real, verifiable law firms.`;
 
       {/* Med Neg Witness mode */}
       {mode === "med_neg" && <MedNegWitnessSearch />}
+
+      {/* Partners mode */}
+      {mode === "partners" && <PartnersSearch />}
 
       {/* Saved Leads mode */}
       {mode === "saved" && (
