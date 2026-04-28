@@ -9,6 +9,7 @@ import {
   ExternalLink, Star, ShieldCheck, BookOpen, Building2, AlertCircle, Download, ChevronDown
 } from "lucide-react";
 import * as XLSX from "xlsx";
+import SaveLeadButton from "@/components/leadSearch/SaveLeadButton";
 
 const PROVINCES = [
   "Western Cape", "KwaZulu-Natal", "Gauteng", "Eastern Cape",
@@ -357,6 +358,9 @@ Return between 10 and 15 experts. Only include real, verifiable medical professi
             {(showAll ? results.experts : results.experts?.slice(0, VISIBLE_COUNT))?.map((expert, i) => (
               <div key={i} className="rounded-xl border p-4 space-y-3 hover:border-[#34CCD0]/60 transition-colors"
                 style={{ borderColor: expert.is_samla_registered ? "rgba(146,242,29,0.35)" : "rgba(52,204,208,0.25)", backgroundColor: "rgba(8,31,63,0.6)" }}>
+
+                {/* Save to DB */}
+                <SaveLeadButton leadData={expert} leadType="PI Expert Witness" />
 
                 {/* Existing expert badge */}
                 {isExistingExpert(expert.expert_name) && (

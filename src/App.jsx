@@ -22,6 +22,7 @@ import PricingModels from './pages/PricingModels';
 import ClientImportManager from './pages/ClientImportManager';
 import FieldVisits from './pages/FieldVisits';
 import ExpertManagerDashboard from './pages/ExpertManagerDashboard';
+import LeadDatabase from './pages/LeadDatabase';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
@@ -93,6 +94,7 @@ const AuthenticatedApp = () => {
       <Route path="/ClientImportManager" element={<LayoutWrapper currentPageName="ClientImportManager"><ClientImportManager /></LayoutWrapper>} />
       <Route path="/FieldVisits" element={<LayoutWrapper currentPageName="FieldVisits"><FieldVisits /></LayoutWrapper>} />
       <Route path="/ExpertManagerDashboard" element={<LayoutWrapper currentPageName="ExpertManagerDashboard"><ExpertManagerDashboard /></LayoutWrapper>} />
+      <Route path="/LeadDatabase" element={<LayoutWrapper currentPageName="LeadDatabase"><LeadDatabase /></LayoutWrapper>} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

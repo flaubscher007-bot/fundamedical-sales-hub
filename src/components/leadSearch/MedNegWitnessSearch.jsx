@@ -9,6 +9,7 @@ import {
   ShieldCheck, BookOpen, Download, ChevronDown, Scale, AlertCircle, User
 } from "lucide-react";
 import * as XLSX from "xlsx";
+import SaveLeadButton from "@/components/leadSearch/SaveLeadButton";
 
 const PROVINCES = [
   "Western Cape", "KwaZulu-Natal", "Gauteng", "Eastern Cape",
@@ -300,6 +301,9 @@ Return between 10 and 15 experts. Only include real, verifiable practitioners co
             {(showAll ? results.experts : results.experts?.slice(0, VISIBLE_COUNT))?.map((expert, i) => (
               <div key={i} className="rounded-xl border p-4 space-y-3 hover:border-[#f43f5e]/60 transition-colors"
                 style={{ borderColor: "rgba(244,63,94,0.3)", backgroundColor: "rgba(8,31,63,0.6)" }}>
+
+                {/* Save to DB */}
+                <SaveLeadButton leadData={expert} leadType="Med Neg Expert Witness" />
 
                 {/* Header */}
                 <div className="flex items-start justify-between gap-2">

@@ -1,0 +1,133 @@
+{
+  "name": "LeadRecord",
+  "type": "object",
+  "properties": {
+    "lead_type": {
+      "type": "string",
+      "enum": [
+        "Law Firm",
+        "PI Expert Witness",
+        "Med Neg Expert Witness"
+      ],
+      "description": "Category of lead"
+    },
+    "name": {
+      "type": "string",
+      "description": "Firm name or expert full name"
+    },
+    "discipline": {
+      "type": "string",
+      "description": "Medical discipline (experts only)"
+    },
+    "specialties": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Practice areas / specialties (law firms)"
+    },
+    "qualifications": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Qualifications (experts only)"
+    },
+    "address": {
+      "type": "string"
+    },
+    "city": {
+      "type": "string"
+    },
+    "province": {
+      "type": "string",
+      "enum": [
+        "Western Cape",
+        "KwaZulu-Natal",
+        "Gauteng",
+        "Eastern Cape",
+        "Free State",
+        "Limpopo",
+        "Mpumalanga",
+        "North West",
+        "Northern Cape"
+      ]
+    },
+    "phone": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "website": {
+      "type": "string"
+    },
+    "practice_name": {
+      "type": "string",
+      "description": "Practice/hospital name (experts)"
+    },
+    "hpcsa_number": {
+      "type": "string"
+    },
+    "hpcsa_status": {
+      "type": "string"
+    },
+    "is_samla_registered": {
+      "type": "boolean"
+    },
+    "lead_quality": {
+      "type": "string",
+      "enum": [
+        "High",
+        "Medium",
+        "Low"
+      ]
+    },
+    "on_funda_panel": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this lead is on the FundaMedical panel"
+    },
+    "contacted": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this lead has been contacted"
+    },
+    "contact_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date first contacted"
+    },
+    "contact_outcome": {
+      "type": "string",
+      "enum": [
+        "Pending",
+        "Interested",
+        "Not Interested",
+        "No Response",
+        "Follow-Up Required",
+        "Converted"
+      ],
+      "default": "Pending"
+    },
+    "contact_notes": {
+      "type": "string",
+      "description": "Notes from contact attempts"
+    },
+    "assigned_bul": {
+      "type": "string",
+      "description": "BUL assigned to follow up"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "source_search": {
+      "type": "string",
+      "description": "Search query that found this lead"
+    }
+  },
+  "required": [
+    "lead_type",
+    "name"
+  ]
+}

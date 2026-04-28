@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, MapPin, Phone, Mail, Globe, Building2, Loader2, ExternalLink, Star, Download, FileText, Stethoscope, ChevronDown, Scale } from "lucide-react";
+import SaveLeadButton from "@/components/leadSearch/SaveLeadButton";
 import * as XLSX from "xlsx";
 
 // BUL territory map for allocation suggestions
@@ -483,11 +484,14 @@ Return between 10 and 15 firms. Only include real, verifiable law firms.`;
                 className="rounded-xl border p-4 space-y-3 hover:border-[#34CCD0]/60 transition-colors"
                 style={{ borderColor: "rgba(52,204,208,0.25)", backgroundColor: "rgba(8,31,63,0.6)" }}
               >
-                {/* Select for outreach */}
-                <div
-                  className="flex items-center gap-2 cursor-pointer select-none mb-1"
-                  onClick={() => toggleFirmSelection(firm)}
-                >
+                {/* Save to DB */}
+                <div className="flex items-center justify-between mb-1">
+                  <SaveLeadButton leadData={firm} leadType="Law Firm" />
+                  {/* Select for outreach */}
+                  <div
+                    className="flex items-center gap-2 cursor-pointer select-none"
+                    onClick={() => toggleFirmSelection(firm)}
+                  >
                   <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors ${
                     selectedFirms.find(f => f.firm_name === firm.firm_name)
                       ? "border-[#34CCD0] bg-[#34CCD0]"
@@ -498,6 +502,7 @@ Return between 10 and 15 firms. Only include real, verifiable law firms.`;
                     )}
                   </div>
                   <span className="text-xs" style={{ color: "#94a3b8" }}>Select for outreach</span>
+                  </div>
                 </div>
 
                 {/* Existing client badge */}
