@@ -1,0 +1,170 @@
+{
+  "name": "FieldVisit",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "client_name": {
+      "type": "string"
+    },
+    "visit_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "check_in_time": {
+      "type": "string",
+      "description": "HH:MM"
+    },
+    "check_out_time": {
+      "type": "string",
+      "description": "HH:MM"
+    },
+    "duration_minutes": {
+      "type": "number",
+      "description": "Calculated visit duration"
+    },
+    "consultant_name": {
+      "type": "string"
+    },
+    "consultant_email": {
+      "type": "string"
+    },
+    "visit_type": {
+      "type": "string",
+      "enum": [
+        "Sales Visit",
+        "Follow-Up",
+        "Account Review",
+        "Onboarding",
+        "Support",
+        "Other"
+      ],
+      "default": "Sales Visit"
+    },
+    "outcome": {
+      "type": "string",
+      "enum": [
+        "Positive",
+        "Neutral",
+        "Negative",
+        "No Contact"
+      ],
+      "default": "Neutral"
+    },
+    "outcome_notes": {
+      "type": "string",
+      "description": "Detailed outcome notes"
+    },
+    "next_steps": {
+      "type": "string"
+    },
+    "follow_up_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "latitude": {
+      "type": "number",
+      "description": "GPS latitude at check-in"
+    },
+    "longitude": {
+      "type": "number",
+      "description": "GPS longitude at check-in"
+    },
+    "city": {
+      "type": "string"
+    },
+    "photo_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Photos taken during visit"
+    },
+    "meeting_minutes_id": {
+      "type": "string",
+      "description": "Linked MeetingMinutes record ID"
+    },
+    "services_discussed": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Services discussed during visit"
+    },
+    "assigned_bul": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "client_name",
+    "visit_date"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "data.assigned_bul": "{{user.full_name}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "admin",
+                "Sales Manager",
+                "senior_management",
+                "bul_manager"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "data.assigned_bul": "{{user.full_name}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "admin",
+                "Sales Manager",
+                "senior_management",
+                "bul_manager"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "admin",
+                "Sales Manager",
+                "senior_management"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -83,6 +83,7 @@ const mainNavItems = [
   { name: "BUL Management", icon: TrendingUp, page: "BULManagement" },
   { name: "Recordings & Documents", icon: FileAudio, page: "MeetingRecordings" },
   { name: "Client Map", icon: MapPin, page: "ClientMapPage" },
+  { name: "Field Visits", icon: MapPin, page: "FieldVisits" },
   { name: "User Management", icon: Users, page: "UserManagement" },
   { name: "Role Management", icon: Users, page: "RoleManagement" },
   { name: "User Roles", icon: Users, page: "UserRoleManagement" },

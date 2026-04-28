@@ -325,7 +325,7 @@ export default function Experts() {
             </div>
           </div>
         </DialogContent>
-        </Dialog>
-        </div>
-        );
-        }
+      </Dialog>
+    </div>
+  );
+}
