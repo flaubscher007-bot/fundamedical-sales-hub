@@ -12,11 +12,20 @@ export default function ComparisonPage() {
   const [activities2, setActivities2] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const loadCompetitors = () => {
     base44.entities.Competitor.list().then((data) => {
       setCompetitors(data);
       setLoading(false);
     });
+  };
+
+  useEffect(() => {
+    loadCompetitors();
+    // Subscribe to competitor changes
+    const unsubscribe = base44.entities.Competitor.subscribe((event) => {
+      loadCompetitors();
+    });
+    return unsubscribe;
   }, []);
 
   const handleCompetitor1Change = async (e) => {

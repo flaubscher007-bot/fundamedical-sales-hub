@@ -46,6 +46,11 @@ export default function CompetitorManager() {
 
   useEffect(() => {
     loadCompetitors();
+    // Subscribe to competitor changes
+    const unsubscribe = base44.entities.Competitor.subscribe((event) => {
+      loadCompetitors();
+    });
+    return unsubscribe;
   }, []);
 
   const loadCompetitors = async () => {
