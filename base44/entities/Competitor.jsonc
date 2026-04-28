@@ -105,35 +105,5 @@
   },
   "required": [
     "name"
-  ],
-  "rls": {
-    "create": {
-      "user_condition": {
-        "role": {
-          "$ne": ""
-        }
-      }
-    },
-    "read": {
-      "user_condition": {
-        "role": {
-          "$ne": ""
-        }
-      }
-    },
-    "update": {
-      "user_condition": {
-        "role": {
-          "$ne": ""
-        }
-      }
-    },
-    "delete": {
-      "user_condition": {
-        "role": {
-          "$ne": ""
-        }
-      }
-    }
-  }
+  ]
 }

@@ -60,10 +60,29 @@ Format as JSON:
         response_json_schema: {
           type: "object",
           properties: {
-            market_analysis: { type: "object" },
-            competitors: { type: "array" },
-            strategic_opportunities: { type: "array" },
-            market_vulnerabilities: { type: "array" }
+            market_analysis: {
+              type: "object",
+              properties: {
+                overall_market_position: { type: "string" },
+                key_trends: { type: "array", items: { type: "string" } }
+              }
+            },
+            competitors: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  name: { type: "string" },
+                  strengths: { type: "array", items: { type: "string" } },
+                  weaknesses: { type: "array", items: { type: "string" } },
+                  threat_level: { type: "string" },
+                  market_gaps: { type: "array", items: { type: "string" } },
+                  recommended_actions: { type: "array", items: { type: "string" } }
+                }
+              }
+            },
+            strategic_opportunities: { type: "array", items: { type: "string" } },
+            market_vulnerabilities: { type: "array", items: { type: "string" } }
           }
         }
       });
