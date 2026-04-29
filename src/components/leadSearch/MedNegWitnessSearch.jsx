@@ -347,49 +347,171 @@ Return between 10 and 15 experts. Only include real, verifiable practitioners co
                     customPDFFn={async () => {
                       const doc = new jsPDF('p', 'mm', 'a4');
                       const experts = results.experts;
-                      let y = 10;
+                      const pageW = 210;
+                      const margin = 12;
+                      const maxW = pageW - margin * 2;
+                      let y = 14;
 
-                      doc.setFontSize(16);
+                      const checkPage = (needed = 8) => {
+                        if (y + needed > 285) { doc.addPage(); y = 14; }
+                      };
+
+                      const wrapText = (text, x, startY, maxWidth, lineHeight = 4.5, fontSize = 8) => {
+                        doc.setFontSize(fontSize);
+                        const lines = doc.splitTextToSize(String(text || ''), maxWidth);
+                        lines.forEach(line => {
+                          checkPage(lineHeight);
+                          doc.text(line, x, startY);
+                          startY += lineHeight;
+                          y = startY;
+                        });
+                        return startY;
+                      };
+
+                      // Title
+                      doc.setFontSize(15);
                       doc.setTextColor(244, 63, 94);
-                      doc.text('Medical Negligence Expert Witnesses', 10, y);
+                      doc.text('Medical Negligence Expert Witnesses', margin, y);
+                      y += 7;
+                      doc.setFontSize(8);
+                      doc.setTextColor(120, 120, 120);
+                      doc.text(`Generated: ${new Date().toLocaleDateString()} | FundaMedical Sales Hub`, margin, y);
+                      y += 4;
 
-                      y += 10;
-                      doc.setFontSize(10);
-                      doc.setTextColor(100, 100, 100);
-                      doc.text(`Generated: ${new Date().toLocaleDateString()}`, 10, y);
-
-                      y += 15;
-                      doc.setFontSize(9);
+                      // Search summary
+                      if (results.search_summary) {
+                        checkPage(10);
+                        doc.setFontSize(7.5);
+                        doc.setTextColor(150, 100, 100);
+                        const summaryLines = doc.splitTextToSize(results.search_summary, maxW);
+                        summaryLines.forEach(line => { checkPage(4); doc.text(line, margin, y); y += 4; });
+                      }
+                      y += 5;
 
                       experts.forEach((expert, idx) => {
-                        if (y > 270) {
-                          doc.addPage();
-                          y = 10;
+                        checkPage(20);
+
+                        // Divider
+                        doc.setDrawColor(244, 63, 94);
+                        doc.setLineWidth(0.3);
+                        doc.line(margin, y, pageW - margin, y);
+                        y += 4;
+
+                        // Name + Last Year
+                        doc.setFontSize(11);
+                        doc.setFont(undefined, 'bold');
+                        doc.setTextColor(50, 80, 20);
+                        doc.text(`${idx + 1}. ${expert.expert_name || ''}`, margin, y);
+                        if (expert.last_case_year) {
+                          doc.setFontSize(8);
+                          doc.setTextColor(244, 63, 94);
+                          doc.text(`Last: ${expert.last_case_year}`, pageW - margin - 20, y);
+                        }
+                        y += 5;
+
+                        // Discipline
+                        doc.setFontSize(9);
+                        doc.setFont(undefined, 'normal');
+                        doc.setTextColor(52, 150, 150);
+                        doc.text(expert.discipline || '', margin, y);
+                        y += 4.5;
+
+                        // Qualifications
+                        if (expert.qualifications?.length > 0) {
+                          doc.setFontSize(8);
+                          doc.setTextColor(100, 100, 100);
+                          doc.text(expert.qualifications.join(', '), margin, y);
+                          y += 4.5;
                         }
 
-                        doc.setTextColor(146, 242, 29);
-                        doc.text(`${idx + 1}. ${expert.expert_name}`, 10, y);
-                        y += 6;
+                        // Location + Practice
+                        doc.setFontSize(8);
+                        doc.setTextColor(80, 80, 80);
+                        if (expert.city || expert.province) {
+                          checkPage(5);
+                          doc.text(`📍 ${[expert.city, expert.province].filter(Boolean).join(', ')}`, margin, y);
+                          y += 4.5;
+                        }
+                        if (expert.practice_name) {
+                          checkPage(5);
+                          doc.text(`🏥 ${expert.practice_name}`, margin, y);
+                          y += 4.5;
+                        }
 
-                        doc.setTextColor(0, 0, 0);
-                        const details = [
-                          ['Discipline:', expert.discipline || '-'],
-                          ['City:', expert.city || '-'],
-                          ['Province:', expert.province || '-'],
-                          ['HPCSA:', expert.hpcsa_status || 'Unknown'],
-                          ['Testified Against:', expert.colleague_area || '-'],
-                          ['Cases:', expert.med_neg_case_count || '0'],
-                        ];
-
-                        details.forEach(([label, value]) => {
+                        // HPCSA
+                        if (expert.hpcsa_status || expert.hpcsa_number) {
+                          checkPage(5);
+                          doc.setFontSize(8);
                           doc.setFont(undefined, 'bold');
-                          doc.text(label, 10, y);
+                          doc.setTextColor(expert.hpcsa_status === 'Active' ? 34 : 180, expert.hpcsa_status === 'Active' ? 150 : 30, 34);
+                          const hpcsaText = `✓ HPCSA ${expert.hpcsa_status || 'Unknown'}${expert.hpcsa_number ? ` #${expert.hpcsa_number}` : ''}`;
+                          doc.text(hpcsaText, margin, y);
                           doc.setFont(undefined, 'normal');
-                          doc.text(String(value).substring(0, 80), 50, y);
                           y += 5;
-                        });
+                        }
 
-                        y += 5;
+                        // Colleague area
+                        if (expert.colleague_area) {
+                          checkPage(7);
+                          doc.setFontSize(8);
+                          doc.setFont(undefined, 'bold');
+                          doc.setTextColor(180, 60, 60);
+                          doc.text(`Testified Against: ${expert.colleague_area}`, margin, y);
+                          doc.setFont(undefined, 'normal');
+                          y += 4.5;
+                          if (expert.colleague_area_notes) {
+                            doc.setTextColor(100, 80, 80);
+                            y = wrapText(expert.colleague_area_notes, margin + 3, y, maxW - 3, 4, 7.5);
+                          }
+                        }
+
+                        // Med neg case count + summary
+                        if (expert.med_neg_case_count > 0 || expert.med_neg_summary) {
+                          checkPage(7);
+                          doc.setFontSize(8);
+                          doc.setFont(undefined, 'bold');
+                          doc.setTextColor(30, 120, 130);
+                          doc.text(`Med Neg Expert Witness — ${expert.med_neg_case_count || 0} case${expert.med_neg_case_count !== 1 ? 's' : ''}`, margin, y);
+                          doc.setFont(undefined, 'normal');
+                          y += 4.5;
+                          if (expert.med_neg_summary) {
+                            doc.setTextColor(60, 100, 100);
+                            y = wrapText(expert.med_neg_summary, margin + 3, y, maxW - 3, 4, 7.5);
+                          }
+                          if (expert.med_neg_cases?.length > 0) {
+                            expert.med_neg_cases.forEach(c => {
+                              checkPage(4.5);
+                              doc.setFontSize(7.5);
+                              doc.setTextColor(90, 90, 90);
+                              doc.text(`• ${c}`, margin + 3, y);
+                              y += 4;
+                            });
+                          }
+                        }
+
+                        // Notes
+                        if (expert.notes) {
+                          checkPage(6);
+                          doc.setFontSize(7.5);
+                          doc.setTextColor(80, 80, 80);
+                          y = wrapText(expert.notes, margin, y, maxW, 4, 7.5);
+                        }
+
+                        // Contact info
+                        const contacts = [
+                          expert.phone && `📞 ${expert.phone}`,
+                          expert.email && `✉ ${expert.email}`,
+                          expert.website && `🌐 ${expert.website}`,
+                        ].filter(Boolean);
+                        if (contacts.length > 0) {
+                          checkPage(5);
+                          doc.setFontSize(8);
+                          doc.setTextColor(50, 100, 50);
+                          doc.text(contacts.join('   '), margin, y);
+                          y += 5;
+                        }
+
+                        y += 4;
                       });
 
                       doc.save(`FundaMedical_MedNeg_ExpertWitnesses_${new Date().toISOString().slice(0, 10)}.pdf`);
