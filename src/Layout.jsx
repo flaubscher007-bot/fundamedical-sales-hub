@@ -21,6 +21,7 @@ import {
   MapPin,
   Search,
   Database,
+  Scale,
   ChevronDown,
   Menu,
   X,
@@ -71,6 +72,7 @@ const competitorsItems = [
 const mainNavItems = [
   { name: "Monthly Import Hub", icon: Upload, page: "MonthlyImportHub" },
   { name: "Appointment Tools", icon: Wrench, page: "AppointmentTools" },
+  { name: "Court Dates", icon: Scale, page: "CourtDatesCalendar" },
   { name: "Lead Search", icon: Search, page: "LeadSearch" },
   { name: "Geospatial Dashboard", icon: MapPin, page: "GeospatialDashboard" },
   { name: "Lead CRM", icon: Users, page: "LeadCRM" },

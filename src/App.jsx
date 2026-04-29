@@ -29,6 +29,7 @@ import Competitors from './pages/Competitors';
 import CompetitorAnalytics from './pages/CompetitorAnalytics';
 import LeadCRM from './pages/LeadCRM';
 import LeadPipelineDashboard from './pages/LeadPipelineDashboard';
+import CourtDatesCalendar from './pages/CourtDatesCalendar';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import { useEffect } from 'react';
@@ -85,6 +86,7 @@ const RouterContent = () => {
       <Route path="/CompetitorAnalytics" element={<LayoutWrapper currentPageName="CompetitorAnalytics"><CompetitorAnalytics /></LayoutWrapper>} />
       <Route path="/LeadCRM" element={<LayoutWrapper currentPageName="LeadCRM"><LeadCRM /></LayoutWrapper>} />
       <Route path="/LeadPipelineDashboard" element={<LayoutWrapper currentPageName="LeadPipelineDashboard"><LeadPipelineDashboard /></LayoutWrapper>} />
+      <Route path="/CourtDatesCalendar" element={<LayoutWrapper currentPageName="CourtDatesCalendar"><CourtDatesCalendar /></LayoutWrapper>} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

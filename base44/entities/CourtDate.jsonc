@@ -1,0 +1,198 @@
+{
+  "name": "CourtDate",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Case or hearing title"
+    },
+    "case_number": {
+      "type": "string",
+      "description": "Court case/file number"
+    },
+    "case_type": {
+      "type": "string",
+      "enum": [
+        "Medical Negligence",
+        "Road Accident Fund",
+        "Personal Injury",
+        "COIDA",
+        "MVA/RAF",
+        "General Litigation",
+        "Other"
+      ],
+      "description": "Type of legal case"
+    },
+    "court_name": {
+      "type": "string",
+      "description": "Name of the court"
+    },
+    "court_division": {
+      "type": "string",
+      "description": "Court division (e.g. High Court, Magistrate, etc.)"
+    },
+    "hearing_type": {
+      "type": "string",
+      "enum": [
+        "Trial",
+        "Pre-Trial Conference",
+        "Interlocutory",
+        "Settlement Conference",
+        "Expert Meeting",
+        "Postponement",
+        "Judgment",
+        "Other"
+      ],
+      "description": "Type of hearing"
+    },
+    "hearing_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of the court hearing"
+    },
+    "hearing_time": {
+      "type": "string",
+      "description": "Time of hearing (HH:MM)"
+    },
+    "end_time": {
+      "type": "string",
+      "description": "Expected end time (HH:MM)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Scheduled",
+        "Postponed",
+        "Completed",
+        "Cancelled",
+        "Settled"
+      ],
+      "default": "Scheduled",
+      "description": "Status of the court date"
+    },
+    "linked_lead_id": {
+      "type": "string",
+      "description": "ID of linked LeadRecord"
+    },
+    "linked_lead_name": {
+      "type": "string",
+      "description": "Name of linked lead (denormalized)"
+    },
+    "linked_client_id": {
+      "type": "string",
+      "description": "ID of linked Client (law firm)"
+    },
+    "linked_client_name": {
+      "type": "string",
+      "description": "Name of linked client (denormalized)"
+    },
+    "linked_competitor_id": {
+      "type": "string",
+      "description": "ID of linked Competitor"
+    },
+    "linked_competitor_name": {
+      "type": "string",
+      "description": "Name of linked competitor (denormalized)"
+    },
+    "plaintiff": {
+      "type": "string",
+      "description": "Plaintiff / claimant name"
+    },
+    "defendant": {
+      "type": "string",
+      "description": "Defendant name"
+    },
+    "attorney_name": {
+      "type": "string",
+      "description": "Handling attorney name"
+    },
+    "attorney_email": {
+      "type": "string",
+      "description": "Attorney email for reminders"
+    },
+    "expert_witness": {
+      "type": "string",
+      "description": "Expert witness assigned"
+    },
+    "assigned_bul": {
+      "type": "string",
+      "description": "Assigned BUL name"
+    },
+    "assigned_bul_email": {
+      "type": "string",
+      "description": "Assigned BUL email for reminders"
+    },
+    "reminder_days_before": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "default": [
+        7,
+        3,
+        1
+      ],
+      "description": "Days before hearing to send reminders"
+    },
+    "reminders_sent": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "default": [],
+      "description": "Which reminder days have already been sent"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes"
+    },
+    "outcome": {
+      "type": "string",
+      "description": "Outcome notes after hearing"
+    },
+    "next_court_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Next scheduled court date if applicable"
+    }
+  },
+  "required": [
+    "title",
+    "hearing_date",
+    "case_type"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": {
+          "$ne": ""
+        }
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": {
+          "$ne": ""
+        }
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": {
+          "$ne": ""
+        }
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "admin",
+            "Sales Manager",
+            "senior_management"
+          ]
+        }
+      }
+    }
+  }
+}
