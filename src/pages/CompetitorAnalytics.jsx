@@ -7,6 +7,7 @@ import {
 } from 'recharts';
 import { TrendingUp, Users, AlertCircle, Activity, Printer } from 'lucide-react';
 import CompetitorInsightsEngine from '@/components/competitors/CompetitorInsightsEngine';
+import LawFirmIntelligence from '@/components/competitors/LawFirmIntelligence';
 
 export default function CompetitorAnalytics() {
   const [competitors, setCompetitors] = useState([]);
@@ -312,6 +313,14 @@ export default function CompetitorAnalytics() {
             Click "Generate Analytics" to view comparison charts
           </CardContent>
         </Card>
+      )}
+
+      {/* Law Firm Intelligence */}
+      {selectedCompetitors.length > 0 && (
+        <LawFirmIntelligence
+          selectedCompetitors={competitors.filter(c => selectedCompetitors.includes(c.id))}
+          allCompetitors={competitors}
+        />
       )}
 
       {/* AI Insights Section */}
