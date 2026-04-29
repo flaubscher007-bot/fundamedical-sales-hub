@@ -137,7 +137,10 @@ export function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('/sw.js').then((reg) => {
-        console.log('SW registered:', reg.scope);
+        // If a new SW is waiting, activate it immediately
+        if (reg.waiting) {
+          reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+        }
       }).catch((err) => {
         console.warn('SW registration failed:', err);
       });
