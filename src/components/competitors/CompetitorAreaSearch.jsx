@@ -63,6 +63,7 @@ For each company found, return:
 - court_mention_count: number of known court appearances (0 if none found)
 - law_firms_served: array of law firms they are known to have assisted
 - linkedin: LinkedIn URL if found
+- types_of_experts: array of specific expert types/disciplines they offer (e.g. "Orthopaedic Surgeons", "Industrial Psychologists", "Occupational Therapists")
 - notes: any additional context or notable information
 
 Return between 5 and 12 companies. Exclude pure individual practices — only companies/agencies that coordinate multiple experts or offer a report service platform.`;
@@ -94,6 +95,7 @@ Return between 5 and 12 companies. Exclude pure individual practices — only co
                 court_mention_count: { type: "number" },
                 law_firms_served: { type: "array", items: { type: "string" } },
                 linkedin: { type: "string" },
+                types_of_experts: { type: "array", items: { type: "string" } },
                 notes: { type: "string" },
               },
             },
@@ -119,7 +121,10 @@ Return between 5 and 12 companies. Exclude pure individual practices — only co
         city: company.city || "",
         province: company.province || "",
         areas_of_operation: company.services || [],
-        linked_experts: (company.affiliated_experts || []).map(name => ({ expert_name: name, discipline: "" })),
+        linked_experts: [
+          ...(company.affiliated_experts || []).map(name => ({ expert_name: name, discipline: "" })),
+          ...(company.types_of_experts || []).map(d => ({ expert_name: "", discipline: d })),
+        ],
         law_firms_assisted: (company.law_firms_served || []).map(f => ({ firm_name: f, last_assisted_year: new Date().getFullYear() })),
         social_accounts: {
           facebook: "",
@@ -265,6 +270,19 @@ Return between 5 and 12 companies. Exclude pure individual practices — only co
                         <span key={j} className="text-xs px-2 py-0.5 rounded-full"
                           style={{ backgroundColor: "rgba(52,204,208,0.12)", color: "#34CCD0", border: "1px solid rgba(52,204,208,0.25)" }}>
                           {s}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Types of Experts */}
+                  {company.types_of_experts?.length > 0 && (
+                    <div className="flex flex-wrap gap-1">
+                      <p className="w-full text-xs font-semibold mb-0.5" style={{ color: "#a78bfa" }}>Types of Experts:</p>
+                      {company.types_of_experts.map((t, j) => (
+                        <span key={j} className="text-xs px-2 py-0.5 rounded-full"
+                          style={{ backgroundColor: "rgba(167,139,250,0.12)", color: "#a78bfa", border: "1px solid rgba(167,139,250,0.25)" }}>
+                          {t}
                         </span>
                       ))}
                     </div>
