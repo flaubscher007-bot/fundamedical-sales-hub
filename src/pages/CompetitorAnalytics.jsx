@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import {
   BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
-import { TrendingUp, Users, AlertCircle, Activity } from 'lucide-react';
+import { TrendingUp, Users, AlertCircle, Activity, Printer } from 'lucide-react';
 import CompetitorInsightsEngine from '@/components/competitors/CompetitorInsightsEngine';
 
 export default function CompetitorAnalytics() {
@@ -136,8 +136,18 @@ export default function CompetitorAnalytics() {
 
   const COLORS = ['#92F21D', '#34CCD0', '#00BFFF', '#FFD700'];
 
+  const handlePrint = () => window.print();
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" id="competitor-analytics-print">
+      {/* Header + Print */}
+      <div className="flex items-center justify-between flex-wrap gap-3 print:hidden">
+        <div />
+        <Button onClick={handlePrint} variant="outline" style={{ borderColor: '#34CCD0', color: '#34CCD0' }}>
+          <Printer className="w-4 h-4 mr-2" /> Print to PDF
+        </Button>
+      </div>
+
       {/* Competitor Selection */}
       <Card style={{ backgroundColor: '#0a1e3a', borderColor: '#34CCD0' }}>
         <CardHeader>
@@ -157,7 +167,7 @@ export default function CompetitorAnalytics() {
               >
                 <p style={{ color: '#92F21D' }} className="font-semibold">{competitor.name}</p>
                 <p style={{ color: '#34CCD0' }} className="text-sm">
-                  {competitor.law_firms_assisted?.length || 0} firms assisted
+                  {competitor.law_firms_assisted?.length || 0} linked law firms
                 </p>
               </button>
             ))}
@@ -179,10 +189,13 @@ export default function CompetitorAnalytics() {
             <CardHeader>
               <CardTitle style={{ color: '#92F21D' }} className="flex items-center gap-2">
                 <Users className="w-5 h-5" />
-                Market Share (Law Firms Assisted)
+                Linked Law Firms per Competitor
               </CardTitle>
             </CardHeader>
             <CardContent>
+              <p className="text-xs mb-3 italic" style={{ color: '#94a3b8' }}>
+                ⚠ Note: Law firms shown here are linked associations — many of these firms also work with FundaMedical. This reflects reach, not exclusivity.
+              </p>
               <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
                   <Pie

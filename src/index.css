@@ -86,3 +86,12 @@
     @apply bg-background text-foreground;
   }
 }
+
+@media print {
+  body { background: white !important; }
+  body::before { display: none !important; }
+  aside, header, .print\:hidden { display: none !important; }
+  #competitor-analytics-print { padding: 16px; }
+  * { color: #000 !important; background: white !important; border-color: #ccc !important; box-shadow: none !important; }
+  h1, h2, h3, h4 { color: #000 !important; }
+}
