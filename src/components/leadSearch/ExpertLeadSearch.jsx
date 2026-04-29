@@ -109,7 +109,6 @@ export default function ExpertLeadSearch() {
   const [searched, setSearched] = useState(false);
   const [existingExperts, setExistingExperts] = useState([]);
   const [showAll, setShowAll] = useState(false);
-  const [savingCompetitors, setSavingCompetitors] = useState(false);
   const [savingAll, setSavingAll] = useState(false);
   const [saveAllDone, setSaveAllDone] = useState(false);
 
@@ -265,53 +264,6 @@ Return between 10 and 15 experts. Only include real, verifiable medical professi
       console.error(err);
     } finally {
       setSavingAll(false);
-    }
-  };
-
-  const saveCompetitorPanels = async () => {
-    if (!results?.experts?.length) return;
-    setSavingCompetitors(true);
-    try {
-      // Collect all unique competitor names from results
-      const allCompetitors = new Set();
-      results.experts.forEach(expert => {
-        if (expert.competitor_panels && Array.isArray(expert.competitor_panels)) {
-          expert.competitor_panels.forEach(panel => {
-            if (panel) allCompetitors.add(panel);
-          });
-        }
-      });
-
-      if (allCompetitors.size === 0) {
-        alert('No competitor panels found in results');
-        setSavingCompetitors(false);
-        return;
-      }
-
-      const response = await base44.functions.invoke('saveCompetitorPanelsFromExperts', {
-        competitor_names: Array.from(allCompetitors)
-      });
-
-      const result = response.data;
-      let message = `✓ Saved ${result.created} new competitor companies`;
-      
-      if (result.duplicates_found > 0) {
-        message += `\n⚠ ${result.duplicates_found} duplicate(s) skipped (already exist)`;
-        if (result.duplicate_details && result.duplicate_details.length > 0) {
-          const examples = result.duplicate_details.slice(0, 3).map(d => `"${d.submitted}" ≈ "${d.existing}"`).join('\n');
-          message += `\n\nExamples:\n${examples}`;
-          if (result.duplicate_details.length > 3) {
-            message += `\n+${result.duplicate_details.length - 3} more`;
-          }
-        }
-      }
-      
-      alert(message);
-    } catch (error) {
-      alert('Failed to save competitors');
-      console.error(error);
-    } finally {
-      setSavingCompetitors(false);
     }
   };
 
@@ -506,9 +458,7 @@ Return between 10 and 15 experts. Only include real, verifiable medical professi
                     />
                   );
                 })()}
-                <Button onClick={saveCompetitorPanels} disabled={savingCompetitors} size="sm" style={{ backgroundColor: "#34CCD0", color: "#081F3F", fontWeight: 600 }}>
-                  {savingCompetitors ? 'Saving...' : 'Save Competitor Companies'}
-                </Button>
+
               </div>
             )}
           </div>
