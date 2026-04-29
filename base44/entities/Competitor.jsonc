@@ -41,6 +41,27 @@
       },
       "description": "Geographic areas or service areas"
     },
+    "annual_cases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "number",
+            "description": "Year (e.g. 2023)"
+          },
+          "case_count": {
+            "type": "number",
+            "description": "Estimated number of cases handled"
+          },
+          "source": {
+            "type": "string",
+            "description": "How this figure was obtained (e.g. RAF data, web research, estimate)"
+          }
+        }
+      },
+      "description": "Estimated annual case volumes for the last 5 years"
+    },
     "linked_experts": {
       "type": "array",
       "items": {

@@ -8,6 +8,7 @@ import {
 import { TrendingUp, Users, AlertCircle, Activity, Printer } from 'lucide-react';
 import CompetitorInsightsEngine from '@/components/competitors/CompetitorInsightsEngine';
 import LawFirmIntelligence from '@/components/competitors/LawFirmIntelligence';
+import MarketShareAnalysis from '@/components/competitors/MarketShareAnalysis';
 
 export default function CompetitorAnalytics() {
   const [competitors, setCompetitors] = useState([]);
@@ -313,6 +314,13 @@ export default function CompetitorAnalytics() {
             Click "Generate Analytics" to view comparison charts
           </CardContent>
         </Card>
+      )}
+
+      {/* Market Share Analysis */}
+      {selectedCompetitors.length > 0 && (
+        <MarketShareAnalysis
+          selectedCompetitors={competitors.filter(c => selectedCompetitors.includes(c.id))}
+        />
       )}
 
       {/* Law Firm Intelligence */}
