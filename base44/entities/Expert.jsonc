@@ -1,0 +1,165 @@
+{
+  "name": "Expert",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Expert full name"
+    },
+    "discipline": {
+      "type": "string",
+      "description": "Medical discipline/specialty"
+    },
+    "active": {
+      "type": "string",
+      "enum": [
+        "YES",
+        "SEMI-ACTIVE",
+        "NO"
+      ],
+      "default": "YES"
+    },
+    "cohort": {
+      "type": "number",
+      "description": "Rotation cohort (1-4)"
+    },
+    "email": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "address": {
+      "type": "string"
+    },
+    "photo_url": {
+      "type": "string",
+      "description": "Professional photo URL"
+    },
+    "biography": {
+      "type": "string",
+      "description": "Detailed biography of the expert"
+    },
+    "specializations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Areas of specialization"
+    },
+    "publications": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "year": {
+            "type": "number"
+          },
+          "journal": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "List of publications"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "discipline"
+  ],
+  "rls": {
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "Sales Manager",
+                "senior_management",
+                "bul_manager"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "Sales Manager",
+                "senior_management",
+                "bul_manager",
+                "kac",
+                "team_member"
+              ]
+            }
+          }
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$ne": ""
+            }
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "Sales Manager",
+                "senior_management",
+                "bul_manager"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "senior_management"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

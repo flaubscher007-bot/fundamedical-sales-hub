@@ -1,0 +1,35 @@
+{
+  "name": "BULNameMapping",
+  "type": "object",
+  "properties": {
+    "first_name": {
+      "type": "string",
+      "description": "First name or nickname (e.g. 'Dylan', 'Nthabi')"
+    },
+    "full_name": {
+      "type": "string",
+      "description": "Full name as stored in system"
+    },
+    "email": {
+      "type": "string",
+      "description": "Email address of the BUL/KAC"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "Business Unit Leader",
+        "Key Accounts Consultant",
+        "Senior Management"
+      ],
+      "description": "Role in organization"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "first_name",
+    "full_name"
+  ]
+}

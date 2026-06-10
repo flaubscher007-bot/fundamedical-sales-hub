@@ -1,0 +1,124 @@
+{
+  "name": "Expense",
+  "type": "object",
+  "properties": {
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "description": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Travel",
+        "Accommodation",
+        "Meals",
+        "Entertainment",
+        "Transport",
+        "Office Supplies",
+        "Communication",
+        "Other"
+      ]
+    },
+    "amount": {
+      "type": "number",
+      "description": "Amount in ZAR"
+    },
+    "receipt_url": {
+      "type": "string",
+      "description": "Receipt photo/file URL"
+    },
+    "client_name": {
+      "type": "string",
+      "description": "Related client if applicable"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Pending",
+        "Approved",
+        "Rejected"
+      ],
+      "default": "Pending"
+    },
+    "assigned_bul": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "date",
+    "description",
+    "amount"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "data.assigned_bul": "{{user.full_name}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "admin",
+                "Sales Manager",
+                "senior_management",
+                "bul_manager",
+                "finance_user"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "data.assigned_bul": "{{user.full_name}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "admin",
+                "Sales Manager",
+                "senior_management",
+                "bul_manager",
+                "finance_user"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "admin",
+                "Sales Manager",
+                "senior_management"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

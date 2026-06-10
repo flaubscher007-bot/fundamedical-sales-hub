@@ -1,0 +1,96 @@
+{
+  "name": "UserActivityLog",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email of user performing the action"
+    },
+    "user_name": {
+      "type": "string",
+      "description": "Name of user performing the action"
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "invite_user",
+        "bulk_invite_users",
+        "create_target",
+        "edit_target",
+        "delete_target",
+        "approve_leave",
+        "reject_leave",
+        "add_team_member",
+        "edit_team_member",
+        "delete_team_member",
+        "import_team_assignments",
+        "login",
+        "logout",
+        "create_client",
+        "edit_client",
+        "other"
+      ],
+      "description": "Type of action performed"
+    },
+    "resource_type": {
+      "type": "string",
+      "description": "Type of resource affected (e.g., User, Client, Target, TeamAssignment)"
+    },
+    "resource_id": {
+      "type": "string",
+      "description": "ID of the resource affected"
+    },
+    "resource_name": {
+      "type": "string",
+      "description": "Name or identifier of the resource (e.g., client firm name, user email)"
+    },
+    "details": {
+      "type": "string",
+      "description": "Additional details about the action"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the action was performed"
+    },
+    "ip_address": {
+      "type": "string",
+      "description": "IP address of the user (optional)"
+    }
+  },
+  "required": [
+    "user_email",
+    "action",
+    "timestamp"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "admin",
+            "Sales Manager",
+            "senior_management"
+          ]
+        }
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "admin",
+            "Sales Manager",
+            "senior_management"
+          ]
+        }
+      }
+    },
+    "update": {},
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

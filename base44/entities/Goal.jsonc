@@ -1,0 +1,119 @@
+{
+  "name": "Goal",
+  "type": "object",
+  "properties": {
+    "goal_name": {
+      "type": "string",
+      "description": "Name of the goal"
+    },
+    "goal_type": {
+      "type": "string",
+      "enum": [
+        "Revenue",
+        "Bookings",
+        "Collections",
+        "New Clients",
+        "Custom"
+      ],
+      "description": "Type of goal"
+    },
+    "custom_metric": {
+      "type": "string",
+      "description": "Custom metric name if goal_type is Custom"
+    },
+    "owner_email": {
+      "type": "string",
+      "description": "Email of the BUL or person who owns this goal"
+    },
+    "owner_name": {
+      "type": "string",
+      "description": "Name of the goal owner"
+    },
+    "assigned_to_email": {
+      "type": "string",
+      "description": "Email of person responsible for achieving goal (can be different from owner)"
+    },
+    "assigned_to_name": {
+      "type": "string",
+      "description": "Name of person responsible for goal"
+    },
+    "team": {
+      "type": "string",
+      "enum": [
+        "Kopano",
+        "Kutlwano",
+        "Sisonke",
+        "Nasira",
+        "All"
+      ],
+      "description": "Team this goal belongs to"
+    },
+    "target_value": {
+      "type": "number",
+      "description": "Target value to achieve"
+    },
+    "target_unit": {
+      "type": "string",
+      "enum": [
+        "ZAR",
+        "Number",
+        "Percentage"
+      ],
+      "default": "ZAR",
+      "description": "Unit of measurement"
+    },
+    "current_progress": {
+      "type": "number",
+      "default": 0,
+      "description": "Current progress value"
+    },
+    "progress_type": {
+      "type": "string",
+      "enum": [
+        "auto",
+        "manual"
+      ],
+      "default": "auto",
+      "description": "Whether progress is auto-calculated or manually updated"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Goal start date"
+    },
+    "deadline": {
+      "type": "string",
+      "format": "date",
+      "description": "Goal deadline"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Not Started",
+        "In Progress",
+        "On Track",
+        "At Risk",
+        "Completed",
+        "Failed"
+      ],
+      "default": "Not Started",
+      "description": "Current status of goal"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Notes about the goal"
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the goal was last updated"
+    }
+  },
+  "required": [
+    "goal_name",
+    "goal_type",
+    "owner_email",
+    "target_value",
+    "deadline"
+  ]
+}

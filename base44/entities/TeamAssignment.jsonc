@@ -1,0 +1,76 @@
+{
+  "name": "TeamAssignment",
+  "type": "object",
+  "properties": {
+    "person_name": {
+      "type": "string",
+      "description": "Full name of the person"
+    },
+    "person_email": {
+      "type": "string",
+      "description": "Email address"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "Senior Management",
+        "Business Unit Leader",
+        "Key Accounts Consultant",
+        "Finance Clerk",
+        "Case Administrator",
+        "Distribution"
+      ],
+      "description": "Role in the organization"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Contact phone number"
+    },
+    "team": {
+      "type": "string",
+      "enum": [
+        "Kopano",
+        "Kutlwano",
+        "Sisonke",
+        "Nasira"
+      ],
+      "description": "Team assignment"
+    },
+    "reports_to": {
+      "type": "string",
+      "description": "Name of the Business Unit Leader this person reports to (for KACs and other roles)"
+    }
+  },
+  "required": [
+    "person_name",
+    "role",
+    "team"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "write": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

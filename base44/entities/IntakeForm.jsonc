@@ -1,0 +1,224 @@
+{
+  "name": "IntakeForm",
+  "type": "object",
+  "properties": {
+    "customer_representative": {
+      "type": "string",
+      "description": "Name of customer representative"
+    },
+    "customer_name": {
+      "type": "string",
+      "description": "Law firm / customer name"
+    },
+    "business_registration_number": {
+      "type": "string",
+      "description": "Business registration number"
+    },
+    "vat_number": {
+      "type": "string",
+      "description": "VAT number"
+    },
+    "physical_address": {
+      "type": "string",
+      "description": "Physical address"
+    },
+    "booking_representative": {
+      "type": "string",
+      "description": "Booking representative for quotes"
+    },
+    "directors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name_surname": {
+            "type": "string"
+          },
+          "telephone": {
+            "type": "string"
+          },
+          "cell_phone": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Directors' names and contact details"
+    },
+    "attorneys": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name_surname": {
+            "type": "string"
+          },
+          "telephone": {
+            "type": "string"
+          },
+          "cell_phone": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Attorney names and contact details"
+    },
+    "legal_clerks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name_surname": {
+            "type": "string"
+          },
+          "telephone": {
+            "type": "string"
+          },
+          "cell_phone": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Legal clerks/secretaries names and contact details"
+    },
+    "finance_persons": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name_surname": {
+            "type": "string"
+          },
+          "telephone": {
+            "type": "string"
+          },
+          "cell_phone": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Finance persons names and contact details"
+    },
+    "cost_consultants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name_surname": {
+            "type": "string"
+          },
+          "telephone": {
+            "type": "string"
+          },
+          "cell_phone": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Cost consultant names and contact details"
+    },
+    "settlement_terms": {
+      "type": "string",
+      "description": "Settlement terms"
+    },
+    "funda_medical_representative": {
+      "type": "string",
+      "description": "FundaMedical Representative (KAC)"
+    },
+    "additional_information": {
+      "type": "string",
+      "description": "Additional information"
+    },
+    "attorney_representative_signature": {
+      "type": "string",
+      "description": "Digital signature from attorney representative"
+    },
+    "attorney_representative_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date signed by attorney representative"
+    },
+    "funda_representative_signature": {
+      "type": "string",
+      "description": "Digital signature from FundaMedical representative"
+    },
+    "funda_representative_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date signed by FundaMedical representative"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "New",
+        "Reviewed",
+        "Converted",
+        "Declined"
+      ],
+      "default": "New"
+    }
+  },
+  "required": [
+    "customer_name",
+    "customer_representative"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "data.funda_medical_representative": "{{user.full_name}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "admin",
+                "Sales Manager",
+                "senior_management",
+                "bul_manager"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "admin",
+                "Sales Manager",
+                "senior_management"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

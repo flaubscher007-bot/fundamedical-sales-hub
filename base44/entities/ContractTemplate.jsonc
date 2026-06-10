@@ -1,0 +1,84 @@
+{
+  "name": "ContractTemplate",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Template name"
+    },
+    "description": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Service Agreement",
+        "NDA",
+        "Pricing Agreement",
+        "Retainer",
+        "Custom"
+      ],
+      "default": "Service Agreement"
+    },
+    "body": {
+      "type": "string",
+      "description": "Contract template body with {{placeholders}}"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "admin",
+            "Sales Manager",
+            "senior_management"
+          ]
+        }
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "admin",
+            "Sales Manager",
+            "senior_management",
+            "bul_manager",
+            "kac",
+            "team_member"
+          ]
+        }
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "admin",
+            "Sales Manager",
+            "senior_management"
+          ]
+        }
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "admin",
+            "Sales Manager",
+            "senior_management"
+          ]
+        }
+      }
+    }
+  }
+}

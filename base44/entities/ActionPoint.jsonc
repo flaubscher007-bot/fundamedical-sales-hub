@@ -1,0 +1,120 @@
+{
+  "name": "ActionPoint",
+  "type": "object",
+  "properties": {
+    "appointment_id": {
+      "type": "string"
+    },
+    "client_name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string",
+      "description": "What needs to be done"
+    },
+    "assigned_to_type": {
+      "type": "string",
+      "enum": [
+        "Case Administrator",
+        "Finance Clerk",
+        "BUL",
+        "Other"
+      ],
+      "description": "Role of person responsible"
+    },
+    "assigned_to_name": {
+      "type": "string",
+      "description": "Name of person"
+    },
+    "assigned_to_email": {
+      "type": "string"
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Pending",
+        "In Progress",
+        "Completed"
+      ],
+      "default": "Pending"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "description"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "data.assigned_to_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "admin",
+                "Sales Manager",
+                "senior_management",
+                "bul_manager"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "data.assigned_to_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "admin",
+                "Sales Manager",
+                "senior_management",
+                "bul_manager"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "admin",
+                "Sales Manager",
+                "senior_management",
+                "bul_manager"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

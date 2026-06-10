@@ -1,0 +1,87 @@
+{
+  "name": "ClientAccount",
+  "type": "object",
+  "properties": {
+    "firm_name": {
+      "type": "string",
+      "description": "Law firm name"
+    },
+    "x3_acc_no": {
+      "type": "string",
+      "description": "X3 Account Number for statement linking"
+    },
+    "contact_person": {
+      "type": "string",
+      "description": "Primary contact at the firm"
+    },
+    "contact_email": {
+      "type": "string",
+      "description": "Contact email"
+    },
+    "contact_phone": {
+      "type": "string",
+      "description": "Contact phone"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "Associated user email for login"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "suspended"
+      ],
+      "default": "active",
+      "description": "Account status"
+    },
+    "portal_access": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether firm can access the portal"
+    },
+    "dashboard_url": {
+      "type": "string",
+      "description": "PowerBI dashboard URL for this firm"
+    },
+    "last_login": {
+      "type": "string",
+      "description": "Last portal login timestamp"
+    }
+  },
+  "required": [
+    "firm_name",
+    "contact_email",
+    "user_email"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "$or": [
+        {
+          "data.user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

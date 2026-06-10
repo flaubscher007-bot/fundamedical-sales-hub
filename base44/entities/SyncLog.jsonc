@@ -1,0 +1,70 @@
+{
+  "name": "SyncLog",
+  "type": "object",
+  "properties": {
+    "sync_type": {
+      "type": "string",
+      "enum": [
+        "schedule_to_appointment",
+        "appointment_to_schedule"
+      ],
+      "description": "Direction of synchronization"
+    },
+    "source_entity": {
+      "type": "string",
+      "description": "Entity that triggered the sync (Appointment or ExpertSchedule)"
+    },
+    "source_id": {
+      "type": "string",
+      "description": "ID of the source record"
+    },
+    "target_entity": {
+      "type": "string",
+      "description": "Entity being updated"
+    },
+    "target_id": {
+      "type": "string",
+      "description": "ID of the target record"
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "create",
+        "update",
+        "conflict",
+        "skip"
+      ],
+      "description": "Action performed"
+    },
+    "conflict_resolution": {
+      "type": "string",
+      "description": "How conflict was resolved (if any)"
+    },
+    "source_data": {
+      "type": "object",
+      "description": "Source record data snapshot"
+    },
+    "target_data": {
+      "type": "object",
+      "description": "Target record data snapshot before update"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When sync occurred"
+    },
+    "sync_batch_id": {
+      "type": "string",
+      "description": "Batch ID to group related syncs"
+    },
+    "error": {
+      "type": "string",
+      "description": "Error message if sync failed"
+    }
+  },
+  "required": [
+    "sync_type",
+    "action",
+    "timestamp"
+  ]
+}

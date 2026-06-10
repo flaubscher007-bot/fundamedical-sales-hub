@@ -1,0 +1,49 @@
+{
+  "name": "BusinessCard",
+  "type": "object",
+  "properties": {
+    "full_name": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string",
+      "description": "Job title e.g. Business Unit Leader"
+    },
+    "email": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "whatsapp": {
+      "type": "string"
+    },
+    "profile_photo_url": {
+      "type": "string"
+    },
+    "business_card_front_url": {
+      "type": "string",
+      "description": "Business card front image URL"
+    },
+    "business_card_back_url": {
+      "type": "string",
+      "description": "Business card back image URL"
+    },
+    "assigned_bul": {
+      "type": "string",
+      "description": "Name of the assigned Business Unit Leader"
+    },
+    "owner_email": {
+      "type": "string",
+      "description": "Email of the BUL who owns this card"
+    },
+    "created_by": {
+      "type": "string",
+      "description": "Email of the user who created this card"
+    }
+  },
+  "required": [
+    "full_name",
+    "email"
+  ]
+}

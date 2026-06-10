@@ -1,0 +1,98 @@
+{
+  "name": "Statement",
+  "type": "object",
+  "properties": {
+    "law_firm": {
+      "type": "string",
+      "description": "Law Firm name"
+    },
+    "x3_acc_no": {
+      "type": "string",
+      "description": "X3 Account Number"
+    },
+    "kac": {
+      "type": "string",
+      "description": "Business Unit Leader name (KAC)"
+    },
+    "business_unit": {
+      "type": "string",
+      "description": "Business Unit name"
+    },
+    "finance_clerk": {
+      "type": "string",
+      "description": "Finance Clerk name (DC - STM)"
+    },
+    "account_status": {
+      "type": "string",
+      "description": "Account Status"
+    },
+    "movement": {
+      "type": "string",
+      "description": "Movement status"
+    },
+    "total_deposit": {
+      "type": "number",
+      "description": "Total deposit amount (C-TOTAL DEP)"
+    },
+    "total_due": {
+      "type": "number",
+      "description": "Total due amount (C-TOTAL DUE)"
+    },
+    "total_balance": {
+      "type": "number",
+      "description": "Total balance (C-TOTAL BAL)"
+    },
+    "deposit_90_plus": {
+      "type": "number",
+      "description": "Deposit 90+ days old (C-DEP-90+ DAYS)"
+    },
+    "deposit_61_90": {
+      "type": "number",
+      "description": "Deposit 61-90 days old (C-DEP-61-90 DAYS)"
+    },
+    "deposit_31_60": {
+      "type": "number",
+      "description": "Deposit 31-60 days old (C-DEP-31-60 DAYS)"
+    },
+    "deposit_1_30": {
+      "type": "number",
+      "description": "Deposit 1-30 days old (C-DEP-1-30 DAYS)"
+    },
+    "balance_48_plus": {
+      "type": "number",
+      "description": "Balance 48+ months (C-BAL- 48+ MONTHS)"
+    },
+    "balance_37_47": {
+      "type": "number",
+      "description": "Balance 37-47 months (C-BAL-37-47 MONTHS)"
+    },
+    "balance_25_36": {
+      "type": "number",
+      "description": "Balance 25-36 months (C-BAL-25-36 MONTHS)"
+    },
+    "balance_19_24": {
+      "type": "number",
+      "description": "Balance 19-24 months (C-BAL-19-24 MONTHS)"
+    },
+    "balance_0_18": {
+      "type": "number",
+      "description": "Balance 0-18 months (C-BAL-0-18 MONTHS)"
+    },
+    "statement_month": {
+      "type": "string",
+      "description": "Statement analysis month"
+    },
+    "comments": {
+      "type": "string",
+      "description": "Comments"
+    },
+    "sync_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of last sync"
+    }
+  },
+  "required": [
+    "law_firm"
+  ]
+}

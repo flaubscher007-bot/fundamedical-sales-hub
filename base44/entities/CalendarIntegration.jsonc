@@ -1,0 +1,63 @@
+{
+  "name": "CalendarIntegration",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "User's email"
+    },
+    "user_name": {
+      "type": "string",
+      "description": "User's name"
+    },
+    "calendar_provider": {
+      "type": "string",
+      "enum": [
+        "google",
+        "outlook"
+      ],
+      "description": "Calendar provider"
+    },
+    "is_connected": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether calendar is connected"
+    },
+    "access_token": {
+      "type": "string",
+      "description": "OAuth access token (encrypted)"
+    },
+    "refresh_token": {
+      "type": "string",
+      "description": "OAuth refresh token (encrypted)"
+    },
+    "primary_calendar_id": {
+      "type": "string",
+      "description": "Primary calendar ID on external provider"
+    },
+    "sync_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to sync events with external calendar"
+    },
+    "last_sync": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last sync timestamp"
+    },
+    "sync_direction": {
+      "type": "string",
+      "enum": [
+        "bidirectional",
+        "app_to_provider",
+        "provider_to_app"
+      ],
+      "default": "bidirectional",
+      "description": "Direction of sync"
+    }
+  },
+  "required": [
+    "user_email",
+    "calendar_provider"
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "name": "BULReport",
+  "type": "object",
+  "properties": {
+    "bul_name": {
+      "type": "string",
+      "description": "Business Unit Leader name"
+    },
+    "bul_email": {
+      "type": "string",
+      "description": "BUL email address"
+    },
+    "report_month": {
+      "type": "string",
+      "format": "date",
+      "description": "Month the report covers (first day of month)"
+    },
+    "revenue_target": {
+      "type": "number",
+      "description": "Target revenue for the month"
+    },
+    "revenue_actual": {
+      "type": "number",
+      "description": "Actual revenue generated"
+    },
+    "revenue_variance": {
+      "type": "number",
+      "description": "Actual minus target (positive is over)"
+    },
+    "bookings_target": {
+      "type": "number",
+      "description": "Target number of bookings"
+    },
+    "bookings_actual": {
+      "type": "number",
+      "description": "Actual number of bookings"
+    },
+    "collections_target": {
+      "type": "number",
+      "description": "Target collections amount"
+    },
+    "collections_actual": {
+      "type": "number",
+      "description": "Actual collections amount"
+    },
+    "top_clients": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "firm_name": {
+            "type": "string"
+          },
+          "bookings": {
+            "type": "number"
+          }
+        }
+      },
+      "description": "Top performing clients for the month"
+    },
+    "report_html": {
+      "type": "string",
+      "description": "HTML content of the full report"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the report was generated"
+    }
+  },
+  "required": [
+    "bul_name",
+    "report_month"
+  ]
+}

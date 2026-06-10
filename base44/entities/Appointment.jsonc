@@ -1,0 +1,108 @@
+{
+  "name": "Appointment",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "client_id": {
+      "type": "string"
+    },
+    "client_name": {
+      "type": "string"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "time": {
+      "type": "string"
+    },
+    "end_time": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "In-Person",
+        "Virtual",
+        "Phone Call",
+        "Site Visit"
+      ],
+      "default": "In-Person"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Scheduled",
+        "Completed",
+        "Cancelled",
+        "Rescheduled"
+      ],
+      "default": "Scheduled"
+    },
+    "attendance_confirmed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether attendance has been confirmed"
+    },
+    "confirmed_at": {
+      "type": "string",
+      "description": "When attendance was confirmed"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "assigned_bul": {
+      "type": "string"
+    },
+    "is_recurring": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this is a recurring appointment"
+    },
+    "recurrence_pattern": {
+      "type": "string",
+      "enum": [
+        "daily",
+        "weekly",
+        "biweekly",
+        "monthly"
+      ],
+      "description": "Pattern for recurring appointments"
+    },
+    "recurrence_end_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When the recurrence ends"
+    },
+    "parent_appointment_id": {
+      "type": "string",
+      "description": "ID of parent appointment if this is a recurring instance"
+    },
+    "reminder_sent": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether reminder has been sent"
+    },
+    "reminder_sent_at": {
+      "type": "string",
+      "description": "When reminder was sent"
+    },
+    "client_contact_email": {
+      "type": "string",
+      "description": "Client contact email for reminders"
+    },
+    "expert_contact_email": {
+      "type": "string",
+      "description": "Expert contact email for reminders"
+    }
+  },
+  "required": [
+    "title",
+    "date"
+  ]
+}

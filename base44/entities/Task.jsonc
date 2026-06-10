@@ -1,0 +1,163 @@
+{
+  "name": "Task",
+  "type": "object",
+  "properties": {
+    "task_title": {
+      "type": "string",
+      "description": "Task title"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed task description"
+    },
+    "assigned_to_email": {
+      "type": "string",
+      "description": "Email of person task is assigned to"
+    },
+    "assigned_to_name": {
+      "type": "string",
+      "description": "Name of person task is assigned to"
+    },
+    "assigned_by_email": {
+      "type": "string",
+      "description": "Email of person who assigned the task"
+    },
+    "client_id": {
+      "type": "string",
+      "description": "Associated client ID if task is client-related"
+    },
+    "client_name": {
+      "type": "string",
+      "description": "Associated client name"
+    },
+    "project_id": {
+      "type": "string",
+      "description": "Associated project ID if applicable"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Not Started",
+        "In Progress",
+        "Pending Review",
+        "Completed",
+        "Cancelled"
+      ],
+      "default": "Not Started",
+      "description": "Task status"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "Low",
+        "Medium",
+        "High",
+        "Urgent"
+      ],
+      "default": "Medium",
+      "description": "Task priority"
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Task due date"
+    },
+    "completion_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When task was completed"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Task notes"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Task tags for organization"
+    }
+  },
+  "required": [
+    "task_title",
+    "assigned_to_email",
+    "due_date"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "data.assigned_to_email": "{{user.email}}"
+        },
+        {
+          "data.assigned_by_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "admin",
+                "Sales Manager",
+                "senior_management",
+                "bul_manager"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "data.assigned_to_email": "{{user.email}}"
+        },
+        {
+          "data.assigned_by_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "admin",
+                "Sales Manager",
+                "senior_management",
+                "bul_manager"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "data.assigned_by_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "admin",
+                "Sales Manager",
+                "senior_management"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

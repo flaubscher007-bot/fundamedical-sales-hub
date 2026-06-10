@@ -1,0 +1,124 @@
+{
+  "name": "Channel",
+  "type": "object",
+  "properties": {
+    "channel_name": {
+      "type": "string",
+      "description": "Name of the channel"
+    },
+    "channel_type": {
+      "type": "string",
+      "enum": [
+        "team",
+        "project",
+        "custom"
+      ],
+      "description": "Type of channel"
+    },
+    "team_name": {
+      "type": "string",
+      "enum": [
+        "Kopano",
+        "Kutlwano",
+        "Sisonke",
+        "Nasira"
+      ],
+      "description": "Team this channel belongs to"
+    },
+    "project_id": {
+      "type": "string",
+      "description": "Associated project/client ID if project channel"
+    },
+    "description": {
+      "type": "string",
+      "description": "Channel description"
+    },
+    "members": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of member emails"
+    },
+    "created_by": {
+      "type": "string",
+      "description": "Email of channel creator"
+    },
+    "is_archived": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether channel is archived"
+    }
+  },
+  "required": [
+    "channel_name",
+    "channel_type"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "data.members": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "admin",
+                "Sales Manager",
+                "senior_management",
+                "bul_manager"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "data.members": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "admin",
+                "Sales Manager",
+                "senior_management",
+                "bul_manager"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "admin",
+                "Sales Manager",
+                "senior_management"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

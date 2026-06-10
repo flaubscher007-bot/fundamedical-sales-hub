@@ -1,0 +1,131 @@
+{
+  "name": "Alert",
+  "type": "object",
+  "properties": {
+    "law_firm": {
+      "type": "string",
+      "description": "Law firm name"
+    },
+    "bul_email": {
+      "type": "string",
+      "description": "Business Unit Leader email"
+    },
+    "bul_name": {
+      "type": "string",
+      "description": "Business Unit Leader name"
+    },
+    "alert_type": {
+      "type": "string",
+      "enum": [
+        "balance_threshold",
+        "aging_critical",
+        "sync_failed"
+      ],
+      "description": "Type of alert"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "medium"
+    },
+    "message": {
+      "type": "string",
+      "description": "Alert message"
+    },
+    "relevant_value": {
+      "type": "number",
+      "description": "The value that triggered the alert (e.g. balance amount)"
+    },
+    "threshold": {
+      "type": "number",
+      "description": "The threshold that was exceeded"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "unread",
+        "read",
+        "resolved"
+      ],
+      "default": "unread"
+    },
+    "statement_id": {
+      "type": "string",
+      "description": "Related statement ID if applicable"
+    },
+    "sent_at": {
+      "type": "string",
+      "description": "When notification was sent"
+    }
+  },
+  "required": [
+    "law_firm",
+    "alert_type",
+    "message"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "data.bul_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "admin",
+                "Sales Manager",
+                "senior_management",
+                "finance_user"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "data.bul_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "admin",
+                "Sales Manager",
+                "senior_management",
+                "finance_user"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "admin",
+            "Sales Manager",
+            "senior_management"
+          ]
+        }
+      }
+    }
+  }
+}

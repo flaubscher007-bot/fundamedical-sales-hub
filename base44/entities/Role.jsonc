@@ -1,0 +1,195 @@
+{
+  "name": "Role",
+  "type": "object",
+  "properties": {
+    "role_name": {
+      "type": "string",
+      "description": "Name of the role (e.g., Admin, Manager, User, Read-Only)"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description of what this role does"
+    },
+    "is_system_role": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this is a built-in system role that cannot be deleted"
+    },
+    "permissions": {
+      "type": "object",
+      "description": "Permission object mapping modules to allowed actions",
+      "properties": {
+        "users": {
+          "type": "object",
+          "properties": {
+            "view": {
+              "type": "boolean",
+              "default": false
+            },
+            "create": {
+              "type": "boolean",
+              "default": false
+            },
+            "edit": {
+              "type": "boolean",
+              "default": false
+            },
+            "delete": {
+              "type": "boolean",
+              "default": false
+            },
+            "manage_roles": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "clients": {
+          "type": "object",
+          "properties": {
+            "view": {
+              "type": "boolean",
+              "default": false
+            },
+            "create": {
+              "type": "boolean",
+              "default": false
+            },
+            "edit": {
+              "type": "boolean",
+              "default": false
+            },
+            "delete": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "finance": {
+          "type": "object",
+          "properties": {
+            "view": {
+              "type": "boolean",
+              "default": false
+            },
+            "export": {
+              "type": "boolean",
+              "default": false
+            },
+            "sync": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "goals": {
+          "type": "object",
+          "properties": {
+            "view": {
+              "type": "boolean",
+              "default": false
+            },
+            "create": {
+              "type": "boolean",
+              "default": false
+            },
+            "edit": {
+              "type": "boolean",
+              "default": false
+            },
+            "delete": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "team": {
+          "type": "object",
+          "properties": {
+            "view": {
+              "type": "boolean",
+              "default": false
+            },
+            "manage": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "reporting": {
+          "type": "object",
+          "properties": {
+            "view": {
+              "type": "boolean",
+              "default": false
+            },
+            "generate": {
+              "type": "boolean",
+              "default": false
+            },
+            "export": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "analytics": {
+          "type": "object",
+          "properties": {
+            "view": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "settings": {
+          "type": "object",
+          "properties": {
+            "view": {
+              "type": "boolean",
+              "default": false
+            },
+            "edit": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        }
+      }
+    },
+    "color": {
+      "type": "string",
+      "description": "Badge color for visual identification (hex code)"
+    }
+  },
+  "required": [
+    "role_name"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "write": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

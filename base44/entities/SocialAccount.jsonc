@@ -1,0 +1,49 @@
+{
+  "name": "SocialAccount",
+  "type": "object",
+  "properties": {
+    "platform": {
+      "type": "string",
+      "enum": [
+        "Facebook",
+        "LinkedIn",
+        "Instagram",
+        "YouTube"
+      ],
+      "description": "Social media platform"
+    },
+    "page_url": {
+      "type": "string",
+      "description": "Public page/profile URL"
+    },
+    "handle": {
+      "type": "string",
+      "description": "Username or page name"
+    },
+    "connected": {
+      "type": "boolean",
+      "default": false
+    },
+    "last_fetched": {
+      "type": "string",
+      "description": "Last time posts were fetched"
+    }
+  },
+  "required": [
+    "platform"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

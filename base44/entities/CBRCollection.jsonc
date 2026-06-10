@@ -1,0 +1,82 @@
+{
+  "name": "CBRCollection",
+  "type": "object",
+  "properties": {
+    "law_firm": {
+      "type": "string",
+      "description": "Law firm name"
+    },
+    "patient_name": {
+      "type": "string",
+      "description": "Patient name or date"
+    },
+    "x3_acc_no": {
+      "type": "string",
+      "description": "X3 Account Number"
+    },
+    "dc_stm": {
+      "type": "string",
+      "description": "DC/STM person"
+    },
+    "kac": {
+      "type": "string",
+      "description": "KAC or BUL who collected"
+    },
+    "bank_select": {
+      "type": "string",
+      "description": "Bank account selected"
+    },
+    "bank_reference": {
+      "type": "string",
+      "description": "Bank reference number"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Collection amount (ZAR)"
+    },
+    "fmacc_status": {
+      "type": "string",
+      "description": "FMACC status (YES/NO)"
+    },
+    "expert_name": {
+      "type": "string",
+      "description": "Expert whose report was paid"
+    },
+    "prod": {
+      "type": "string",
+      "description": "Product (XRAYS, TRANS, etc.)"
+    },
+    "payment_type": {
+      "type": "string",
+      "enum": [
+        "DEP",
+        "SET",
+        "FULL",
+        "X-rays"
+      ],
+      "description": "Type of payment received (DEP=Deposit, SET=Balance, FULL=Full Invoice)"
+    },
+    "ja_comments": {
+      "type": "string",
+      "description": "JA comments"
+    },
+    "dc_comments": {
+      "type": "string",
+      "description": "DC comments"
+    },
+    "dc_inv_number": {
+      "type": "string",
+      "description": "DC Invoice Number"
+    },
+    "collection_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Collection date"
+    }
+  },
+  "required": [
+    "law_firm",
+    "amount",
+    "kac"
+  ]
+}

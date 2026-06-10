@@ -1,0 +1,43 @@
+{
+  "name": "Target",
+  "type": "object",
+  "properties": {
+    "bul_name": {
+      "type": "string",
+      "description": "Business Unit Leader name"
+    },
+    "bul_email": {
+      "type": "string",
+      "description": "Business Unit Leader email"
+    },
+    "month": {
+      "type": "string",
+      "format": "date",
+      "description": "First day of the month this target applies to"
+    },
+    "revenue_target": {
+      "type": "number",
+      "description": "Revenue/Sales target amount (ZAR)"
+    },
+    "bookings_target": {
+      "type": "number",
+      "description": "Number of bookings/cases target"
+    },
+    "reports_target": {
+      "type": "number",
+      "description": "Number of reports target"
+    },
+    "collections_target": {
+      "type": "number",
+      "description": "Collections target amount (ZAR)"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes"
+    }
+  },
+  "required": [
+    "bul_name",
+    "month"
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "name": "DailyActual",
+  "type": "object",
+  "properties": {
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of the actual entry"
+    },
+    "bul_name": {
+      "type": "string",
+      "description": "Business Unit Leader or KAC name"
+    },
+    "bul_email": {
+      "type": "string",
+      "description": "Email of the BUL or KAC"
+    },
+    "team": {
+      "type": "string",
+      "enum": [
+        "Kopano",
+        "Kutlwano",
+        "Sisonke",
+        "Nasira"
+      ],
+      "description": "Team the person belongs to"
+    },
+    "bookings": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of bookings made on this date"
+    },
+    "reports": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of reports delivered on this date"
+    },
+    "collections": {
+      "type": "number",
+      "default": 0,
+      "description": "Collections amount received on this date (ZAR)"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes"
+    }
+  },
+  "required": [
+    "date",
+    "bul_name"
+  ]
+}

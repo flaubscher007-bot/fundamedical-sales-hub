@@ -1,0 +1,130 @@
+{
+  "name": "Contract",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "client_id": {
+      "type": "string"
+    },
+    "client_name": {
+      "type": "string"
+    },
+    "template_id": {
+      "type": "string"
+    },
+    "template_name": {
+      "type": "string"
+    },
+    "pricing_proposal_id": {
+      "type": "string"
+    },
+    "pricing_proposal_title": {
+      "type": "string"
+    },
+    "body": {
+      "type": "string",
+      "description": "Final contract content (filled in)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Draft",
+        "Sent",
+        "Signed",
+        "Declined",
+        "Expired"
+      ],
+      "default": "Draft"
+    },
+    "sent_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "signed_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "expiry_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "signature_url": {
+      "type": "string"
+    },
+    "signed_by": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "assigned_bul": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "client_name"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "data.assigned_bul": "{{user.full_name}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "admin",
+                "Sales Manager",
+                "senior_management",
+                "bul_manager"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "data.assigned_bul": "{{user.full_name}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "admin",
+                "Sales Manager",
+                "senior_management",
+                "bul_manager"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "admin",
+            "Sales Manager",
+            "senior_management"
+          ]
+        }
+      }
+    }
+  }
+}

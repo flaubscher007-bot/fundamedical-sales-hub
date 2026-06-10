@@ -5,13 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Plus, X, Edit2, Trash2, ExternalLink, Mail, Phone, MapPin, Users, Building2, Download } from "lucide-react";
+import { Plus, X, Edit2, Trash2, ExternalLink, Mail, Phone, MapPin, Users, Building2, Clock, Search, Filter, X as FilterX } from "lucide-react";
 import { toast } from "sonner";
-import { jsPDF } from "jspdf";
 import ActivityLogDialog from "./ActivityLogDialog";
 import CompetitorDashboard from "./CompetitorDashboard";
 import CompetitorSearchDialog from "@/components/competitors/CompetitorSearchDialog";
-import { Search, Filter, X as FilterX } from "lucide-react";
+import CompetitorDetailCard from "@/components/competitors/CompetitorDetailCard";
+import CompetitorBatchPrint from "@/components/competitors/CompetitorBatchPrint";
 
 export default function CompetitorManager() {
   const [competitors, setCompetitors] = useState([]);
@@ -25,6 +25,7 @@ export default function CompetitorManager() {
   const [showSearchDialog, setShowSearchDialog] = useState(false);
   const [importingLeads, setImportingLeads] = useState(false);
   const [populatingFromExperts, setPopulatingFromExperts] = useState(false);
+  const [selectedCompetitor, setSelectedCompetitor] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
     contact_person: "",
@@ -183,159 +184,6 @@ export default function CompetitorManager() {
     });
   };
 
-  const exportToPDF = () => {
-    const doc = new jsPDF();
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const pageHeight = doc.internal.pageSize.getHeight();
-    let yPosition = 15;
-    const margin = 12;
-    const contentWidth = pageWidth - 2 * margin;
-
-    // Header
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(18);
-    doc.setTextColor(52, 204, 208);
-    doc.text("Competitor Analysis Report", margin, yPosition);
-    yPosition += 8;
-
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(10);
-    doc.setTextColor(100, 100, 100);
-    doc.text(`Generated: ${new Date().toLocaleDateString()}`, margin, yPosition);
-    yPosition += 10;
-
-    // Add each competitor
-    competitors.forEach((competitor, idx) => {
-      // Check if new page needed
-      if (yPosition > pageHeight - 30) {
-        doc.addPage();
-        yPosition = 15;
-      }
-
-      // Competitor Name
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(13);
-      doc.setTextColor(0, 0, 0);
-      doc.text(competitor.name, margin, yPosition);
-      yPosition += 7;
-
-      // Contact Person
-      if (competitor.contact_person) {
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(9);
-        doc.setTextColor(80, 80, 80);
-        doc.text(`Contact: ${competitor.contact_person}`, margin, yPosition);
-        yPosition += 5;
-      }
-
-      // Location
-      if (competitor.address || competitor.city || competitor.province) {
-        const location = [competitor.address, competitor.city, competitor.province]
-          .filter(Boolean)
-          .join(", ");
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(9);
-        doc.text(`Location: ${location}`, margin, yPosition);
-        yPosition += 5;
-      }
-
-      // Contact Details
-      const contactDetails = [];
-      if (competitor.email) contactDetails.push(`Email: ${competitor.email}`);
-      if (competitor.phone) contactDetails.push(`Phone: ${competitor.phone}`);
-      if (competitor.website) contactDetails.push(`Website: ${competitor.website}`);
-
-      contactDetails.forEach((detail) => {
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(9);
-        doc.setTextColor(80, 80, 80);
-        const wrapped = doc.splitTextToSize(detail, contentWidth - 10);
-        doc.text(wrapped, margin + 5, yPosition);
-        yPosition += wrapped.length * 4 + 2;
-      });
-
-      // Areas of Operation
-      if (competitor.areas_of_operation?.length > 0) {
-        yPosition += 2;
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(9);
-        doc.setTextColor(0, 0, 0);
-        doc.text("Areas of Operation:", margin, yPosition);
-        yPosition += 5;
-        const areas = competitor.areas_of_operation.join(", ");
-        const wrappedAreas = doc.splitTextToSize(areas, contentWidth - 10);
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(8);
-        doc.setTextColor(80, 80, 80);
-        doc.text(wrappedAreas, margin + 5, yPosition);
-        yPosition += wrappedAreas.length * 4 + 2;
-      }
-
-      // Law Firms Assisted
-      if (competitor.law_firms_assisted?.length > 0) {
-        yPosition += 2;
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(9);
-        doc.setTextColor(0, 0, 0);
-        doc.text("Law Firms Assisted (Last 5 Years):", margin, yPosition);
-        yPosition += 5;
-        competitor.law_firms_assisted.forEach((firm) => {
-          doc.setFont("helvetica", "normal");
-          doc.setFontSize(8);
-          doc.setTextColor(80, 80, 80);
-          doc.text(`• ${firm.firm_name} (${firm.last_assisted_year})`, margin + 5, yPosition);
-          yPosition += 4;
-        });
-      }
-
-      // Social Media
-      const socialLinks = Object.entries(competitor.social_accounts || {})
-        .filter(([_, url]) => url)
-        .map(([platform]) => platform.charAt(0).toUpperCase() + platform.slice(1))
-        .join(", ");
-
-      if (socialLinks) {
-        yPosition += 2;
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(9);
-        doc.setTextColor(0, 0, 0);
-        doc.text("Social Media:", margin, yPosition);
-        yPosition += 5;
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(8);
-        doc.setTextColor(80, 80, 80);
-        doc.text(socialLinks, margin + 5, yPosition);
-        yPosition += 4;
-      }
-
-      // Notes
-      if (competitor.notes) {
-        yPosition += 2;
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(9);
-        doc.setTextColor(0, 0, 0);
-        doc.text("Notes:", margin, yPosition);
-        yPosition += 5;
-        const wrappedNotes = doc.splitTextToSize(competitor.notes, contentWidth - 10);
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(8);
-        doc.setTextColor(80, 80, 80);
-        doc.text(wrappedNotes, margin + 5, yPosition);
-        yPosition += wrappedNotes.length * 4 + 4;
-      }
-
-      // Divider
-      yPosition += 4;
-      doc.setDrawColor(200, 200, 200);
-      doc.line(margin, yPosition, pageWidth - margin, yPosition);
-      yPosition += 6;
-    });
-
-    // Save PDF
-    doc.save("competitor-analysis.pdf");
-    toast.success("PDF exported successfully");
-  };
-
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -375,15 +223,7 @@ export default function CompetitorManager() {
           {showDashboard ? "Hide" : "Show"} Dashboard
         </Button>
         <div className="flex gap-2 flex-wrap">
-          <Button
-            onClick={exportToPDF}
-            variant="outline"
-            disabled={competitors.length === 0}
-            className="flex items-center gap-2"
-          >
-            <Download className="w-4 h-4" />
-            Export PDF
-          </Button>
+          <CompetitorBatchPrint competitors={filteredCompetitors.length > 0 ? filteredCompetitors : competitors} />
           <Button
             onClick={handlePopulateFromExperts}
             disabled={populatingFromExperts}
@@ -737,8 +577,17 @@ export default function CompetitorManager() {
         </Card>
       ) : (
         <div className="grid gap-4">
-          {filteredCompetitors.map((competitor) => (
-            <Card key={competitor.id} className="p-6 bg-slate-900 border-slate-700">
+          {filteredCompetitors.map((competitor) => {
+            const staleDays = competitor.last_analyzed
+              ? Math.floor((Date.now() - new Date(competitor.last_analyzed).getTime()) / 86400000)
+              : null;
+            const lastUpdatedLabel = staleDays === null ? "Not researched"
+              : staleDays === 0 ? "Updated today"
+              : `${staleDays}d ago`;
+            const isStale = staleDays === null || staleDays > 30;
+            return (
+            <Card key={competitor.id} className="p-6 bg-slate-900 border-slate-700 cursor-pointer hover:border-[#34CCD0] transition-colors"
+              onClick={() => setSelectedCompetitor(competitor)}>
               <div className="flex items-start justify-between mb-3">
                 <div>
                   <h3 className="text-lg font-bold" style={{ color: "#92F21D" }}>
@@ -747,8 +596,12 @@ export default function CompetitorManager() {
                   {competitor.contact_person && (
                     <p className="text-sm text-gray-400">{competitor.contact_person}</p>
                   )}
+                  <div className={`flex items-center gap-1 mt-1.5 text-xs ${isStale ? 'text-red-400' : 'text-green-400'}`}>
+                    <Clock className="w-3 h-3" />
+                    <span>{lastUpdatedLabel}</span>
+                  </div>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2" onClick={e => e.stopPropagation()}>
                   <ActivityLogDialog
                     competitorId={competitor.id}
                     competitorName={competitor.name}
@@ -874,8 +727,16 @@ export default function CompetitorManager() {
                 <p className="text-sm text-gray-300 italic">{competitor.notes}</p>
               )}
             </Card>
-          ))}
+          );})}
         </div>
+      )}
+
+      {/* Detail Modal */}
+      {selectedCompetitor && (
+        <CompetitorDetailCard
+          competitor={selectedCompetitor}
+          onClose={() => setSelectedCompetitor(null)}
+        />
       )}
     </div>
   );

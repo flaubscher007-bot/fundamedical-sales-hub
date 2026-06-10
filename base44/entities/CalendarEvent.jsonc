@@ -1,0 +1,162 @@
+{
+  "name": "CalendarEvent",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Event title"
+    },
+    "description": {
+      "type": "string",
+      "description": "Event description"
+    },
+    "start_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Event start time"
+    },
+    "end_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Event end time"
+    },
+    "location": {
+      "type": "string",
+      "description": "Event location"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "appointment",
+        "meeting",
+        "task",
+        "personal"
+      ],
+      "description": "Type of event"
+    },
+    "organizer_email": {
+      "type": "string",
+      "description": "Email of event organizer"
+    },
+    "organizer_name": {
+      "type": "string",
+      "description": "Name of event organizer"
+    },
+    "attendees": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "accepted",
+              "declined",
+              "tentative"
+            ]
+          }
+        }
+      },
+      "description": "Event attendees"
+    },
+    "related_client_id": {
+      "type": "string",
+      "description": "Associated client ID if applicable"
+    },
+    "related_task_id": {
+      "type": "string",
+      "description": "Associated task ID if applicable"
+    },
+    "is_recurring": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether event is recurring"
+    },
+    "recurrence_pattern": {
+      "type": "string",
+      "enum": [
+        "daily",
+        "weekly",
+        "monthly",
+        "yearly"
+      ],
+      "description": "Recurrence pattern if recurring"
+    },
+    "recurrence_end_date": {
+      "type": "string",
+      "format": "date",
+      "description": "End date for recurring events"
+    },
+    "google_calendar_id": {
+      "type": "string",
+      "description": "Google Calendar event ID for sync"
+    },
+    "outlook_calendar_id": {
+      "type": "string",
+      "description": "Outlook event ID for sync"
+    },
+    "visibility": {
+      "type": "string",
+      "enum": [
+        "private",
+        "team",
+        "public"
+      ],
+      "default": "team",
+      "description": "Event visibility"
+    },
+    "reminder_minutes": {
+      "type": "number",
+      "default": 15,
+      "description": "Reminder time in minutes before event"
+    },
+    "is_synced": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether event is synced to external calendar"
+    },
+    "color": {
+      "type": "string",
+      "description": "Event color for display (hex code)"
+    },
+    "send_invites": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to send email invitations to attendees"
+    },
+    "invites_sent": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether invitations have been sent"
+    },
+    "sync_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "syncing",
+        "synced",
+        "failed"
+      ],
+      "default": "pending",
+      "description": "Current sync status"
+    },
+    "sync_error": {
+      "type": "string",
+      "description": "Error message if sync failed"
+    }
+  },
+  "required": [
+    "title",
+    "start_time",
+    "end_time",
+    "organizer_email",
+    "event_type"
+  ]
+}

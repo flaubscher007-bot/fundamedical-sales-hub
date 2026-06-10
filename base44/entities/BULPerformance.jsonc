@@ -1,0 +1,66 @@
+{
+  "name": "BULPerformance",
+  "type": "object",
+  "properties": {
+    "bul_name": {
+      "type": "string",
+      "description": "Business Unit Leader name"
+    },
+    "bul_email": {
+      "type": "string",
+      "description": "BUL email for linking to user"
+    },
+    "month": {
+      "type": "string",
+      "format": "date",
+      "description": "First day of the month this record represents (e.g. 2026-02-01)"
+    },
+    "law_firm": {
+      "type": "string",
+      "description": "Law firm name"
+    },
+    "bookings": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of bookings received from the law firm"
+    },
+    "reports_delivered": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of reports delivered"
+    },
+    "deposits_collected": {
+      "type": "number",
+      "default": 0,
+      "description": "Amount of deposits collected (ZAR)"
+    },
+    "balance_payments_collected": {
+      "type": "number",
+      "default": 0,
+      "description": "Amount of balance payments collected (ZAR)"
+    },
+    "visits": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of visits to the law firm in the month"
+    },
+    "line_items": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of line by line items done with the law firm"
+    },
+    "new_firms_signed": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of new law firms signed up this month"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "bul_name",
+    "month",
+    "law_firm"
+  ]
+}

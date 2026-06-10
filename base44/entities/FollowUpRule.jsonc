@@ -1,0 +1,124 @@
+{
+  "name": "FollowUpRule",
+  "type": "object",
+  "properties": {
+    "rule_name": {
+      "type": "string",
+      "description": "Name of the follow-up rule"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether this rule is active"
+    },
+    "inactivity_days": {
+      "type": "number",
+      "description": "Number of days of inactivity to trigger the rule (e.g., 30)"
+    },
+    "assigned_to_email": {
+      "type": "string",
+      "description": "Email of the person assigned to handle the follow-up"
+    },
+    "email_subject": {
+      "type": "string",
+      "description": "Subject line for the follow-up email"
+    },
+    "email_body": {
+      "type": "string",
+      "description": "Body template for the follow-up email"
+    },
+    "task_title": {
+      "type": "string",
+      "description": "Title for the follow-up task"
+    },
+    "task_description": {
+      "type": "string",
+      "description": "Description for the follow-up task"
+    },
+    "task_priority": {
+      "type": "string",
+      "enum": [
+        "Low",
+        "Medium",
+        "High",
+        "Urgent"
+      ],
+      "default": "Medium",
+      "description": "Priority level for the task"
+    },
+    "apply_to_all_clients": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to apply this rule to all clients or specific ones"
+    },
+    "specific_client_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of specific client IDs if not applying to all"
+    },
+    "last_run": {
+      "type": "string",
+      "description": "Timestamp of last rule execution"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes about this rule"
+    }
+  },
+  "required": [
+    "rule_name",
+    "inactivity_days",
+    "assigned_to_email"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "admin",
+            "Sales Manager",
+            "senior_management",
+            "bul_manager"
+          ]
+        }
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "admin",
+            "Sales Manager",
+            "senior_management",
+            "bul_manager"
+          ]
+        }
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "admin",
+            "Sales Manager",
+            "senior_management",
+            "bul_manager"
+          ]
+        }
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "admin",
+            "Sales Manager",
+            "senior_management"
+          ]
+        }
+      }
+    }
+  }
+}

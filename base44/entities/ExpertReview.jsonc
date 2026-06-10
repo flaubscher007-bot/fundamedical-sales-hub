@@ -1,0 +1,124 @@
+{
+  "name": "ExpertReview",
+  "type": "object",
+  "properties": {
+    "expert_id": {
+      "type": "string",
+      "description": "Expert ID being reviewed"
+    },
+    "expert_name": {
+      "type": "string",
+      "description": "Expert name (denormalized)"
+    },
+    "appointment_id": {
+      "type": "string",
+      "description": "Related appointment ID"
+    },
+    "client_name": {
+      "type": "string",
+      "description": "Client name"
+    },
+    "rating": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "Rating from 1-5 stars"
+    },
+    "review_text": {
+      "type": "string",
+      "description": "Review text"
+    },
+    "review_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of review"
+    },
+    "reviewer_email": {
+      "type": "string",
+      "description": "Email of person who left the review"
+    }
+  },
+  "required": [
+    "expert_id",
+    "expert_name",
+    "rating"
+  ],
+  "rls": {
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$ne": ""
+            }
+          }
+        }
+      ]
+    },
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$ne": ""
+            }
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "Sales Manager",
+                "senior_management"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": {
+              "$in": [
+                "Sales Manager",
+                "senior_management"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

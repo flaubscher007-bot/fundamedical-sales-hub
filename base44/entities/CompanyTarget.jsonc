@@ -1,0 +1,106 @@
+{
+  "name": "CompanyTarget",
+  "type": "object",
+  "properties": {
+    "category": {
+      "type": "string",
+      "enum": [
+        "Bookings Made",
+        "Claimants Seen",
+        "Reports Delivered",
+        "Invoices Sent",
+        "Total Money in Bank",
+        "Deposits Received",
+        "Balance Payments Received",
+        "Line by Line to Attorney"
+      ],
+      "description": "Bottom-line target category"
+    },
+    "target_type": {
+      "type": "string",
+      "enum": [
+        "Bookings",
+        "Production",
+        "Finance"
+      ],
+      "description": "Main target grouping: Bookings, Production, or Finance"
+    },
+    "month": {
+      "type": "string",
+      "format": "date",
+      "description": "Month for this target (first day of month)"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Target amount (in ZAR for finance, count for bookings/production)"
+    },
+    "unit": {
+      "type": "string",
+      "enum": [
+        "ZAR",
+        "Count",
+        "Number"
+      ],
+      "default": "ZAR",
+      "description": "Unit of measurement"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes"
+    }
+  },
+  "required": [
+    "category",
+    "target_type",
+    "month",
+    "amount"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "admin",
+            "Sales Manager",
+            "senior_management"
+          ]
+        }
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "admin",
+            "Sales Manager",
+            "senior_management",
+            "bul_manager",
+            "finance_user"
+          ]
+        }
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "admin",
+            "Sales Manager",
+            "senior_management"
+          ]
+        }
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "admin",
+            "Sales Manager",
+            "senior_management"
+          ]
+        }
+      }
+    }
+  }
+}

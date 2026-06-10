@@ -1,0 +1,56 @@
+{
+  "name": "MarketingMaterial",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Material title"
+    },
+    "description": {
+      "type": "string",
+      "description": "Brief description"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Brochure",
+        "Presentation",
+        "Case Study",
+        "Service Guide",
+        "Price List",
+        "Flyer",
+        "Video",
+        "Other"
+      ],
+      "description": "Material category"
+    },
+    "file_url": {
+      "type": "string",
+      "description": "Uploaded file URL"
+    },
+    "thumbnail_url": {
+      "type": "string",
+      "description": "Thumbnail image URL"
+    },
+    "service_area": {
+      "type": "string",
+      "enum": [
+        "Medical Legal Reports",
+        "Trusts",
+        "Financing",
+        "National Assessments",
+        "Case Management",
+        "Document Sharing",
+        "General"
+      ],
+      "description": "Related service area"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "title"
+  ]
+}
