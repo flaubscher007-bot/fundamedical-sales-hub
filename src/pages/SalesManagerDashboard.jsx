@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Calendar, TrendingUp, MapPin, BarChart3 } from "lucide-react";
+import LeadFunnel from "@/components/dashboard/LeadFunnel";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, LineChart, Line, Legend
@@ -116,6 +117,9 @@ export default function SalesManagerDashboard({ user }) {
           </Card>
         ))}
       </div>
+
+      {/* Lead Conversion Funnel */}
+      <LeadFunnel />
 
       {/* Charts row 1 */}
       <div className="grid lg:grid-cols-2 gap-6">
