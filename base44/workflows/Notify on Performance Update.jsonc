@@ -1,0 +1,45 @@
+{
+  "name": "Notify on Performance Update",
+  "description": "",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "entity",
+      "events": [
+        "create",
+        "update"
+      ],
+      "entity_name": "BULPerformance"
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "notify_on_performance_update",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_function": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "sendNotification",
+            "args": {
+              "recipient_email": "{{ bul_email }}",
+              "type": "performance_update",
+              "title": "Performance Update for {{ law_firm }}",
+              "message": "Your performance metrics have been updated for {{ law_firm }}. Bookings: {{ bookings }}, Reports: {{ reports_delivered }}, Collections: {{ deposits_collected }}",
+              "related_entity": "BULPerformance",
+              "related_id": "{{ id }}"
+            }
+          },
+          "then": "end"
+        }
+      }
+    ]
+  },
+  "x-base44-migrated-from-automation": {
+    "legacy_payload_function": "sendNotification"
+  }
+}

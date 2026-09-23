@@ -1,0 +1,44 @@
+{
+  "name": "Notify on Leave Approval",
+  "description": "",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "entity",
+      "events": [
+        "update"
+      ],
+      "entity_name": "Leave"
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "notify_on_leave_approval",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_function": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "sendNotification",
+            "args": {
+              "recipient_email": "{{ bul_email }}",
+              "type": "leave_approved",
+              "title": "Leave Request {{ status }}",
+              "message": "Your {{ leave_type }} leave request from {{ start_date }} to {{ end_date }} has been {{ status | lowercase }}",
+              "related_entity": "Leave",
+              "related_id": "{{ id }}"
+            }
+          },
+          "then": "end"
+        }
+      }
+    ]
+  },
+  "x-base44-migrated-from-automation": {
+    "legacy_payload_function": "sendNotification"
+  }
+}
